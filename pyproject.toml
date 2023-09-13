@@ -2,13 +2,34 @@
 name = "how2meet"
 version = "0.1.0"
 description = ""
-authors = ["Ben Memberg <benmemberg@gmail.com>"]
-readme = "README.md"
+authors = ["Ben Memberg <benmemberg@gmail.com>", "Connor Rubin <csrubin@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+nicegui = "^1.2.24"
+pywebview = "^4.2.2"
 
+[tool.poetry.dev-dependencies]
+pytest = "^7.0.1"
+mypy = "^1.0.1"
+pre-commit = "^3.0.2"
+black = "^23.1.0"
+isort = "^5.10.1"
+ruff = "^0.0.277"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+[tool.mypy]
+ignore_missing_imports = true
