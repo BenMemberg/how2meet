@@ -132,9 +132,5 @@ dmypy.json
 .idea/
 .DS_Store
 
-# project specific
-hubsim/examples/**/*
-.streamlit/secrets.toml
-hubsim/logs/**/*
-logs/**/*
+# ruff linter
 .ruff_cache
