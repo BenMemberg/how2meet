@@ -134,3 +134,6 @@ dmypy.json
 
 # ruff linter
 .ruff_cache
+
+# nicegui app storage
+.nicegui
