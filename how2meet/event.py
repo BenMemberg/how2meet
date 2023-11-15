@@ -1,11 +1,10 @@
 """
 
 """
-from datetime import datetime
 
-
+# @dataclass?
 class Event:
-    def __init__(self, name: str, password: str, date: datetime, description: str, guests: list[str, str, str]):
+    def __init__(self, name, password, date, description, guests):
         self.name = name
         self.password = password
         self.date = date
