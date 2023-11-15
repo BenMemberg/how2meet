@@ -8,6 +8,7 @@ authors = ["Ben Memberg <benmemberg@gmail.com>", "Connor Rubin <csrubin@gmail.co
 python = "^3.10"
 nicegui = "^1.2.24"
 pywebview = "^4.2.2"
+sqlalchemy = "^2.0.23"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
