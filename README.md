@@ -69,6 +69,7 @@ More specific reasons here
 |--------------|----------------------|
 | Ben Memberg  | benmemberg@gmail.com |
 | Connor Rubin | csrubin@gmail.com    |
+| Taea Vogel   | taelxvie@gmail.com   |
 
 # License
 
