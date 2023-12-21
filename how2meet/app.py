@@ -6,8 +6,8 @@ import uuid
 
 from nicegui import ui
 
-# app.add_static_file(local_file="./assets/css/global.css")
-# ui.add_head_html("""<link rel="stylesheet" type="text/css" href="./assets/css/global.css">""")
+# app.add_static_file(local_file="./static/css/global.css")
+# ui.add_head_html("""<link rel="stylesheet" type="text/css" href="./static/css/global.css">""")
 ui.add_head_html(
     "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>"
 )

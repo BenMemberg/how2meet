@@ -1,9 +1,9 @@
 
 ---
 <h1 align="center">
-    <img src="" alt="Logo" width="125" height="125">
+    <img src="docs/assets/h2m-logo.png" alt="Logo" width="125" height="125">
     <br>
-    <img src="" alt="CompanyLogo" width="200">
+    <img src="docs/assets/company-logo.png" alt="CompanyLogo" width="200">
     <br>
     how2meet
 </h1>
