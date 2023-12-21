@@ -1,0 +1,39 @@
+services:
+  # A Docker web service
+  - type: web
+    name: how2meet
+    runtime: python
+    repo: https://github.com/BenMemberg/how2meet.git # optional
+    region: ohio # optional (defaults to oregon)
+    plan: free # optional (defaults to starter instance type)
+    branch: main # optional (defaults to master)
+    rootDir: how2meet
+    buildCommand: poetry install
+    startCommand: poetry run python app.py
+    envVars:
+      - key: DB_CONNECTION_STRING
+        sync: false
+      - fromGroup: how2meet-envvars
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - how2meet/**/*
+        - docs/**/*
+      ignoredPaths:
+        - tests/*/*
+
+databases:
+  - name: how2meet-test
+    plan: free
+  - name: how2meet-staging
+    plan: free
+  - name: how2meet-production
+    plan: free
+
+envVarGroups:
+  - name: how2meet-envvars
+    envVars:
+      - key: KEY
+        value: VAL
+      - key: USER_PROVIDED_SECRET
+        sync: false
