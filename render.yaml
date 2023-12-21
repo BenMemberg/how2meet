@@ -21,22 +21,12 @@ services:
         - tests/*/*
 
 databases:
-  - name: how2meet-test
-    plan: free
-    region: ohio
-  - name: how2meet-staging
-    plan: free
-    region: ohio
-  - name: how2meet-prod
+  - name: how2meet-db
     plan: free
     region: ohio
 
 envVarGroups:
   - name: how2meet-envvars
     envVars:
-      - key: DB_CONNECTION_STRING_TEST
-        sync: false
-      - key: DB_CONNECTION_STRING_STAGING
-        sync: false
-      - key: DB_CONNECTION_STRING_PRODUCTION
+      - key: DB_CONNECTION_STRING
         sync: false
