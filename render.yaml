@@ -11,8 +11,6 @@ services:
     buildCommand: poetry install
     startCommand: poetry run python app.py
     envVars:
-      - key: DB_CONNECTION_STRING
-        sync: false
       - fromGroup: how2meet-envvars
     autoDeploy: true
     buildFilter:
@@ -33,7 +31,9 @@ databases:
 envVarGroups:
   - name: how2meet-envvars
     envVars:
-      - key: KEY
-        value: VAL
-      - key: USER_PROVIDED_SECRET
+      - key: DB_CONNECTION_STRING_TEST
+        sync: false
+      - key: DB_CONNECTION_STRING_STAGING
+        sync: false
+      - key: DB_CONNECTION_STRING_PRODUCTION
         sync: false
