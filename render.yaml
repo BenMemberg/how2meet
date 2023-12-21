@@ -27,7 +27,7 @@ databases:
   - name: how2meet-staging
     plan: free
     region: ohio
-  - name: how2meet-production
+  - name: how2meet-prod
     plan: free
     region: ohio
 
