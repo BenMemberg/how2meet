@@ -23,10 +23,13 @@ services:
 databases:
   - name: how2meet-test
     plan: free
+    region: ohio
   - name: how2meet-staging
     plan: free
+    region: ohio
   - name: how2meet-production
     plan: free
+    region: ohio
 
 envVarGroups:
   - name: how2meet-envvars
