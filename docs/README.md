@@ -9,7 +9,7 @@
 </h1>
 
 <p align="center">
-    Tagline goes here
+    Frictionless event manager
     <br/>
 </p>
 
@@ -35,32 +35,40 @@
 ---
 
 # About
-| TL;DR                                                                      |
-|:---------------------------------------------------------------------------|
-| TL;DR goes here. [Click here to jump to Getting Started](#getting-started) |
 
-Some overview text here.
+**how2meet** is a *frictionless* event manager--meaning it is simple, free, easy to use, and does **NOT** require you or your guests to:
+- Create an account
+- Download an app
 
 ## Motivation
 
-### __Interesting bold phrase:__ _Sassy retort_
-More specific reasons here
+### __Facebook is dead:__ _But Facebook Events was :fire:_
+- Facebook Events
+- No one wants to download an app
+- Planning a reunion with a big group of distributed, busy friends
+- The hardest part of staying connected is someone taking charge and planning events. It takes time, effort, and often little thanks
+-
 
 ## Features
-- [ ] Feature
-
+- [ ] Host an event at a specific location, date, and time
+- [ ] Send invites to guests via text, email, or web interface (link)
+- [ ] Track RSVP responses, nudge those who haven't responded
+- [ ] Admin access to limit attendees, kick out unknowns, change event details, and more!
 
 ## Roadmap
-- [ ] Upcoming feature
+- [ ] When2meet-style group scheduler
+- [ ] GCal URL integration
+- [ ] Polls
+- [ ] Photos and comments
+- [ ] AI-powered planning assistant
 
 ## Built With
-| Library                                            | Use                          | Source                                       |
-|----------------------------------------------------|------------------------------|----------------------------------------------|
-| [nicegui](https://nicegui.io)                      | GUI                          | Github link here                             |
-
-# Getting Started
-
-## Tutorial
+| Library                       | Use            | Source                                       |
+|-------------------------------|----------------|----------------------------------------------|
+| [nicegui](https://nicegui.io) | GUI            | Github link here                             |
+| [FastAPI]()                   | Backend        |                                              |
+| [Render]()                    | Infrastructure |                                              |
+|                               |                |                                              |
 
 ## Screenshots
 
@@ -72,5 +80,8 @@ More specific reasons here
 | Taea Vogel   | taelxvie@gmail.com   |
 
 # License
+[GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/)
 
 # Acknowledgements / References
+
+[when2meet](https://www.when2meet.com)
