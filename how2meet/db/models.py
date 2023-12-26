@@ -1,7 +1,7 @@
-
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Date, DateTime
+
 from .database import Base
 
 
@@ -18,11 +18,7 @@ class Event(Base):
     host_name = Column(String(50))
     host_password = Column(String(100))
     duration = Column(Integer)
-    invites = relationship(
-        "Invite",
-        primaryjoin = "Event.id == Invite.store_id",
-        cascade = "all, delete-orphan"
-    )
+    invites = relationship("Invite", primaryjoin="Event.id == Invite.store_id", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"Event({self.name}, {self.date})"
@@ -38,8 +34,7 @@ class Invite(Base):
     status = Column(String(15))
     password = Column(Integer, nullable=True)
     verified = Column(bool, nullable=True)
-    event_id = Column(Integer, ForeignKey('events.id'), nullable=False)
+    event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
 
     def __repr__(self):
         return f"Invite(name='{self.name}', contact='{self.email if self.email else self.phone}')"
-    

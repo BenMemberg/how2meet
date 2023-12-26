@@ -1,4 +1,5 @@
 from datetime import date, datetime
+
 from pydantic import BaseModel
 
 
@@ -10,7 +11,7 @@ class Event(BaseModel):
     end_time: datetime
     all_day: bool
     locatiom: str
-    host_name:str
+    host_name: str
     host_password: str
     duration: int
 
