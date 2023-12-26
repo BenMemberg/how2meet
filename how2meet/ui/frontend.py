@@ -1,8 +1,20 @@
+"""
+
+"""
 from fastapi import FastAPI
 from nicegui import app, ui
 
 
 def init(fastapi_app: FastAPI) -> None:
+    """
+
+    Args:
+        fastapi_app:
+
+    Returns:
+
+    """
+
     @ui.page("/show")
     def show():
         ui.label("Hello, FastAPI!")

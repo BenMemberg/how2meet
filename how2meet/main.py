@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-from how2meet import frontend
 from fastapi import FastAPI
+from ui import frontend
 
 app = FastAPI()
 
 
-@app.get('/')
+@app.get("/")
 def read_root():
-    return {'Hello': 'World'}
+    return {"Hello": "World"}
 
 
 frontend.init(app)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print('Please start the app with the "uvicorn" command as shown in the start.sh script')
