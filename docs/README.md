@@ -63,14 +63,11 @@
 - [ ] AI-powered planning assistant
 
 ## Built With
-| Library                       | Use            | Source                                       |
-|-------------------------------|----------------|----------------------------------------------|
-| [nicegui](https://nicegui.io) | GUI            | Github link here                             |
-| [FastAPI]()                   | Backend        |                                              |
-| [Render]()                    | Infrastructure |                                              |
-|                               |                |                                              |
-
-## Screenshots
+| Library                                 | Use            | Source                                          |
+|-----------------------------------------|----------------|-------------------------------------------------|
+| [nicegui](https://nicegui.io)           | GUI            | https://github.com/zauberzeug/nicegui/tree/main |
+| [FastAPI](https://fastapi.tiangolo.com) | Backend        | https://github.com/tiangolo/fastapi             |
+| [Render](https://render.com)            | Infrastructure | https://github.com/renderinc                    |
 
 # Maintainers
 | Name         | Email                |
