@@ -1,4 +1,7 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+"""
+
+"""
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Date, DateTime
 
@@ -13,7 +16,7 @@ class Event(Base):
     date = Column(Date)
     start_time = Column(DateTime)
     end_time = Column(DateTime)
-    all_day = Column(bool)
+    all_day = Column(Boolean)
     location = Column(String(150))
     organizer_name = Column(String(50))
     organizer_password = Column(String(100))
@@ -30,10 +33,10 @@ class Invite(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100))
     email = Column(String(100), nullable=True)
-    phone = Column(Integer(10), nullable=True)
+    phone = Column(Integer(), nullable=True)
     status = Column(String(15))
     password = Column(Integer, nullable=True)
-    verified = Column(bool, nullable=True)
+    verified = Column(Boolean, nullable=True)
     event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
 
     def __repr__(self):

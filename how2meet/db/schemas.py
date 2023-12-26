@@ -1,9 +1,14 @@
+"""
+
+"""
 from datetime import date, datetime
 
 from pydantic import BaseModel
 
 
 class Event(BaseModel):
+    """"""
+
     id: int
     name: str
     date: date
@@ -20,6 +25,8 @@ class Event(BaseModel):
 
 
 class Invite(BaseModel):
+    """"""
+
     id: int
     name: str
     email: str
