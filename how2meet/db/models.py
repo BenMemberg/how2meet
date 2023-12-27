@@ -1,4 +1,11 @@
 """
+Models used to store data in the database via the SQLAlchemy ORM.
+
+FastAPI Tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/#create-the-database-models
+
+'SQLAlchemy uses the term "model" to refer to these classes and instances that interact with the database.
+But Pydantic also uses the term "model" to refer to something different, the data validation, conversion,
+and documentation classes and instances.'
 
 """
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
@@ -17,7 +24,7 @@ class Event(Base):
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     all_day = Column(Boolean)
-    locatiom = Column(String(150))
+    location = Column(String(150))
     host_name = Column(String(50))
     host_password = Column(String(100))
     duration = Column(Integer)
