@@ -2,7 +2,7 @@
 name = "how2meet"
 version = "0.1.0"
 description = "Frictionless event manager"
-authors = ["Ben Memberg <benmemberg@gmail.com>", "Connor Rubin <csrubin@gmail.com>"]
+authors = ["Ben Memberg <benmemberg@gmail.com>", "Connor Rubin <csrubin@gmail.com>", "Taea Vogel <taelxvie@gmail.com"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
