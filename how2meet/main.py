@@ -2,11 +2,12 @@
 """
 
 """
-from db import crud, models, schemas
-from db.database import engine, get_db
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
-from ui import frontend
+
+from .db import crud, models, schemas
+from .db.database import engine, get_db
+from .ui import frontend
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -115,6 +116,7 @@ def read_root():
 
 
 frontend.init(app)
+
 
 if __name__ == "__main__":
     print('Please start the app with the "uvicorn" command as shown in the start.sh script')
