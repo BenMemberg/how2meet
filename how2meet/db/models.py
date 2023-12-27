@@ -28,7 +28,7 @@ class Event(Base):
     host_name = Column(String(50))
     host_password = Column(String(100))
     duration = Column(Integer)
-    invites = relationship("Invite", primaryjoin="Event.id == Invite.store_id", cascade="all, delete-orphan")
+    invites = relationship("Invite", primaryjoin="Event.id == Invite.event_id", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"Event({self.name}, {self.date})"
