@@ -42,7 +42,6 @@ def new_event(event_id: uuid.UUID):
     7. Description
     8. Agenda/Itinerary
     9. Guest list"""
-
     with ui.column().classes("w-full"):
         with ui.row().classes("w-1/2"):
             ui.input("Event Name").classes("w-full")
@@ -55,21 +54,18 @@ def new_event(event_id: uuid.UUID):
         with ui.row():
             ui.input("Description")
         with ui.row().classes("w-half"):
-            global col
-            ui.button("Add guest", on_click=add_guest)
-        with ui.row():
-            col = ui.column()
+            with ui.column():
+                ui.button("Add guest", on_click=add_guest)
 
     ui.button("Save", on_click=lambda: ui.notify("Event details would be written to DB here"))
     ui.button("Back", on_click=lambda: ui.open("/"))
 
 
 def add_guest():
-    with col:
-        with ui.row().classes("w-full"):
-            ui.input("Name").classes("w-1/3")
-            ui.input("Email").classes("w-1/3")
-            ui.input("Phone Number").classes("w-1/3")
+    with ui.row().classes("w-full"):
+        ui.input("Name").classes("w-1/3")
+        ui.input("Email").classes("w-1/3")
+        ui.input("Phone Number").classes("w-1/3")
 
 
 @ui.page("/existing_event")
