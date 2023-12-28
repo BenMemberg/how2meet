@@ -191,19 +191,19 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "fastapi"
-version = "0.103.0"
+version = "0.108.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "fastapi-0.103.0-py3-none-any.whl", hash = "sha256:61ab72c6c281205dd0cbaccf503e829a37e0be108d965ac223779a8479243665"},
-    {file = "fastapi-0.103.0.tar.gz", hash = "sha256:4166732f5ddf61c33e9fa4664f73780872511e0598d4d5434b1816dc1e6d9421"},
+    {file = "fastapi-0.108.0-py3-none-any.whl", hash = "sha256:8c7bc6d315da963ee4cdb605557827071a9a7f95aeb8fcdd3bde48cdc8764dd7"},
+    {file = "fastapi-0.108.0.tar.gz", hash = "sha256:5056e504ac6395bf68493d71fcfc5352fdbd5fda6f88c21f6420d80d81163296"},
 ]
 
 [package.dependencies]
 pydantic = ">=1.7.4,<1.8 || >1.8,<1.8.1 || >1.8.1,<2.0.0 || >2.0.0,<2.0.1 || >2.0.1,<2.1.0 || >2.1.0,<3.0.0"
-starlette = ">=0.27.0,<0.28.0"
-typing-extensions = ">=4.5.0"
+starlette = ">=0.29.0,<0.33.0"
+typing-extensions = ">=4.8.0"
 
 [package.extras]
 all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)", "jinja2 (>=2.11.2)", "orjson (>=3.2.1)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.5)", "pyyaml (>=5.3.1)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0)", "uvicorn[standard] (>=0.12.0)"]
@@ -680,18 +680,18 @@ files = [
 
 [[package]]
 name = "nicegui"
-version = "1.4.7"
+version = "1.4.8"
 description = "Create web-based user interfaces with Python. The nice way."
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "nicegui-1.4.7-py3-none-any.whl", hash = "sha256:3882c523e4349120000127f1ded13e2712f2a0c042d1e5e3690499eb76ef5f00"},
-    {file = "nicegui-1.4.7.tar.gz", hash = "sha256:db9bf984352380f09bb0eb1719feb63fa68af790d372e1f782c7aa5e17be036d"},
+    {file = "nicegui-1.4.8-py3-none-any.whl", hash = "sha256:0104e8bd6ae010b5b989c079ae0679f7514293db76f1f6609610f2920488b6fc"},
+    {file = "nicegui-1.4.8.tar.gz", hash = "sha256:69dea9579fade7a5db401445fff954d00775921aa9c10693967f2ec3faf44454"},
 ]
 
 [package.dependencies]
 aiofiles = ">=23.1.0,<24.0.0"
-fastapi = ">=0.93,<1.0.0"
+fastapi = ">=0.108.0,<1.0.0"
 fastapi-socketio = ">=0.0.10,<0.0.11"
 httpx = ">=0.24.0,<1.0.0"
 ifaddr = ">=0.2.0,<0.3.0"
@@ -1448,6 +1448,9 @@ files = [
 
 [package.dependencies]
 greenlet = {version = "!=0.4.17", markers = "platform_machine == \"win32\" or platform_machine == \"WIN32\" or platform_machine == \"AMD64\" or platform_machine == \"amd64\" or platform_machine == \"x86_64\" or platform_machine == \"ppc64le\" or platform_machine == \"aarch64\""}
+=======
+greenlet = {version = "!=0.4.17", markers = "platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\""}
+>>>>>>> 02986cb (Add sqlalquemy to poetry reqs)
 typing-extensions = ">=4.2.0"
 
 [package.extras]
@@ -1476,14 +1479,29 @@ pymysql = ["pymysql"]
 sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
+name = "sqlmodel"
+version = "0.0.14"
+description = "SQLModel, SQL databases in Python, designed for simplicity, compatibility, and robustness."
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "sqlmodel-0.0.14-py3-none-any.whl", hash = "sha256:accea3ff5d878e41ac439b11e78613ed61ce300cfcb860e87a2d73d4884cbee4"},
+    {file = "sqlmodel-0.0.14.tar.gz", hash = "sha256:0bff8fc94af86b44925aa813f56cf6aabdd7f156b73259f2f60692c6a64ac90e"},
+]
+
+[package.dependencies]
+pydantic = ">=1.10.13,<3.0.0"
+SQLAlchemy = ">=2.0.0,<2.1.0"
+
+[[package]]
 name = "starlette"
-version = "0.27.0"
+version = "0.32.0.post1"
 description = "The little ASGI library that shines."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "starlette-0.27.0-py3-none-any.whl", hash = "sha256:918416370e846586541235ccd38a474c08b80443ed31c578a418e2209b3eef91"},
-    {file = "starlette-0.27.0.tar.gz", hash = "sha256:6a6b0d042acb8d469a01eba54e9cda6cbd24ac602c4cd016723117d6a7e73b75"},
+    {file = "starlette-0.32.0.post1-py3-none-any.whl", hash = "sha256:cd0cb10ddb49313f609cedfac62c8c12e56c7314b66d89bb077ba228bada1b09"},
+    {file = "starlette-0.32.0.post1.tar.gz", hash = "sha256:e54e2b7e2fb06dff9eac40133583f10dfa05913f5a85bf26f427c7a40a9a3d02"},
 ]
 
 [package.dependencies]
@@ -1802,4 +1820,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ca80b7ffc8a7295dac9df6605e7d2b3fd1f793bb5a8eb5bcf9614ce1e7bc9be9"
+content-hash = "1bc4f8f084ea7418343bb7a449bfea9091fb7b63dadcc1d96aa496e2bed047f2"

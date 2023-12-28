@@ -3,6 +3,7 @@
 
 """
 from fastapi import Depends, FastAPI, HTTPException
+from nicegui import ui
 from sqlalchemy.orm import Session
 
 from .db import crud, models, schemas
@@ -48,6 +49,9 @@ def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
         List[Event]: A list of events retrieved from the database.
     """
     events = crud.get_events(db, skip=skip, limit=limit)
+
+    with ui.column():
+        ui.label("Events")
     return events
 
 
