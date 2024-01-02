@@ -17,7 +17,7 @@ services:
       paths: # Only rebuild on changes to these paths
         - how2meet/**/*
       ignoredPaths: # Don't rebuild on changes to these paths
-        - tests/*/*
+        - tests/**/*
         - docs/**/*
 
 databases:
