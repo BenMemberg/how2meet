@@ -4,7 +4,11 @@ Twilio SMS service. Boilerplate and API calls to arbitrarily send SMS messages.
 
 import os
 
+from fastapi import FastAPI
 from twilio.rest import Client
+from twilio.rest.api.v2010.account.message import MessageInstance
+
+app = FastAPI()  # TODO: is this problematic? Need to be same object for all routes?
 
 # Your Twilio TEST account SID and auth token
 test_account_sid = os.getenv("TWILIO_TEST_ACCOUNT_SID")
@@ -18,23 +22,29 @@ auth_token = os.getenv("TWILIO_LIVE_AUTH_TOKEN")
 how2meet_sid = os.getenv("TWILIO_H2M_SID")
 how2meet_token = os.getenv("TWILIO_H2M_AUTH_TOKEN")
 
-print(f"test: {test_account_sid} | {test_auth_token}")
-print(f"live: {account_sid} | {auth_token}")
-print(f"h2m: {how2meet_sid} | {how2meet_token}")
+msg_service_sid = os.getenv("TWILIO_MSG_SERVICE_SID")
+twilio_number = "+12163409585"
+my_number = "+12165541740"
 
 # Create a Twilio client
 client = Client(account_sid, auth_token)
 
-twilio_number = "+12163409585"
-my_number = "+12165541740"
 
-# Send a message
-message = client.messages.create(
-    body="Hello from Twilio!",
-    from_=twilio_number,
-    to=my_number,
-    messaging_service_sid="MG4e7b8359547821f5859d9c1b1f4814e7",
-)  # Send from campaign
+def send_sms(to_number: str, body: str) -> MessageInstance:
+    """
+    Send an SMS message.
+    Args:
+        to_number: The number to send the message to in string format, with country code
+        body: Body of the message
 
-# Print the message sid
-print(message.sid)
+    Returns:
+
+    """
+    message = client.messages.create(
+        body=body,
+        from_=twilio_number,
+        to=to_number,
+        messaging_service_sid=msg_service_sid,
+    )
+
+    return message
