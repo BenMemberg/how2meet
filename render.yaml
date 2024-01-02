@@ -1,0 +1,34 @@
+services:
+  # Main python web service
+  - type: web
+    name: how2meet
+    runtime: python
+    repo: https://github.com/BenMemberg/how2meet.git
+    region: ohio
+    plan: free
+    branch: main
+    rootDir: how2meet
+    buildCommand: poetry install
+    startCommand: poetry run python app.py
+    envVars:
+      - fromGroup: how2meet-envvars
+    buildFilter:
+      paths: # Only rebuild on changes to these paths
+        - how2meet/**/*
+      ignoredPaths: # Don't rebuild on changes to these paths
+        - tests/**/*
+        - docs/**/*
+
+databases:
+  - # Postgres database instance on render
+  - name: how2meet-db
+    plan: free
+    region: ohio
+
+envVarGroups:
+  # Environment variable group for
+  - # TODO: How to get connection string from how2meet-db programatically
+  - name: how2meet-envvars
+    envVars:
+      - key: DB_CONNECTION_STRING
+        sync: false # Input manually in the UI, don't commit secrets to VCS
