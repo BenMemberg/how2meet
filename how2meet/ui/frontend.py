@@ -6,7 +6,9 @@ from nicegui import app, ui
 
 from ..db.crud import get_events
 from ..db.database import get_db
+from .log_config import get_logger
 
+logger = get_logger(__name__)
 
 @ui.page("/show")
 def show():
