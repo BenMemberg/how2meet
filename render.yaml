@@ -12,7 +12,6 @@ services:
     startCommand: poetry run python app.py
     envVars:
       - fromGroup: how2meet-envvars
-    autoDeploy: true # deploy on push to main branch (testing on IAC branch)
     buildFilter:
       paths: # Only rebuild on changes to these paths
         - how2meet/**/*
