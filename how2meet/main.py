@@ -114,11 +114,6 @@ def read_invites(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     return invites
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 frontend.init(app)
 
 
