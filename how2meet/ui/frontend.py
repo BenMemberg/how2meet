@@ -31,32 +31,29 @@ def frame(navtitle: str):
                     ui.link(link_text, link_target).classes(replace='text-white')
 
     with ui.footer().classes('justify-start text-white'):
-        # with ui.row():
         ui.link('Donate', 'https://www.buymeacoffee.com/').classes('text-white')
         ui.link('GitHub', 'https://www.github.com/BenMemberg/how2meet').classes('text-white')
-
     yield
 
 @ui.page("/settings")
 def settings():
+    """Settings page"""
     with frame('Settings'):
         with ui.column().classes("absolute-center"):
             # NOTE dark mode will be persistent for each user across tabs and server restarts
             ui.dark_mode().bind_value(app.storage.user, "dark_mode")
             ui.checkbox("dark mode").bind_value(app.storage.user, "dark_mode")
 
-
 @ui.page("/new_event/{event_id}")
 def new_event(event_id: uuid.UUID):
-    """1. Event Name
-    2. Event Password
-    3. Require event password from guests option [boolean] (public vs. private event)
-    4. Date
-    5. Number of guests limit [Optional]
-    6. Photo [Optional]
-    7. Description
-    8. Agenda/Itinerary
-    9. Guest list"""
+    """New event creation page
+
+    Args:
+        event_id (uuid.UUID): The unique ID of the event to be created.
+
+    Returns:
+        None
+    """
     def add_guest():
         with ui.row().classes("w-full"):
             ui.input("Name").classes("w-1/3")
@@ -84,23 +81,27 @@ def new_event(event_id: uuid.UUID):
 
 @ui.page("/events")
 def events():
+    """Master list of events in database
+    NOTE: currently a debug page, will be replaced in future versions with
+    a more user-friendly interface.
+    """
     db = next(get_db())
     events = get_events(db)
     with frame('Events'):
         for event in events:
             ui.link(event.name, f"/event/{event.id}")
-        # ui.button("New Event", on_click=lambda: ui.open(f"/new_event/{uuid.uuid4()}"))
-        # ui.button("Existing Event", on_click=lambda: ui.open("/existing_event"))
         ui.button("Back", on_click=lambda: ui.open("/"))
 
 @ui.page("/event/{event_id}")
 def event_home(event_id: str):
+    """Detail page for a specific event"""
     with frame('Event Home'):
         ui.label(f"Event ID: {event_id}")
         ui.button("Back", on_click=lambda: ui.open("/"))
 
 @ui.page("/")   # NOTE this is the default page
 def home():
+    """Home page"""
     with frame('Home'):
         with ui.column().classes("w-full items-center"):
             with ui.row():
