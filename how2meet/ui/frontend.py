@@ -81,7 +81,7 @@ def new_event(event_id: uuid.UUID):
 
 @ui.page("/events")
 def events():
-    """Master list of events in database
+    """List of events in database
     NOTE: currently a debug page, will be replaced in future versions with
     a more user-friendly interface.
     """
