@@ -9,7 +9,6 @@ python = "^3.10"
 nicegui = "^1.2.24"
 pywebview = "^4.2.2"
 sqlalchemy = "^2.0.23"
-sqlmodel = "^0.0.14"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
