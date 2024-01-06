@@ -115,7 +115,7 @@ def home():
             with ui.row():
                 ui.button("New Event", on_click=lambda: ui.open(f"/new_event/{uuid.uuid4()}"))
             with ui.row():
-                ui.button("Existing Event", on_click=lambda: ui.open("/existing_event"))
+                ui.button("Existing Event", on_click=lambda: ui.open("/events"))
 
 
 def init(fastapi_app: FastAPI) -> None:
