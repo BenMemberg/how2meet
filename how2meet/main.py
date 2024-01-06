@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-from how2meet import frontend
 from fastapi import FastAPI
+
+from .ui import frontend
 
 app = FastAPI()
 

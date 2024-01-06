@@ -102,7 +102,7 @@ def event_home(event_id: str):
     """Detail page for a specific event"""
     with frame('Event Home'):
         ui.label(f"Event ID: {event_id}")
-        ui.button("Back", on_click=lambda: ui.open("/"))
+        ui.button("Back", on_click=lambda: ui.open("/events"))
 
 @ui.page("/")   # NOTE this is the default page
 def home():
