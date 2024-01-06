@@ -8,10 +8,6 @@ from collections import namedtuple
 from fastapi import FastAPI
 from nicegui import app, ui
 
-from .log_config import get_logger
-
-logger = get_logger(__name__)
-
 @contextmanager
 def frame(navtitle: str):
     """Custom page frame to share the same styling and behavior across all pages"""
