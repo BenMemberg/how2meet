@@ -18,7 +18,7 @@ class Event(BaseModel):
     end_time: datetime
     all_day: bool
     location: str
-    organizer_name:str
+    organizer_name: str
     organizer_password: str
     duration: int
 

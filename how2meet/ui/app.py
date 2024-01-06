@@ -17,7 +17,6 @@ ui.add_head_html("<meta name='apple-mobile-web-app-tatus-bar-style' content='bla
 
 @ui.page("/")
 def main():
-
     with ui.header(elevated=True).classes("items-center justify-between"):
         ui.label("how2meet").classes("absolute-center").tailwind.font_size("xl")
 
