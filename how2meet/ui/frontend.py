@@ -1,6 +1,7 @@
 """
 
 """
+
 from contextlib import contextmanager
 import uuid
 from collections import namedtuple
@@ -113,13 +114,12 @@ def home():
 
 def init(fastapi_app: FastAPI) -> None:
     """
-    Initializes the FastAPI application with the provided
-    `fastapi_app` instance. This allows for FastAPI to be
+    Initializes the FastAPI application with the provided `fastapi_app` instance. This allows for FastAPI to be
     the driving force and NiceGUI to take the backseat.
 
     Args:
-        fastapi_app (FastAPI): The FastAPI application instance
-          to be initialized.
+        fastapi_app (FastAPI): The FastAPI application instance to be initialized.
+
 
     Returns:
         None
