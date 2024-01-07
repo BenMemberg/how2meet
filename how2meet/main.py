@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-
+Main entrypoint
 """
 from fastapi import Depends, FastAPI, HTTPException
 from nicegui import ui
@@ -118,6 +118,7 @@ def read_invites(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 def read_root():
     return {"Hello": "World"}
 
+app = FastAPI()
 
 frontend.init(app)
 
