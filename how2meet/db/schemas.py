@@ -23,7 +23,7 @@ class Event(BaseModel):
     duration: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EventCreate(Event):
@@ -41,7 +41,7 @@ class Invite(BaseModel):
     event_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class InviteCreate(Invite):
