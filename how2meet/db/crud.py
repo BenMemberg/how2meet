@@ -45,7 +45,7 @@ def create_event(db: Session, event: schemas.EventCreate) -> models.Event:
         Created event
 
     """
-    db_event = models.Event(event.model_dump())
+    db_event = models.Event(**event.model_dump())
     db.add(db_event)
     db.commit()
     db.refresh(db_event)
