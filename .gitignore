@@ -137,3 +137,6 @@ dmypy.json
 
 # nicegui app storage
 .nicegui
+
+# SQLAlchemy storage
+*.db
