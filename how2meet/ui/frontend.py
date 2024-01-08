@@ -16,6 +16,11 @@ from .pages import events, settings
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
+app.include_router(events.router)
+app.include_router(settings.router)
+
+
 @ui.page("/")  # NOTE this is the default page
 def home():
     """Home page"""
@@ -38,9 +43,6 @@ def init(fastapi_app) -> None:
     Returns:
         None
     """
-
-    app.include_router(events.router)
-    app.include_router(settings.router)
 
     ui.run_with(
         fastapi_app,

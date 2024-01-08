@@ -13,11 +13,19 @@ from .db.database import engine, get_db
 from .ui import frontend
 from .routers import events, invites
 
+BASE_URL = os.getenv('BASE_URL', 'http://localhost:8000')
+
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(prefix="/api")
-app.include_router(events.router)
-app.include_router(invites.router)
+app = FastAPI()
+
+api_app = FastAPI(openapi_url="/v1/openapi.json",
+                  docs_url="/v1/docs",
+                  redoc_url="/v1/redoc",
+                  )
+api_app.include_router(events.router)
+api_app.include_router(invites.router)
+app.mount("/api", api_app)
 frontend.init(app)
 
 if __name__ == "__main__":

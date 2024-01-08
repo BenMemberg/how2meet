@@ -18,16 +18,17 @@ def events(user: str = None):
     """List page for all events"""
 
     try:
-        events = requests.get("http://localhost:8000/events/").json()
+        events = requests.get(f"http://127.0.0.1:8000/api/events/").json()
+
     except:
         events = [
-            namedtuple("Event", ["id", "name"])(uuid.uuid4(), "Event 1"),
-            namedtuple("Event", ["id", "name"])(uuid.uuid4(), "Event 2"),
+            {'name': 'Test Event 1'}
         ]
-
+    logging.debug(events)
     with frame("Events"):
         for event in events:
-            ui.label(event.name)
+            ui.label(event['name'])
+
         ui.button("Back", on_click=lambda: ui.open("/"))
 
 
