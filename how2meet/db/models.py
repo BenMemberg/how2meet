@@ -18,16 +18,15 @@ from .database import Base
 class Event(Base):
     __tablename__ = "events"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(32), primary_key=True, index=True)
     name = Column(String(150))
-    date = Column(Date)
+    created = Column(DateTime)
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     all_day = Column(Boolean)
     location = Column(String(150))
     organizer_name = Column(String(50))
     organizer_password = Column(String(100))
-    duration = Column(Integer)
     invites = relationship("Invite", primaryjoin="Event.id == Invite.event_id", cascade="all, delete-orphan")
 
     def __repr__(self):
@@ -37,7 +36,7 @@ class Event(Base):
 class Invite(Base):
     __tablename__ = "invites"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(32), primary_key=True, index=True)
     name = Column(String(100))
     email = Column(String(100), nullable=True)
     phone = Column(Integer(), nullable=True)

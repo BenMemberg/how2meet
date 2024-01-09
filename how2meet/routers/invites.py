@@ -25,3 +25,5 @@ def read_invites(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     """
     invites = crud.get_invites(db, skip=skip, limit=limit)
     return invites
+
+# TODO: Add a route to create an invite
