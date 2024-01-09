@@ -5,9 +5,6 @@ from nicegui import ui, APIRouter
 import httpx
 
 from ..components.frames import frame
-from ...utils.logging import get_file_logger
-
-logger = get_file_logger(__name__)
 
 router = APIRouter(prefix="/events",
                    tags=["events"])
