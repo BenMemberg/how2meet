@@ -27,6 +27,7 @@ class Event(Base):
     location = Column(String(150))
     organizer_name = Column(String(50))
     organizer_password = Column(String(100))
+    description = Column(String(500))
     invites = relationship("Invite", primaryjoin="Event.id == Invite.event_id", cascade="all, delete-orphan")
 
     def __repr__(self):

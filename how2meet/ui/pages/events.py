@@ -95,7 +95,7 @@ async def new_event(event_id: str):
 
         # TODO: use actual url for post request
         # TODO: use details from page to create event
-        ui.button("Save", on_click=lambda: event.save(f"http://localhost:8000/events/"))
+        ui.button("Save", on_click=lambda: event.save(f"http://localhost:8000/api/events/"))
         ui.button("Back", on_click=lambda: ui.open("/"))
         from pprint import pformat
         ui.button("Test", on_click=lambda: ui.notify(event.__dict__))
