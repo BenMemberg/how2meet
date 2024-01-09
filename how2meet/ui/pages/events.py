@@ -13,36 +13,42 @@ router = APIRouter(prefix="/events",
 async def events(user: str = None):
     """List page for all events"""
     with frame("Events"):
+        # Get the list of events from the API
+        # NOTE: This is a blocking call, so we use an async client
         async with httpx.AsyncClient() as client:
             events = await client.get(f"http://localhost:8000/api/events/", timeout=10)
-        if isinstance(events, httpx.Response):
+        try:
             events = events.json()
-        else:
+        except:
             events = []
+
+        # Display the list of events
         for event in events:
-            with ui.row().classes("w-full"):
-                with ui.card().classes("w-full"):
+            with ui.card().classes("w-full"):
+                with ui.row().classes("w-full justify-between"):
                     ui.label(f"Event ID: {event['id']}")
                     ui.label(f"Event Name: {event['name']}")
                     ui.button("Details", on_click=lambda event_id=event['id']: ui.open(f"/events/{event_id}"))
+
+        # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
-            ui.button("New Event", on_click=lambda: ui.open(f"/events/new/{uuid.uuid4()}"))
             ui.button("Back", on_click=lambda: ui.open("/"))
+            ui.button("New Event", on_click=lambda: ui.open(f"/events/new/{uuid.uuid4()}"))
 
 
 @router.page("/{event_id}")
-def event_home(event_id: str):
+async def event_home(event_id: str):
     """Detail page for a specific event"""
     with frame("Event Home"):
         ui.label(f"Event ID: {event_id}")
         ui.button("Back", on_click=lambda: ui.open("/events"))
 
 @router.page("/new/{event_id}")
-def new_event(event_id: str):
+async def new_event(event_id: str):
     """New event creation page
 
     Args:
-        event_id (uuid.UUID): The unique ID of the event to be created.
+        event_id (str): The unique ID of the event to be created.
 
     Returns:
         None
@@ -71,5 +77,6 @@ def new_event(event_id: str):
                     ui.button("Add guest", on_click=add_guest)
 
         # TODO: use actual url for post request
+        # TODO: use details from page to create event
         ui.button("Save", on_click=lambda: httpx.post(f"http://localhost:8000/events/{event_id}"))
         ui.button("Back", on_click=lambda: ui.open("/"))
