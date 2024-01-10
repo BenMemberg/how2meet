@@ -40,8 +40,21 @@ async def events(user: str = None):
 @router.page("/{event_id}")
 async def event_home(event_id: str):
     """Detail page for a specific event"""
+    # Get the event from the API
+    # NOTE: This is a blocking call, so we use an async client
+
     with frame("Event Home"):
-        ui.label(f"Event ID: {event_id}")
+        async with httpx.AsyncClient() as client:
+            event = await client.get(f"http://localhost:8000/api/events/{event_id}", timeout=10)
+        try:
+            event = event.json()
+        except:
+            event = {}
+
+        # Display the event details
+        with ui.column().classes("w-full justify-between"):
+            for key, value in event.items():
+                ui.label(f"{key}: {value}")
         ui.button("Back", on_click=lambda: ui.open("/events"))
 
 @router.page("/new/{event_id}")

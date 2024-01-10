@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-def get_event(db: Session, event_id: int) -> models.Event | None:
+def get_event(db: Session, event_id: str) -> models.Event | None:
     """
     Get an event by ID.
     Args:
@@ -52,7 +52,7 @@ def create_event(db: Session, event: schemas.EventCreate) -> models.Event:
     return db_event
 
 
-def get_invite(db: Session, user_id: int) -> models.Invite | None:
+def get_invite(db: Session, user_id: str) -> models.Invite | None:
     """
     Retrieve an invite from the database based on the given user ID.
 

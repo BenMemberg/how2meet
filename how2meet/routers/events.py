@@ -48,12 +48,12 @@ def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @router.get("/{event_id}", response_model=schemas.Event)
-def read_event(event_id: int, db: Session = Depends(get_db)):
+def read_event(event_id: str, db: Session = Depends(get_db)):
     """
     Retrieves an event from the database.
 
     Args:
-        event_id (int): The ID of the event to retrieve.
+        event_id (str): The ID of the event to retrieve.
         db (Session): The database session to use.
 
     Returns:
@@ -66,12 +66,12 @@ def read_event(event_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{event_id}/invites/", response_model=schemas.Invite)
-def create_invite_for_event(event_id: int, invite: schemas.InviteCreate, db: Session = Depends(get_db)):
+def create_invite_for_event(event_id: str, invite: schemas.InviteCreate, db: Session = Depends(get_db)):
     """
     Create an invite for an event.
 
     Args:
-        event_id (int): The ID of the event to invite to.
+        event_id (str): The ID of the event to invite to.
         invite (InviteCreate): The invite data to create.
         db (Session): The database session to use.
 
