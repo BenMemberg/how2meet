@@ -64,6 +64,24 @@ def read_event(event_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Event not found")
     return db_event
 
+@router.delete("/{event_id}", response_model=schemas.Event)
+def delete_event(event_id: str, db: Session = Depends(get_db)):
+    """
+    Deletes an event from the database.
+
+    Args:
+        event_id (str): The ID of the event to delete.
+        db (Session): The database session to use.
+
+    Returns:
+        Event: The event that was deleted.
+    """
+    db_event = crud.get_event(db, event_id=event_id)
+    if db_event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    db.delete(db_event)
+    db.commit()
+    return db_event
 
 @router.post("/{event_id}/invites/", response_model=schemas.Invite)
 def create_invite_for_event(event_id: str, invite: schemas.InviteCreate, db: Session = Depends(get_db)):

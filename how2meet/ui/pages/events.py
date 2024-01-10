@@ -23,13 +23,21 @@ async def events(user: str = None):
         except:
             events = []
 
+        async def delete_event(event_id: str):
+            async with httpx.AsyncClient() as client:
+                response = await client.delete(f"http://localhost:8000/api/events/{event_id}", timeout=10)
+                response.raise_for_status()
+            ui.open("/events")
+
         # Display the list of events
         for event in events:
             with ui.card().classes("w-full"):
                 with ui.row().classes("w-full justify-between"):
-                    ui.label(f"Event ID: {event['id']}")
-                    ui.label(f"Event Name: {event['name']}")
-                    ui.button("Details", on_click=lambda event_id=event['id']: ui.open(f"/events/{event_id}"))
+                    with ui.column().classes("flex-grow"):
+                        ui.label(f"Event ID: {event['id']}")
+                        ui.label(f"Event Name: {event['name']}")
+                    ui.button("", icon="info", on_click=lambda event_id=event['id']: ui.open(f"/events/{event_id}")).classes("w-6 h-6")
+                    ui.button("", icon="delete", color="red", on_click=lambda event_id=event['id']: delete_event(event_id)).classes("w-6 h-6")
 
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
