@@ -1,6 +1,5 @@
 from datetime import datetime
 import uuid
-from collections import namedtuple
 
 from nicegui import ui, APIRouter
 import httpx
