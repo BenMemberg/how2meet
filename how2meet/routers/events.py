@@ -11,7 +11,8 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=schemas.Event)
-def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
+def create_event(event: schemas.EventCreate,
+                 db: Session = Depends(get_db)) -> schemas.Event:
     """
     Create an event.
 
@@ -31,7 +32,9 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[schemas.Event])
-def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_events(skip: int = 0,
+                limit: int = 100,
+                db: Session = Depends(get_db)) -> list[schemas.Event]:
     """
     Retrieves a list of events from the database.
 
@@ -48,7 +51,8 @@ def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @router.get("/{event_id}", response_model=schemas.Event)
-def read_event(event_id: str, db: Session = Depends(get_db)):
+def read_event(event_id: str,
+               db: Session = Depends(get_db)) -> schemas.Event:
     """
     Retrieves an event from the database.
 
@@ -65,7 +69,8 @@ def read_event(event_id: str, db: Session = Depends(get_db)):
     return db_event
 
 @router.delete("/{event_id}", response_model=schemas.Event)
-def delete_event(event_id: str, db: Session = Depends(get_db)):
+def delete_event(event_id: str,
+                 db: Session = Depends(get_db)) -> schemas.Event:
     """
     Deletes an event from the database.
 
@@ -82,26 +87,3 @@ def delete_event(event_id: str, db: Session = Depends(get_db)):
     db.delete(db_event)
     db.commit()
     return db_event
-
-@router.post("/{event_id}/invites/", response_model=schemas.Invite)
-def create_invite_for_event(event_id: str, invite: schemas.InviteCreate, db: Session = Depends(get_db)):
-    """
-    Create an invite for an event.
-
-    Args:
-        event_id (str): The ID of the event to invite to.
-        invite (InviteCreate): The invite data to create.
-        db (Session): The database session to use.
-
-    Returns:
-        Invite: The created invite.
-    """
-    db_event = crud.get_event(db, event_id=event_id)
-    if db_event is None:
-        raise HTTPException(status_code=404, detail="Event not found")
-    db_invite = crud.get_invite(db, user_id=invite.user_id)
-    if db_invite:
-        raise HTTPException(status_code=400, detail="Invite already registered")
-    else:
-        db_invite = crud.create_invite(db, invite)  # TODO figure out where logic to handle event_id belongs
-    return db_invite
