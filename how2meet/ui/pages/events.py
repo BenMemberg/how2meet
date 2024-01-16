@@ -99,11 +99,11 @@ async def new_event(event_id: str):
             password_input = ui.input("Password", password=True, password_toggle_button=True)
         with ui.row():
             with ui.expansion("Start Time"):
-                start_date_input = ui.date()
-                start_time_input = ui.time()
+                start_date_input = ui.date(value=datetime.now().date().strftime("%Y-%m-%d"))
+                start_time_input = ui.time(value=datetime.now().time().strftime("%H:%M"))
             with ui.expansion("End Time"):
-                end_date_input = ui.date()
-                end_time_input = ui.time()
+                end_date_input = ui.date(value=datetime.now().date().strftime("%Y-%m-%d"))
+                end_time_input = ui.time(value=datetime.now().time().strftime("%H:%M"))
             all_day_checkbox = ui.checkbox("All Day")
         with ui.row().classes("w-full"):
             description_input = ui.textarea("Description").classes("w-full")
@@ -113,7 +113,7 @@ async def new_event(event_id: str):
 
         async def get_event_json():
             import json
-            return json.dumps({
+            event_json = json.dumps({
                 "id": event_id,
                 "name": event_name_input.value,
                 "created": datetime.now().isoformat(),
@@ -125,6 +125,7 @@ async def new_event(event_id: str):
                 "end_time": f"{end_date_input.value}T{end_time_input.value}:00",
                 "all_day": all_day_checkbox.value
             })
+            return event_json
 
         async def post_event():
             event_json = await get_event_json()
