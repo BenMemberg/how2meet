@@ -1,14 +1,11 @@
 """
-Twilio SMS service. Boilerplate and API calls to arbitrarily send SMS messages.
+Twilio SMS service. Boilerplate to arbitrarily send SMS messages.
 """
 
 import os
 
-from fastapi import FastAPI
 from twilio.rest import Client
 from twilio.rest.api.v2010.account.message import MessageInstance
-
-app = FastAPI()  # TODO: is this problematic? Need to be same object for all routes?
 
 # Your Twilio TEST account SID and auth token
 test_account_sid = os.getenv("TWILIO_TEST_ACCOUNT_SID")
@@ -40,11 +37,11 @@ def send_sms(to_number: str, body: str) -> MessageInstance:
     Returns:
 
     """
-    message = client.messages.create(
+    message_instance = client.messages.create(
         body=body,
         from_=twilio_number,
         to=to_number,
         messaging_service_sid=msg_service_sid,
     )
 
-    return message
+    return message_instance
