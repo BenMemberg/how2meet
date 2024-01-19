@@ -11,19 +11,19 @@ from pydantic import BaseModel
 
 
 class Event(BaseModel):
-    id: int
+    id: str
     name: str
-    date: date
+    created: datetime
     start_time: datetime
     end_time: datetime
     all_day: bool
     location: str
     organizer_name: str
     organizer_password: str
-    duration: int
+    description: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EventCreate(Event):
@@ -31,7 +31,7 @@ class EventCreate(Event):
 
 
 class Invite(BaseModel):
-    id: int
+    id: str
     name: str
     email: str
     phone: int
@@ -41,7 +41,7 @@ class Invite(BaseModel):
     event_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class InviteCreate(Invite):
