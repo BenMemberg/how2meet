@@ -30,12 +30,13 @@ client = Client(account_sid, auth_token)
 def send_sms(to_number: str, body: str) -> MessageInstance:
     """
     Send an SMS message.
+
     Args:
-        to_number: The number to send the message to in string format, with country code
-        body: Body of the message
+        to_number: The number to send the message to in string format, with country code.The phone number to send the SMS to.
+        body: The body of the SMS message.
 
     Returns:
-
+        MessageInstance: The instance of the sent message.
     """
     message_instance = client.messages.create(
         body=body,
