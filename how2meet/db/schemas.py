@@ -5,9 +5,10 @@ from these schemas depending on how the API is to be used.
 
 FastAPI Tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/#create-the-pydantic-models
 """
-from datetime import date, datetime
+from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Event(BaseModel):
@@ -28,6 +29,19 @@ class Event(BaseModel):
 
 class EventCreate(Event):
     pass
+
+
+class EventUpdate(BaseModel):
+    id: Optional[str] = Field(default=None, description="The ID of the event")
+    name: Optional[str] = Field(default=None, description="The name of the event")
+    created: Optional[datetime] = Field(default=None, description="The creation datetime of the event")
+    start_time: Optional[datetime] = Field(default=None, description="The start datetime of the event")
+    end_time: Optional[datetime] = Field(default=None, description="The end datetime of the event")
+    all_day: Optional[bool] = Field(default=None, description="Whether the event lasts all day")
+    location: Optional[str] = Field(default=None, description="The location of the event")
+    organizer_name: Optional[str] = Field(default=None, description="The name of the event organizer")
+    organizer_password: Optional[str] = Field(default=None, description="The password of the event organizer")
+    description: Optional[str] = Field(default=None, description="The description of the event")
 
 
 class Invite(BaseModel):

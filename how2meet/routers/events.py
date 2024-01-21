@@ -1,18 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from ..db import crud, models, schemas
-from ..db.database import engine, get_db
+from ..db import crud, schemas
+from ..db.database import get_db
 
-router = APIRouter(
-    prefix="/events",
-    tags=["events"],
-    responses={404: {"description": "Not found"}}
-)
+router = APIRouter(prefix="/events", tags=["events"], responses={404: {"description": "Not found"}})
+
 
 @router.post("/", response_model=schemas.Event)
-def create_event(event: schemas.EventCreate,
-                 db: Session = Depends(get_db)) -> schemas.Event:
+def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> schemas.Event:
     """
     Create an event.
 
@@ -32,9 +28,7 @@ def create_event(event: schemas.EventCreate,
 
 
 @router.get("/", response_model=list[schemas.Event])
-def read_events(skip: int = 0,
-                limit: int = 100,
-                db: Session = Depends(get_db)) -> list[schemas.Event]:
+def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[schemas.Event]:
     """
     Retrieves a list of events from the database.
 
@@ -51,8 +45,7 @@ def read_events(skip: int = 0,
 
 
 @router.get("/{event_id}", response_model=schemas.Event)
-def read_event(event_id: str,
-               db: Session = Depends(get_db)) -> schemas.Event:
+def read_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
     """
     Retrieves an event from the database.
 
@@ -68,9 +61,9 @@ def read_event(event_id: str,
         raise HTTPException(status_code=404, detail="Event not found")
     return db_event
 
+
 @router.delete("/{event_id}", response_model=schemas.Event)
-def delete_event(event_id: str,
-                 db: Session = Depends(get_db)) -> schemas.Event:
+def delete_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
     """
     Deletes an event from the database.
 
@@ -87,3 +80,24 @@ def delete_event(event_id: str,
     db.delete(db_event)
     db.commit()
     return db_event
+
+
+@router.put("/{event_id}", response_model=schemas.Event)
+def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session = Depends(get_db)) -> schemas.Event:
+    """
+    Update an existing event.
+
+    Args:
+        event_id: The ID of the event to update.
+        updated_event: The updated event data
+        db: The database session.
+
+    Returns:
+        schemas.Event: The updated event.
+    """
+    db_event = crud.get_event(db, event_id=event_id)
+    if db_event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    updated_event = crud.update_event(db, db_event, updated_event)
+    return updated_event

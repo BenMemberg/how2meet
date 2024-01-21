@@ -8,8 +8,7 @@ FastAPI tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/#create-th
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 # TODO: connect to postres instance from env
 SQLALCHEMY_DATABASE_URL = os.getenv("DB_CONN", "sqlite:///./data.db")
