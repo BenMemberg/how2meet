@@ -80,3 +80,24 @@ def delete_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
     db.delete(db_event)
     db.commit()
     return db_event
+
+
+@router.put("/{event_id}", response_model=schemas.Event)
+def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session = Depends(get_db)) -> schemas.Event:
+    """
+    Update an existing event.
+
+    Args:
+        event_id: The ID of the event to update.
+        updated_event: The updated event data
+        db: The database session.
+
+    Returns:
+        schemas.Event: The updated event.
+    """
+    db_event = crud.get_event(db, event_id=event_id)
+    if db_event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    updated_event = crud.update_event(db, db_event, updated_event)
+    return updated_event
