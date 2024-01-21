@@ -2,8 +2,6 @@
 """
 Main entrypoint
 """
-import logging
-import os
 
 from fastapi import FastAPI
 
