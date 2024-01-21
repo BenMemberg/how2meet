@@ -2,18 +2,13 @@
 """
 Main entrypoint
 """
-import logging
-import os
 
-from fastapi import Depends, FastAPI, HTTPException
-from nicegui import ui
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 
-from .db import crud, models, schemas
-from .db.database import engine, get_db
+from .db import models
+from .db.database import engine
 from .routers import events, invites
 from .ui import frontend
-from .utils import BASE_URL
 
 models.Base.metadata.create_all(bind=engine)
 

@@ -1,9 +1,7 @@
 """
 Utility functions
 """
-import json
 import os
-from typing import Coroutine
 
 from httpx import AsyncClient
 from nicegui import ui

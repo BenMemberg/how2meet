@@ -1,8 +1,5 @@
 
 import logging
-import requests
-import uuid
-from collections import namedtuple
 
 from nicegui import ui, APIRouter, app
 

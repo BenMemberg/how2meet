@@ -4,9 +4,6 @@
 import logging
 
 import uuid
-from collections import namedtuple
-from contextlib import contextmanager
-import requests
 
 from nicegui import app, ui
 
