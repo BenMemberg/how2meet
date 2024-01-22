@@ -99,7 +99,7 @@ async def new_event(event_id: str):
             with ui.column().classes("w-full"):
                 add_guest_button = ui.button("Add guest", on_click=add_guest)
 
-        async def get_event_json():
+        async def get_event_json() -> str:
             import json
 
             event_json = json.dumps(
@@ -122,9 +122,11 @@ async def new_event(event_id: str):
             event_json = await get_event_json()
             status = await api.post_event(event_json)
             if status == 200:
-                ui.notification(f"{event_name_input.value} created successfully!", position="center", type="positive")
-                await asyncio.sleep(2.0)
-                ui.open(f"/events/{event_id}")
+                with ui.dialog(value=True) as dialog, ui.card():
+                    ui.label("Event created successfully!")
+                    with ui.row().classes("w-full justify-center"):
+                        ui.button("Go to event", on_click=lambda: ui.open(f"/events/{event_id}"))
+                        ui.button("OK", on_click=lambda: dialog.close())
 
         # TODO: Post invites to API
         save_button = ui.button("Save", on_click=post_event)

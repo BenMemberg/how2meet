@@ -55,7 +55,7 @@ class APIClient:
         return response.status_code
 
     @classmethod
-    async def post_event(cls, event_json) -> int:
+    async def post_event(cls, event_json: str) -> int:
         """
         Post single event to API
         TODO: rename to create?
