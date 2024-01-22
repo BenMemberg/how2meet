@@ -4,12 +4,7 @@ from datetime import datetime
 
 from nicegui import APIRouter, ui
 
-from how2meet.utils import (
-    delete_event_api,
-    get_event_api,
-    get_events_api,
-    post_event_api,
-)
+from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
 
@@ -21,7 +16,7 @@ async def events(user: str = None):
     """List page for all events"""
     with frame("Events"):
         # Get the list of events from the API
-        events_data = await get_events_api()
+        events_data = await api.get_events()
 
         # Display the list of events
         for event in events_data:
@@ -33,7 +28,7 @@ async def events(user: str = None):
                     ui.button(
                         "", icon="info", on_click=lambda event_id=event["id"]: ui.open(f"/events/{event_id}")
                     ).classes("w-6 h-6")
-                    ui.button("", icon="delete", color="red", on_click=lambda: delete_event_api(event["id"]))
+                    ui.button("", icon="delete", color="red", on_click=lambda: api.delete_event(event["id"]))
 
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
@@ -47,7 +42,7 @@ async def event_home(event_id: str):
     # Get the event from the API
 
     with frame("Event Home"):
-        event = await get_event_api(event_id)
+        event = await api.get_event(event_id)
 
         # Display the event details
         with ui.column().classes("w-full justify-between"):
@@ -125,7 +120,7 @@ async def new_event(event_id: str):
 
         async def post_event():
             event_json = await get_event_json()
-            status = await post_event_api(event_json)
+            status = await api.post_event(event_json)
             if status == 200:
                 ui.notification(f"{event_name_input.value} created successfully!", position="center", type="positive")
                 await asyncio.sleep(2.0)
