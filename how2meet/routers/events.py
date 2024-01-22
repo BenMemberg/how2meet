@@ -4,15 +4,11 @@ from sqlalchemy.orm import Session
 from ..db import crud, schemas
 from ..db.database import get_db
 
-router = APIRouter(
-    prefix="/events",
-    tags=["events"],
-    responses={404: {"description": "Not found"}}
-)
+router = APIRouter(prefix="/events", tags=["events"], responses={404: {"description": "Not found"}})
+
 
 @router.post("/", response_model=schemas.Event)
-def create_event(event: schemas.EventCreate,
-                 db: Session = Depends(get_db)) -> schemas.Event:
+def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> schemas.Event:
     """
     Create an event.
 
@@ -32,9 +28,7 @@ def create_event(event: schemas.EventCreate,
 
 
 @router.get("/", response_model=list[schemas.Event])
-def read_events(skip: int = 0,
-                limit: int = 100,
-                db: Session = Depends(get_db)) -> list[schemas.Event]:
+def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[schemas.Event]:
     """
     Retrieves a list of events from the database.
 
@@ -51,8 +45,7 @@ def read_events(skip: int = 0,
 
 
 @router.get("/{event_id}", response_model=schemas.Event)
-def read_event(event_id: str,
-               db: Session = Depends(get_db)) -> schemas.Event:
+def read_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
     """
     Retrieves an event from the database.
 
@@ -68,9 +61,9 @@ def read_event(event_id: str,
         raise HTTPException(status_code=404, detail="Event not found")
     return db_event
 
+
 @router.delete("/{event_id}", response_model=schemas.Event)
-def delete_event(event_id: str,
-                 db: Session = Depends(get_db)) -> schemas.Event:
+def delete_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
     """
     Deletes an event from the database.
 

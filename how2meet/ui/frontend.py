@@ -2,7 +2,6 @@
 
 """
 import logging
-
 import uuid
 
 from nicegui import app, ui

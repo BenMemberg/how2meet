@@ -4,17 +4,11 @@ from sqlalchemy.orm import Session
 from ..db import crud, schemas
 from ..db.database import get_db
 
-router = APIRouter(
-    prefix="/invites",
-    tags=["invites"],
-    responses={404: {"description": "Not found"}}
-)
+router = APIRouter(prefix="/invites", tags=["invites"], responses={404: {"description": "Not found"}})
 
 
 @router.get("/", response_model=list[schemas.Invite])
-def read_invites(skip: int = 0,
-                 limit: int = 100,
-                 db: Session = Depends(get_db)) -> list[schemas.Invite]:
+def read_invites(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[schemas.Invite]:
     """
     Retrieves a list of invites from the database.
 
@@ -31,8 +25,7 @@ def read_invites(skip: int = 0,
 
 
 @router.post("/", response_model=schemas.Invite)
-def create_invite(invite: schemas.InviteCreate,
-                  db: Session = Depends(get_db)) -> schemas.Invite:
+def create_invite(invite: schemas.InviteCreate, db: Session = Depends(get_db)) -> schemas.Invite:
     """
     Create an invite for an event.
 
