@@ -1,18 +1,14 @@
-
 import logging
-import requests
-import uuid
-from collections import namedtuple
 
-from nicegui import ui, APIRouter, app
+from nicegui import APIRouter, app, ui
 
 from ..components.frames import frame
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-router = APIRouter(prefix="/settings",
-                   tags=["settings"])
+router = APIRouter(prefix="/settings", tags=["settings"])
+
 
 @router.page("/")
 def settings():

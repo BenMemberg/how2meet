@@ -1,13 +1,13 @@
-from datetime import datetime
 import uuid
+from datetime import datetime
 
-from nicegui import ui, APIRouter
 import httpx
+from nicegui import APIRouter, ui
 
 from ..components.frames import frame
 
-router = APIRouter(prefix="/events",
-                   tags=["events"])
+router = APIRouter(prefix="/events", tags=["events"])
+
 
 @router.page("/")
 async def events(user: str = None):
@@ -16,7 +16,7 @@ async def events(user: str = None):
         # Get the list of events from the API
         # NOTE: This is a blocking call, so we use an async client
         async with httpx.AsyncClient() as client:
-            events = await client.get(f"http://localhost:8000/api/events/", timeout=10)
+            events = await client.get("http://localhost:8000/api/events/", timeout=10)
         try:
             events = events.json()
         except:
@@ -35,8 +35,12 @@ async def events(user: str = None):
                     with ui.column().classes("flex-grow"):
                         ui.label(f"Event ID: {event['id']}")
                         ui.label(f"Event Name: {event['name']}")
-                    ui.button("", icon="info", on_click=lambda event_id=event['id']: ui.open(f"/events/{event_id}")).classes("w-6 h-6")
-                    ui.button("", icon="delete", color="red", on_click=lambda event_id=event['id']: delete_event(event_id)).classes("w-6 h-6")
+                    ui.button(
+                        "", icon="info", on_click=lambda event_id=event["id"]: ui.open(f"/events/{event_id}")
+                    ).classes("w-6 h-6")
+                    ui.button(
+                        "", icon="delete", color="red", on_click=lambda event_id=event["id"]: delete_event(event_id)
+                    ).classes("w-6 h-6")
 
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
@@ -64,6 +68,7 @@ async def event_home(event_id: str):
                 ui.label(f"{key}: {value}")
         ui.button("Back", on_click=lambda: ui.open("/events"))
 
+
 @router.page("/new/{event_id}")
 async def new_event(event_id: str):
     """New event creation page
@@ -75,19 +80,21 @@ async def new_event(event_id: str):
         None
     """
 
-
     async def add_guest():
         invite_uuid = str(uuid.uuid4())
         # TODO add method to remove guest
         with ui.card().classes("flex-grow position:relative") as card:
+
             async def delete(invite_uuid=invite_uuid):
                 card.delete()
+
             with ui.row().classes("flex-grow justify-between items-center"):
                 name_input = ui.input("Name")
                 email_input = ui.input("Email")
                 phone_input = ui.input("Phone Number")
-                ui.button("", icon="delete", color="red", on_click=lambda invite_uuid=invite_uuid: delete(invite_uuid)).classes("w-6 h-6")
-
+                ui.button(
+                    "", icon="delete", color="red", on_click=lambda invite_uuid=invite_uuid: delete(invite_uuid)
+                ).classes("w-6 h-6")
 
     with frame("New Event"):
         with ui.row().classes("flex-grow justify-between"):
@@ -112,18 +119,21 @@ async def new_event(event_id: str):
 
         async def get_event_json():
             import json
-            event_json = json.dumps({
-                "id": event_id,
-                "name": event_name_input.value,
-                "created": datetime.now().isoformat(),
-                "location": event_location_input.value,
-                "organizer_name": user_input.value,
-                "organizer_password": password_input.value,
-                "description": description_input.value,
-                "start_time": f"{start_date_input.value}T{start_time_input.value}:00",
-                "end_time": f"{end_date_input.value}T{end_time_input.value}:00",
-                "all_day": all_day_checkbox.value
-            })
+
+            event_json = json.dumps(
+                {
+                    "id": event_id,
+                    "name": event_name_input.value,
+                    "created": datetime.now().isoformat(),
+                    "location": event_location_input.value,
+                    "organizer_name": user_input.value,
+                    "organizer_password": password_input.value,
+                    "description": description_input.value,
+                    "start_time": f"{start_date_input.value}T{start_time_input.value}:00",
+                    "end_time": f"{end_date_input.value}T{end_time_input.value}:00",
+                    "all_day": all_day_checkbox.value,
+                }
+            )
             return event_json
 
         async def post_event():

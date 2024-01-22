@@ -5,7 +5,7 @@ from these schemas depending on how the API is to be used.
 
 FastAPI Tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/#create-the-pydantic-models
 """
-from datetime import date, datetime
+from datetime import datetime
 
 from pydantic import BaseModel
 
