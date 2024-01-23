@@ -1,8 +1,9 @@
 """
 Utility functions
 """
-
+import json
 import os
+from typing import Any
 
 from httpx import AsyncClient
 from nicegui import ui
@@ -45,13 +46,15 @@ class APIClient:
         return event
 
     @classmethod
-    async def delete_event(cls, event_id: str) -> int:
+    async def delete_event(cls, event_id: str, card: ui.card | None = None) -> int:
         """Delete single event from API"""
         async with AsyncClient() as client:
             response = await client.delete(f"{BASE_URL}/api/events/{event_id}", timeout=10)
             response.raise_for_status()
 
-        await ui.run_javascript("location.reload();")  # Refresh page to show changes
+        if card is not None:
+            card.delete()
+            ui.notify("Event deleted", type="negative")
 
         return response.status_code
 
@@ -63,6 +66,25 @@ class APIClient:
         """
         async with AsyncClient() as client:
             response = await client.post(f"{BASE_URL}/api/events/", data=event_json, timeout=10)
+            response.raise_for_status()
+
+        return response.status_code
+
+    @classmethod
+    async def update_event(cls, event_id: str, event_json: dict[str, Any]) -> int:
+        """
+        Patch single event to API
+        """
+        event_json = json.dumps(
+            {
+                "id": event_id,
+                "name": "Updated Name",
+                "description": "Updated description",
+            }
+        )
+
+        async with AsyncClient() as client:
+            response = await client.put(f"{BASE_URL}/api/events/{event_id}", data=event_json, timeout=10)
             response.raise_for_status()
 
         return response.status_code
