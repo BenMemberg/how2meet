@@ -1,4 +1,6 @@
-import asyncio
+"""
+Nicegui UI routes for all events pages. Use functions from `utils` to call the API.
+"""
 import uuid
 from datetime import datetime
 
@@ -16,10 +18,10 @@ async def events(user: str = None):
     """List page for all events"""
     with frame("Events"):
         # Get the list of events from the API
-        events_data = await api.get_events()
+        events = await api.get_events()
 
         # Display the list of events
-        for event in events_data:
+        for event in events:
             with ui.card().classes("w-full"):
                 with ui.row().classes("w-full justify-between"):
                     with ui.column().classes("flex-grow"):
@@ -120,7 +122,7 @@ async def new_event(event_id: str):
 
         async def post_event():
             event_json = await get_event_json()
-            status = await api.post_event(event_json)
+            status = await api.create_event(event_json)
             if status == 200:
                 with ui.dialog(value=True) as dialog, ui.card():
                     ui.label("Event created successfully!")

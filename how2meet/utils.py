@@ -55,7 +55,7 @@ class APIClient:
         return response.status_code
 
     @classmethod
-    async def post_event(cls, event_json: str) -> int:
+    async def create_event(cls, event_json: str) -> int:
         """
         Post single event to API
         TODO: rename to create?
@@ -65,3 +65,8 @@ class APIClient:
             response.raise_for_status()
 
         return response.status_code
+
+
+### little helpers ###
+async def reload_page():
+    await ui.run_javascript("location.reload();")
