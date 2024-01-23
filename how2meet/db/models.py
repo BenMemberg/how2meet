@@ -10,7 +10,7 @@ and documentation classes and instances.'
 """
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.types import Date, DateTime
+from sqlalchemy.types import DateTime
 
 from .database import Base
 

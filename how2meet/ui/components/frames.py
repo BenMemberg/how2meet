@@ -2,6 +2,7 @@ from contextlib import contextmanager
 
 from nicegui import ui
 
+
 @contextmanager
 def frame(navtitle: str):
     """Custom page frame to share the same styling and behavior across all pages"""
