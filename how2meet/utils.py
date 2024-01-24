@@ -64,14 +64,14 @@ class APIClient:
 
         if card is not None:
             card.delete()
-            ui.notify("Event deleted", type="negative")
+            ui.notification("Event deleted", timeout=1.5)
 
         return response.status_code
 
     @classmethod
     async def create_event(cls, event_json_str: str) -> int:
         """
-        Create single event using the API.
+        Create single event using the API using POST HTTP request.
 
         Args:
             event_json_str: JSON-formatted string of the event to create
