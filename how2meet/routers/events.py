@@ -1,23 +1,26 @@
+"""
+API routes for events. All routes are prefixed with `api/events/` per the router instantiation and mounting the api_app in main.py
+"""
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from ..db import crud, schemas
+from ..db import crud, models, schemas
 from ..db.database import get_db
 
 router = APIRouter(prefix="/events", tags=["events"], responses={404: {"description": "Not found"}})
 
 
 @router.post("/", response_model=schemas.Event)
-def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> schemas.Event:
+def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> models.Event:
     """
-    Create an event.
+    API route to create an event.
 
     Parameters:
-        event (schemas.EventCreate): The event to be created.
-        db (Session, optional): The database session. Defaults to Depends(get_db).
+        event: The event to be created.
+        db: The database session. Defaults to Depends(get_db).
 
     Returns:
-        schemas.Event: The created event.
+        models.Event: The created event.
     """
     db_event = crud.get_event(db, event_id=event.id)
     if db_event:
@@ -28,33 +31,33 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> s
 
 
 @router.get("/", response_model=list[schemas.Event])
-def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[schemas.Event]:
+def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[models.Event]:
     """
-    Retrieves a list of events from the database.
+    API route to retrieve a list of events from the database.
 
     Args:
-        skip (int): The number of events to skip. Defaults to 0.
-        limit (int): The maximum number of events to retrieve. Defaults to 100.
-        db (Session): The database session to use.
+        skip: The number of events to skip. Defaults to 0.
+        limit: The maximum number of events to retrieve. Defaults to 100.
+        db: The database session to use.
 
     Returns:
-        List[Event]: A list of events retrieved from the database.
+        List[models.Event]: A list of events retrieved from the database.
     """
     events = crud.get_events(db, skip=skip, limit=limit)
     return events
 
 
 @router.get("/{event_id}", response_model=schemas.Event)
-def read_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
+def read_event(event_id: str, db: Session = Depends(get_db)) -> models.Event:
     """
-    Retrieves an event from the database.
+    API route to retrieve an event from the database.
 
     Args:
-        event_id (str): The ID of the event to retrieve.
-        db (Session): The database session to use.
+        event_id: The ID of the event to retrieve.
+        db: The database session to use.
 
     Returns:
-        Event: The event retrieved from the database.
+        models.Event: The event retrieved from the database.
     """
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:
@@ -63,16 +66,16 @@ def read_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
 
 
 @router.delete("/{event_id}", response_model=schemas.Event)
-def delete_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
+def delete_event(event_id: str, db: Session = Depends(get_db)) -> models.Event:
     """
-    Deletes an event from the database.
+    API route to delete an event from the database
 
     Args:
-        event_id (str): The ID of the event to delete.
-        db (Session): The database session to use.
+        event_id: The ID of the event to delete.
+        db: The database session to use.
 
     Returns:
-        Event: The event that was deleted.
+        models.Event: The event that was deleted.
     """
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:
@@ -83,9 +86,9 @@ def delete_event(event_id: str, db: Session = Depends(get_db)) -> schemas.Event:
 
 
 @router.put("/{event_id}", response_model=schemas.Event)
-def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session = Depends(get_db)) -> schemas.Event:
+def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session = Depends(get_db)) -> models.Event:
     """
-    Update an existing event.
+    API router to update an existing event in the database.
 
     Args:
         event_id: The ID of the event to update.
@@ -93,7 +96,7 @@ def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session 
         db: The database session.
 
     Returns:
-        schemas.Event: The updated event.
+        models.Event: The updated event.
     """
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:

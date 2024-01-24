@@ -1,7 +1,6 @@
 """
 Utility functions
 """
-import json
 import os
 from typing import Any
 
@@ -12,6 +11,8 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")  # To be passed around
 
 
 class APIClient:
+    """Client class for encapsulating HTTP requests to API"""
+
     def __init__(self, base_url: str = BASE_URL) -> None:
         self.base_url = base_url
 
@@ -29,7 +30,6 @@ class APIClient:
             events = events.json()
         except:
             events = []
-
         return events
 
     @classmethod
@@ -47,7 +47,17 @@ class APIClient:
 
     @classmethod
     async def delete_event(cls, event_id: str, card: ui.card | None = None) -> int:
-        """Delete single event from API"""
+        """
+        Delete single event from API. Optionally, the UI element (card) may be provided (if calling from events page) so that
+        it can be deleted visually upon clicking delete. This prevents needing to reload the page to show updates to the user
+
+        Args:
+            event_id: The ID of the event to delete
+            card: The card to delete
+
+        Returns:
+            int: The status code of the response
+        """
         async with AsyncClient() as client:
             response = await client.delete(f"{BASE_URL}/api/events/{event_id}", timeout=10)
             response.raise_for_status()
@@ -59,32 +69,36 @@ class APIClient:
         return response.status_code
 
     @classmethod
-    async def create_event(cls, event_json: str) -> int:
+    async def create_event(cls, event_json_str: str) -> int:
         """
-        Post single event to API
-        TODO: rename to create?
+        Create single event using the API.
+
+        Args:
+            event_json_str: JSON-formatted string of the event to create
+
+        Returns:
+            int: The status code of the response
         """
         async with AsyncClient() as client:
-            response = await client.post(f"{BASE_URL}/api/events/", data=event_json, timeout=10)
+            response = await client.post(f"{BASE_URL}/api/events/", data=event_json_str, timeout=10)
             response.raise_for_status()
 
         return response.status_code
 
     @classmethod
-    async def update_event(cls, event_id: str, event_json: dict[str, Any]) -> int:
+    async def update_event(cls, event_id: str, event_json_str: dict[str, Any]) -> int:
         """
-        Patch single event to API
-        """
-        event_json = json.dumps(
-            {
-                "id": event_id,
-                "name": "Updated Name",
-                "description": "Updated description",
-            }
-        )
+        Updates an event by sending a PUT request to the API with the given event ID and JSON data.
 
+        Args:
+            event_id: The ID of the event to be updated.
+            event_json_str: The JSON data representing the updated event.
+
+        Returns:
+            int: The status code of the response from the API.
+        """
         async with AsyncClient() as client:
-            response = await client.put(f"{BASE_URL}/api/events/{event_id}", data=event_json, timeout=10)
+            response = await client.put(f"{BASE_URL}/api/events/{event_id}", data=event_json_str, timeout=10)
             response.raise_for_status()
 
         return response.status_code

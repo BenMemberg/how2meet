@@ -101,7 +101,7 @@ async def new_event(event_id: str):
             with ui.column().classes("w-full"):
                 add_guest_button = ui.button("Add guest", on_click=add_guest)
 
-        async def get_event_json() -> str:
+        async def _get_event_json() -> str:
             import json
 
             event_json = json.dumps(
@@ -120,8 +120,8 @@ async def new_event(event_id: str):
             )
             return event_json
 
-        async def post_event():
-            event_json = await get_event_json()
+        async def _create_event():
+            event_json = await _get_event_json()
             status = await api.create_event(event_json)
             if status == 200:
                 with ui.dialog(value=True) as dialog, ui.card():
@@ -131,5 +131,5 @@ async def new_event(event_id: str):
                         ui.button("OK", on_click=lambda: dialog.close())
 
         # TODO: Post invites to API
-        save_button = ui.button("Save", on_click=post_event)
+        save_button = ui.button("Save", on_click=_create_event)
         back_button = ui.button("Back", on_click=lambda: ui.open("/"))
