@@ -1,8 +1,9 @@
 """
 Utility functions
 """
+import json
 import os
-from typing import Any
+from typing import Any, Union
 
 from httpx import AsyncClient
 from nicegui import ui
@@ -69,7 +70,7 @@ class APIClient:
         return response.status_code
 
     @classmethod
-    async def create_event(cls, event_json_str: str) -> int:
+    async def create_event(cls, event_json_str: Union[str, dict]) -> int:
         """
         Create single event using the API using POST HTTP request.
 
@@ -79,6 +80,12 @@ class APIClient:
         Returns:
             int: The status code of the response
         """
+        try:
+            event_json_str = event_json_str.json()
+        except:
+            if isinstance(event_json_str, dict):
+                event_json_str = json.dumps(event_json_str)
+
         async with AsyncClient() as client:
             response = await client.post(f"{BASE_URL}/api/events/", data=event_json_str, timeout=10)
             response.raise_for_status()

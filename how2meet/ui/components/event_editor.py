@@ -53,16 +53,12 @@ class EventEditor:
         self.event = await api.get_event(self.event_id)
 
     async def save(self):
-        event_json_str = await self.model_dump()
-        import logging
-        logging.warning(event_json_str)
-        status = await api.create_event(event_json_str)
+        event_dict = await self.model_dump()
+        status = await api.create_event(event_dict)
         if status == 200:
-            with ui.dialog(value=True) as dialog, ui.card():
-                ui.label("Event created successfully!")
-                with ui.row().classes("w-full justify-center"):
-                    ui.button("Go to event", on_click=lambda: ui.open(URL_EVENT_HOME.format(self.event_id)))
-                    ui.button("OK", on_click=lambda: dialog.close())
+            ui.open(URL_EVENT_HOME.format(event_id=self.event_id))
+        else:
+            ui.notification(f"Error: {status}", timeout=5)
 
     async def add_guest(self):
         invite_id = uuid.uuid4()

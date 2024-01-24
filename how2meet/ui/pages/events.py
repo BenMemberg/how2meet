@@ -11,12 +11,12 @@ from how2meet.utils import APIClient as api
 from ..components.frames import frame
 from ..components.event_editor import EventEditor, InviteEditor
 from .urls import URL_EVENTS_PREFIX, URL_EVENTS, URL_NEW_EVENT,\
-      URL_EVENT_HOME, _URL_EVENTS, _URL_NEW_EVENT, _URL_EVENT_HOME
+      URL_EVENT_HOME, ROUTE_EVENTS, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
 
 
 router = APIRouter(prefix=URL_EVENTS_PREFIX, tags=["events"])
 
-@router.page(_URL_EVENTS)
+@router.page(ROUTE_EVENTS)
 async def events() -> None:
     """List page for all events"""
     with frame("Events"):
@@ -39,7 +39,7 @@ async def events() -> None:
             ui.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
 
 
-@router.page(_URL_EVENT_HOME)
+@router.page(ROUTE_EVENT_HOME)
 async def event_home(event_id: str):
     """Detail page for a specific event"""
     # Get the event from the API
@@ -54,7 +54,7 @@ async def event_home(event_id: str):
         ui.button("Back", on_click=lambda: ui.open("/events"))
 
 
-@router.page(_URL_NEW_EVENT)
+@router.page(ROUTE_NEW_EVENT)
 async def new_event():
     """New event creation page
 
