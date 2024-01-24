@@ -13,9 +13,7 @@ from sqlalchemy.orm import Session, declarative_base, sessionmaker
 # TODO: connect to postres instance from env
 SQLALCHEMY_DATABASE_URL = os.getenv("DB_CONN", "sqlite:///./data.db")
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}, echo=True
-)  # `connect_args` only needed with sqlite
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}, echo=True)  # `connect_args` only needed with sqlite
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()  # Base class inherited in models.py to declare new tables
