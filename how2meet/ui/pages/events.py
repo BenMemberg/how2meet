@@ -9,6 +9,7 @@ from nicegui import APIRouter, ui
 from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
+from ..components.event_editor import EventEditor, InviteEditor
 
 router = APIRouter(prefix="/events", tags=["events"])
 
@@ -35,10 +36,10 @@ async def events(user: str = None):
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
             ui.button("Back", on_click=lambda: ui.open("/"))
-            ui.button("New Event", on_click=lambda: ui.open(f"/events/new/{uuid.uuid4()}"))
+            ui.button("New Event", on_click=lambda: ui.open(f"/events/new_event"))
 
 
-@router.page("/{event_id}")
+@router.page("/home/{event_id}")
 async def event_home(event_id: str):
     """Detail page for a specific event"""
     # Get the event from the API
@@ -53,8 +54,8 @@ async def event_home(event_id: str):
         ui.button("Back", on_click=lambda: ui.open("/events"))
 
 
-@router.page("/new/{event_id}")
-async def new_event(event_id: str):
+@router.page("/new_event")
+async def new_event():
     """New event creation page
 
     Args:
@@ -64,72 +65,7 @@ async def new_event(event_id: str):
         None
     """
 
-    async def add_guest():
-        invite_uuid = str(uuid.uuid4())
-        # TODO add method to remove guest
-        with ui.card().classes("flex-grow position:relative") as card:
-
-            async def delete(invite_uuid=invite_uuid):
-                card.delete()
-
-            with ui.row().classes("flex-grow justify-between items-center"):
-                name_input = ui.input("Name")
-                email_input = ui.input("Email")
-                phone_input = ui.input("Phone Number")
-                ui.button(
-                    "", icon="delete", color="red", on_click=lambda invite_uuid=invite_uuid: delete(invite_uuid)
-                ).classes("w-6 h-6")
-
     with frame("New Event"):
-        with ui.row().classes("flex-grow justify-between"):
-            event_name_input = ui.input("Event Name")
-            event_location_input = ui.input("Location")
-        with ui.row():
-            user_input = ui.input("User")
-            password_input = ui.input("Password", password=True, password_toggle_button=True)
-        with ui.row():
-            with ui.expansion("Start Time"):
-                start_date_input = ui.date(value=datetime.now().date().strftime("%Y-%m-%d"))
-                start_time_input = ui.time(value=datetime.now().time().strftime("%H:%M"))
-            with ui.expansion("End Time"):
-                end_date_input = ui.date(value=datetime.now().date().strftime("%Y-%m-%d"))
-                end_time_input = ui.time(value=datetime.now().time().strftime("%H:%M"))
-            all_day_checkbox = ui.checkbox("All Day")
-        with ui.row().classes("w-full"):
-            description_input = ui.textarea("Description").classes("w-full")
-        with ui.row().classes("w-full"):
-            with ui.column().classes("w-full"):
-                add_guest_button = ui.button("Add guest", on_click=add_guest)
-
-        async def get_event_json() -> str:
-            import json
-
-            event_json = json.dumps(
-                {
-                    "id": event_id,
-                    "name": event_name_input.value,
-                    "created": datetime.now().isoformat(),
-                    "location": event_location_input.value,
-                    "organizer_name": user_input.value,
-                    "organizer_password": password_input.value,
-                    "description": description_input.value,
-                    "start_time": f"{start_date_input.value}T{start_time_input.value}:00",
-                    "end_time": f"{end_date_input.value}T{end_time_input.value}:00",
-                    "all_day": all_day_checkbox.value,
-                }
-            )
-            return event_json
-
-        async def post_event():
-            event_json = await get_event_json()
-            status = await api.create_event(event_json)
-            if status == 200:
-                with ui.dialog(value=True) as dialog, ui.card():
-                    ui.label("Event created successfully!")
-                    with ui.row().classes("w-full justify-center"):
-                        ui.button("Go to event", on_click=lambda: ui.open(f"/events/{event_id}"))
-                        ui.button("OK", on_click=lambda: dialog.close())
-
-        # TODO: Post invites to API
-        save_button = ui.button("Save", on_click=post_event)
-        back_button = ui.button("Back", on_click=lambda: ui.open("/"))
+        event_editor = EventEditor()
+        await event_editor.load()
+        await event_editor.render()
