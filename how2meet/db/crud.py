@@ -111,6 +111,7 @@ def update_event(db: Session, db_event: models.Event, updated_event: schemas.Eve
     """
 
     for attr, value in updated_event.model_dump().items():
+        # TODO: maybe bug later
         if value is not None:
             setattr(db_event, attr, value)
     db.commit()

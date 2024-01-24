@@ -27,8 +27,8 @@ async def events() -> None:
                     with ui.column().classes("flex-grow"):
                         ui.label(f"Event ID: {event['id']}")
                         ui.label(f"Event Name: {event['name']}")
-                    ui.button("", icon="info", on_click=lambda event_id=event["id"]: ui.open(f"/events/{event_id}")).classes("w-6 h-6")
-                    ui.button("", icon="delete", color="red", on_click=lambda: api.delete_event(event["id"], event_card))
+                    ui.button("", icon="info", on_click=lambda _id=event["id"]: ui.open(f"/events/{_id}")).classes("w-6 h-6")
+                    ui.button("", icon="delete", color="red", on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card))
 
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
