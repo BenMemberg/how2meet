@@ -95,3 +95,25 @@ def get_invites(db: Session, skip: int = 0, limit: int = 100) -> list[models.Inv
 
     """
     return db.query(models.Invite).offset(skip).limit(limit).all()
+
+
+def update_event(db: Session, db_event: models.Event, updated_event: schemas.EventUpdate) -> models.Event:
+    """
+    Update an event in the database.
+
+    Args:
+        db: Database session
+        db_event: Event to be updated
+        updated_event: Updated event data
+
+    Returns:
+        Updated event
+    """
+
+    for attr, value in updated_event.model_dump().items():
+        # TODO: maybe bug later
+        if value is not None:
+            setattr(db_event, attr, value)
+    db.commit()
+    db.refresh(db_event)
+    return db_event

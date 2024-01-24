@@ -1,5 +1,5 @@
 """
-Nicegui UI routes for all events pages. Use functions from `utils` to call the API.
+Nicegui UI routes for all events pages. Use functions from `utils` to call the API. All routes prefixed with `/events/`
 """
 import uuid
 from datetime import datetime
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/events", tags=["events"])
 
 
 @router.page("/")
-async def events(user: str = None):
+async def events() -> None:
     """List page for all events"""
     with frame("Events"):
         # Get the list of events from the API
@@ -22,15 +22,13 @@ async def events(user: str = None):
 
         # Display the list of events
         for event in events:
-            with ui.card().classes("w-full"):
+            with ui.card().classes("w-full") as event_card:
                 with ui.row().classes("w-full justify-between"):
                     with ui.column().classes("flex-grow"):
                         ui.label(f"Event ID: {event['id']}")
                         ui.label(f"Event Name: {event['name']}")
-                    ui.button(
-                        "", icon="info", on_click=lambda event_id=event["id"]: ui.open(f"/events/{event_id}")
-                    ).classes("w-6 h-6")
-                    ui.button("", icon="delete", color="red", on_click=lambda: api.delete_event(event["id"]))
+                    ui.button("", icon="info", on_click=lambda _id=event["id"]: ui.open(f"/events/{_id}")).classes("w-6 h-6")
+                    ui.button("", icon="delete", color="red", on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card))
 
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
@@ -39,7 +37,7 @@ async def events(user: str = None):
 
 
 @router.page("/{event_id}")
-async def event_home(event_id: str):
+async def event_home(event_id: str) -> None:
     """Detail page for a specific event"""
     # Get the event from the API
 
@@ -54,15 +52,8 @@ async def event_home(event_id: str):
 
 
 @router.page("/new/{event_id}")
-async def new_event(event_id: str):
-    """New event creation page
-
-    Args:
-        event_id (str): The unique ID of the event to be created.
-
-    Returns:
-        None
-    """
+async def new_event(event_id: str) -> None:
+    """New event creation page"""
 
     async def add_guest():
         invite_uuid = str(uuid.uuid4())
@@ -76,9 +67,7 @@ async def new_event(event_id: str):
                 name_input = ui.input("Name")
                 email_input = ui.input("Email")
                 phone_input = ui.input("Phone Number")
-                ui.button(
-                    "", icon="delete", color="red", on_click=lambda invite_uuid=invite_uuid: delete(invite_uuid)
-                ).classes("w-6 h-6")
+                ui.button("", icon="delete", color="red", on_click=lambda invite_uuid=invite_uuid: delete(invite_uuid)).classes("w-6 h-6")
 
     with frame("New Event"):
         with ui.row().classes("flex-grow justify-between"):
@@ -101,7 +90,7 @@ async def new_event(event_id: str):
             with ui.column().classes("w-full"):
                 add_guest_button = ui.button("Add guest", on_click=add_guest)
 
-        async def get_event_json() -> str:
+        async def _get_event_json_str() -> str:
             import json
 
             event_json = json.dumps(
@@ -120,16 +109,16 @@ async def new_event(event_id: str):
             )
             return event_json
 
-        async def post_event():
-            event_json = await get_event_json()
+        async def _create_event():
+            event_json = await _get_event_json_str()
             status = await api.create_event(event_json)
             if status == 200:
                 with ui.dialog(value=True) as dialog, ui.card():
                     ui.label("Event created successfully!")
                     with ui.row().classes("w-full justify-center"):
                         ui.button("Go to event", on_click=lambda: ui.open(f"/events/{event_id}"))
-                        ui.button("OK", on_click=lambda: dialog.close())
+                        ui.button("OK", on_click=lambda: ui.open("/events/"))
 
         # TODO: Post invites to API
-        save_button = ui.button("Save", on_click=post_event)
+        save_button = ui.button("Save", on_click=_create_event)
         back_button = ui.button("Back", on_click=lambda: ui.open("/"))
