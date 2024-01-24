@@ -4,17 +4,19 @@ Nicegui UI routes for all events pages. Use functions from `utils` to call the A
 import uuid
 from datetime import datetime
 
-from nicegui import APIRouter, ui
+from nicegui import APIRouter, ui, app
 
 from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
 from ..components.event_editor import EventEditor, InviteEditor
+from .urls import URL_EVENTS_PREFIX, URL_EVENTS, URL_NEW_EVENT,\
+      URL_EVENT_HOME, _URL_EVENTS, _URL_NEW_EVENT, _URL_EVENT_HOME
 
-router = APIRouter(prefix="/events", tags=["events"])
 
+router = APIRouter(prefix=URL_EVENTS_PREFIX, tags=["events"])
 
-@router.page("/")
+@router.page(_URL_EVENTS)
 async def events() -> None:
     """List page for all events"""
     with frame("Events"):
@@ -33,11 +35,11 @@ async def events() -> None:
 
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
-            ui.button("Back", on_click=lambda: ui.open("/"))
-            ui.button("New Event", on_click=lambda: ui.open(f"/events/new_event"))
+            ui.button("Back", on_click=lambda: ui.open(URL_EVENTS))
+            ui.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
 
 
-@router.page("/home/{event_id}")
+@router.page(_URL_EVENT_HOME)
 async def event_home(event_id: str):
     """Detail page for a specific event"""
     # Get the event from the API
@@ -52,7 +54,7 @@ async def event_home(event_id: str):
         ui.button("Back", on_click=lambda: ui.open("/events"))
 
 
-@router.page("/new_event")
+@router.page(_URL_NEW_EVENT)
 async def new_event():
     """New event creation page
 
@@ -65,5 +67,4 @@ async def new_event():
 
     with frame("New Event"):
         event_editor = EventEditor()
-        await event_editor.load()
         await event_editor.render()

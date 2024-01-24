@@ -23,7 +23,7 @@ def home():
     with frame("Home"):
         with ui.column().classes("w-full items-center"):
             with ui.row():
-                ui.button("New Event", on_click=lambda: ui.open(f"/events/new_event"))
+                ui.button("New Event", on_click=lambda: ui.open(events.NEW_EVENT_URL))
             with ui.row():
                 ui.button("Existing Event", on_click=lambda: ui.open("/events"))
 
