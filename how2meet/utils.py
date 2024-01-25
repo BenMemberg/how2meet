@@ -104,6 +104,12 @@ class APIClient:
         Returns:
             int: The status code of the response from the API.
         """
+        try:
+            event_json_str = event_json_str.json()
+        except:
+            if isinstance(event_json_str, dict):
+                event_json_str = json.dumps(event_json_str)
+
         async with AsyncClient() as client:
             response = await client.put(f"{BASE_URL}/api/events/{event_id}", data=event_json_str, timeout=10)
             response.raise_for_status()

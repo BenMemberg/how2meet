@@ -1,3 +1,4 @@
+from functools import partial
 from datetime import datetime
 import uuid
 
@@ -20,6 +21,7 @@ class InviteEditor:
             self.card.delete()
 
         async def render(self):
+            await self.load()
             # TODO add method to remove guest
             with ui.card().classes("flex-grow position:relative") as card:
                 self.card = card
@@ -48,15 +50,24 @@ class EventEditor:
         self.event_id = event_id or str(uuid.uuid4())
         self.event = {}
         self.invites = []
+        self.dialog = None
 
     async def load(self):
-        self.event = await api.get_event(self.event_id)
+        if self.event_id is not None:
+            self.event = await api.get_event(self.event_id)
 
-    async def save(self):
-        event_dict = await self.model_dump()
-        status = await api.create_event(event_dict)
+    async def save(self, on_save=None):
+        try:
+            if self.event:
+                status = await api.update_event(self.event_id, self.model_dump())
+            else:
+                status = await api.create_event(self.model_dump())
+        except Exception as e:
+            ui.notification(f"Error: {e}\n{self.model_dump()}", timeout=5)
+            return
         if status == 200:
-            ui.open(URL_EVENT_HOME.format(event_id=self.event_id))
+            if callable(on_save):
+                on_save()
         else:
             ui.notification(f"Error: {status}", timeout=5)
 
@@ -64,10 +75,20 @@ class EventEditor:
         invite_id = uuid.uuid4()
         invite_editor = InviteEditor(invite_id)
         self.invites.append(invite_editor)
-        await invite_editor.load()
         await invite_editor.render()
 
-    async def render(self):
+    async def close(self):
+        try:
+            self.dialog.close()
+        except:
+            pass
+
+    async def render(self, floating=False, on_save=None, on_back=None):
+        if floating:
+            with ui.dialog(value=True) as dialog, ui.card() as card:
+                self.dialog = dialog
+                await self.render()
+                return
         await self.load()
         with ui.row().classes("flex-grow justify-between"):
             self.event_name_input = ui.input("Event Name", value=self.event.get("name", ""))
@@ -77,12 +98,17 @@ class EventEditor:
                 self.password_input = ui.input("Password", password=True, password_toggle_button=True)
             with ui.row():
                 with ui.expansion("Start Time"):
-
-                    self.start_date_input = ui.date(value=self.event.get("start_time", datetime.now().date()).strftime("%Y-%m-%d"))
-                    self.start_time_input = ui.time(value=self.event.get("start_time", datetime.now().time()).strftime("%H:%M"))
+                    start_time = self.event.get("start_time", datetime.now())
+                    if isinstance(start_time, str):
+                        start_time = datetime.fromisoformat(start_time)
+                    self.start_date_input = ui.date(value=start_time.strftime("%Y-%m-%d"))
+                    self.start_time_input = ui.time(value=start_time.strftime("%H:%M"))
                 with ui.expansion("End Time"):
-                    self.end_date_input = ui.date(value=self.event.get("end_time", datetime.now().date()).strftime("%Y-%m-%d"))
-                    self.end_time_input = ui.time(value=self.event.get("end_time", datetime.now().time()).strftime("%H:%M"))
+                    end_time = self.event.get("end_time", datetime.now())
+                    if isinstance(end_time, str):
+                        end_time = datetime.fromisoformat(end_time)
+                    self.end_date_input = ui.date(value=end_time.strftime("%Y-%m-%d"))
+                    self.end_time_input = ui.time(value=end_time.strftime("%H:%M"))
                 self.all_day_checkbox = ui.checkbox("All Day", value=self.event.get("all_day", False))
             with ui.row().classes("w-full"):
                 self.description_input = ui.textarea("Description", value=self.event.get("description", "")).classes("w-full")
@@ -90,11 +116,11 @@ class EventEditor:
                 with ui.column().classes("w-full"):
                     self.add_guest_button = ui.button("Add guest", on_click=self.add_guest)
 
-        # TODO: Post invites to API
-        save_button = ui.button("Save", on_click=self.save)
-        back_button = ui.button("Back", on_click=lambda: ui.open("/"))
+        with ui.row().classes("flex-grow justify-between"):
+            ui.button("Back", on_click=on_back)
+            ui.button("Save", on_click=partial(self.save, on_save=on_save))
 
-    async def model_dump(self):
+    def model_dump(self):
         return {
             "id": self.event_id,
             "name": self.event_name_input.value,

@@ -3,6 +3,7 @@ Nicegui UI routes for all events pages. Use functions from `utils` to call the A
 """
 import uuid
 from datetime import datetime
+from functools import partial
 
 from nicegui import APIRouter, ui, app
 
@@ -21,22 +22,32 @@ async def events() -> None:
     """List page for all events"""
     with frame("Events"):
         # Get the list of events from the API
-        events = await api.get_events()
-
+        async def open_floating_editor(_id):
+            event_editor = EventEditor(_id)
+            await event_editor.render(floating=True,
+                                      on_save=partial(ui.notify, "Event saved!"),
+                                      on_back=event_editor.close)
+            event_editor.dialog.on("hide", render_list.refresh)
         # Display the list of events
-        for event in events:
-            with ui.card().classes("w-full") as event_card:
-                with ui.row().classes("w-full justify-between"):
-                    with ui.column().classes("flex-grow"):
-                        ui.label(f"Event ID: {event['id']}")
-                        ui.label(f"Event Name: {event['name']}")
-                    ui.button("", icon="info", on_click=lambda _id=event["id"]: ui.open(f"/events/{_id}")).classes("w-6 h-6")
-                    ui.button("", icon="delete", color="red", on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card))
+        @ui.refreshable
+        async def render_list():
+            events = await api.get_events()
+            for event in events:
+                with ui.card().classes("w-full") as event_card:
+                    with ui.row().classes("w-full justify-between"):
+                        with ui.column().classes("flex-grow"):
+                            ui.label(f"Event ID: {event['id']}")
+                            ui.label(f"Event Name: {event['name']}")
+                        ui.button("", icon="edit", on_click=partial(open_floating_editor, _id=event["id"])).classes("w-6 h-6")
+                        ui.button("", icon="info", on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))).classes("w-6 h-6")
+                        ui.button("", icon="delete", color="red", on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card))
+        await render_list()
 
         # Add navigation buttons
         with ui.row().classes("w-full justify-center"):
             ui.button("Back", on_click=lambda: ui.open(URL_EVENTS))
             ui.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
+            ui.button("Refresh", on_click=render_list.refresh)
 
 
 @router.page(ROUTE_EVENT_HOME)
@@ -67,4 +78,8 @@ async def new_event():
 
     with frame("New Event"):
         event_editor = EventEditor()
-        await event_editor.render()
+        await event_editor.render(
+            on_back=partial(ui.open,
+                            URL_EVENTS),
+            on_save=partial(ui.open,
+                             URL_EVENT_HOME.format(event_id=event_editor.event_id)))
