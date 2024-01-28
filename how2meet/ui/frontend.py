@@ -8,6 +8,7 @@ from nicegui import app, ui
 
 from .components.frames import frame
 from .pages import events, settings
+from .pages.urls import URL_NEW_EVENT, URL_EVENTS
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -23,9 +24,9 @@ def home():
     with frame("Home"):
         with ui.column().classes("w-full items-center"):
             with ui.row():
-                ui.button("New Event", on_click=lambda: ui.open(events.NEW_EVENT_URL))
+                ui.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
             with ui.row():
-                ui.button("Existing Event", on_click=lambda: ui.open("/events"))
+                ui.button("Existing Event", on_click=lambda: ui.open(URL_EVENTS))
 
 
 def init(fastapi_app) -> None:

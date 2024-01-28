@@ -63,7 +63,6 @@ class EventEditor:
             else:
                 status = await api.create_event(self.model_dump())
         except Exception as e:
-            ui.notification(f"Error: {e}\n{self.model_dump()}", timeout=5)
             return
         if status == 200:
             if callable(on_save):

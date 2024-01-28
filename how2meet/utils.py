@@ -39,9 +39,9 @@ class APIClient:
         # NOTE: This is a blocking call, so we use an async client
         async with AsyncClient() as client:
             event = await client.get(f"{BASE_URL}/api/events/{event_id}", timeout=10)
-        try:
+        if event.is_success:
             event = event.json()
-        except:
+        else:
             event = {}
 
         return event

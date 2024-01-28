@@ -11,13 +11,13 @@ from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
 from ..components.event_editor import EventEditor, InviteEditor
-from .urls import URL_EVENTS_PREFIX, URL_EVENTS, URL_NEW_EVENT,\
-      URL_EVENT_HOME, ROUTE_EVENTS, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
+from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
+      URL_EVENT_HOME, ROUTE_EVENTS_LIST, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
 
 
-router = APIRouter(prefix=URL_EVENTS_PREFIX, tags=["events"])
+router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
 
-@router.page(ROUTE_EVENTS)
+@router.page(ROUTE_EVENTS_LIST)
 async def events() -> None:
     """List page for all events"""
     with frame("Events"):
