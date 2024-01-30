@@ -4,8 +4,9 @@ Nicegui UI routes for all events pages. Use functions from `utils` to call the A
 import uuid
 from datetime import datetime
 from functools import partial
-
-from nicegui import APIRouter, ui, app
+from pathlib import Path
+from PIL import Image as PIL_Image
+from nicegui import APIRouter, ui, app, context
 
 from how2meet.utils import APIClient as api
 
@@ -13,6 +14,7 @@ from ..components.frames import frame
 from ..components.event_editor import EventEditor, InviteEditor
 from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
       URL_EVENT_HOME, ROUTE_EVENTS_LIST, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
+from ..components.date_utils import event_dates_to_str
 
 
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
@@ -56,12 +58,21 @@ async def event_home(event_id: str):
     # Get the event from the API
 
     with frame("Event Home"):
+        # set the padding of top level content div to 0
+        context.get_client().content.classes("m-0 p-0 gap-0")
         event = await api.get_event(event_id)
-
-        # Display the event details
-        with ui.column().classes("w-full justify-between"):
-            for key, value in event.items():
-                ui.label(f"{key}: {value}")
+        ui.image(event.get('image', './how2meet/ui/assets/default-image.jpeg')).classes(
+            "w-full h-64 m-0 p-0 object-cover")
+        with ui.column().classes("w-full justify-left space-y-0 p-4"):
+            ui.label(f"{event['name']}").classes("text-2xl font-bold")
+            ui.label(f"{event_dates_to_str(event)}").classes("text-xl")
+            ui.label(f"{event['location'] or 'Unknown'}").classes("text-base text-gray-800")
+        with ui.card().classes("w-full-m-4 p-4"):
+            ui.label("Details").classes("text-xl font-bold")
+            with ui.row().classes("w-full justify-left items-center"):
+                ui.icon("person").classes("text-xl")
+                ui.label(f"{len(event.get('invites', []))} Invites")
+            ui.label(f"{event['description']}").classes("text-base text-gray-800")
         ui.button("Back", on_click=lambda: ui.open("/events"))
 
 
