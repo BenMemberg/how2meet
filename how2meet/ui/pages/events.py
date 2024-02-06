@@ -91,14 +91,15 @@ async def event_home(event_id: str):
             guest_name_input = ui.input("Name")
             guest_email_input = ui.input("Email")
             guest_phone_input = ui.input("Phone Number")
-            guest_status_input = ui.radio({True: "Yes", False: "No"})
+            guest_status_input = ui.radio(["Yes", "No"])
 
             async def _get_guest_json_str() -> str:
                 guest_json = json.dumps(
                     {
+                        "id": str(uuid.uuid4()),  # TODO: autoincrement IDs
                         "name": guest_name_input.value,
                         "email": guest_email_input.value,
-                        "phone": guest_phone_input.value,
+                        "phone": int(guest_phone_input.value),
                         "status": guest_status_input.value,
                         "event_id": event_id,
                     }
@@ -116,7 +117,6 @@ async def event_home(event_id: str):
             ui.button("Submit", on_click=_create_guest)
 
         ui.button("RSVP", on_click=rsvp_dialog.open)
-        ui.button("Delete", on_click=lambda: api.delete_event(event_id), color="red")
         ui.button("Guest List", on_click=lambda: ui.open(f"/events/{event_id}/guests"))
 
 
@@ -133,7 +133,7 @@ async def event_guests(event_id: str) -> None:
             for guest in guests:
                 with ui.card().classes("w-full") as guest_card:
                     with ui.row().classes("w-full justify-between"):
-                        ui.label(f"{guest['name']}: {guest['attending']}")
+                        ui.label(f"{guest['name']}: {guest['status']}")
                         ui.button("", icon="edit", on_click=lambda: ui.notify("Edit guest"))
                         ui.button(
                             "",

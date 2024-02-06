@@ -142,7 +142,7 @@ class APIClient:
 
         """
         async with AsyncClient() as client:
-            response = await client.post(f"{BASE_URL}/api/events/{event_id}/guests/", data=guest_json_str, timeout=10)
+            response = await client.post(f"{BASE_URL}/api/events/{event_id}/guests", data=guest_json_str, timeout=10)
             response.raise_for_status()
 
         return response.status_code

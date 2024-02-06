@@ -139,7 +139,7 @@ def get_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) -> sc
     return guest
 
 
-@router.post("/{event_id}/guests/", response_model=schemas.Guest)
+@router.post("/{event_id}/guests", response_model=schemas.Guest)
 def create_guest(event_id: str, guest: schemas.GuestCreate, db: Session = Depends(get_db)) -> schemas.Guest:
     """
     API route to create a guest for an event.

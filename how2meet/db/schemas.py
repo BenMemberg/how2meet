@@ -49,7 +49,7 @@ class Guest(BaseModel):
     name: str
     email: str
     phone: int
-    status: bool
+    status: str
     event_id: str
 
     class Config:
