@@ -70,12 +70,6 @@ class EventEditor:
         else:
             ui.notification(f"Error: {status}", timeout=5)
 
-    async def add_guest(self):
-        invite_id = uuid.uuid4()
-        invite_editor = InviteEditor(invite_id)
-        self.invites.append(invite_editor)
-        await invite_editor.render()
-
     def close(self):
         try:
             self.dialog.close()
@@ -86,39 +80,44 @@ class EventEditor:
             logging.warning(e)
 
     async def render(self, floating=False, on_save=None, on_back=None):
+        # If floating, enclose in a dialog
         if floating:
-            with ui.dialog(value=True) as dialog, ui.card() as card:
+            with ui.dialog(value=True).props("no-route-dismiss") as dialog, ui.card() as card:
                 self.dialog = dialog
+                # Render the event editor (use floating=False to embed in enclosing element)
                 await self.render(on_save=on_save, on_back=on_back)
                 return
-        await self.load()
-        with ui.row().classes("flex-grow justify-between"):
-            self.event_name_input = ui.input("Event Name", value=self.event.get("name", ""))
-            self.event_location_input = ui.input("Location", value=self.event.get("location", ""))
-            with ui.row():
-                self.user_input = ui.input("User", value=self.event.get("organizer_name", ""))
-                self.password_input = ui.input("Password", password=True, password_toggle_button=True)
-            with ui.row():
-                with ui.expansion("Start Time"):
-                    start_time = self.event.get("start_time", datetime.now())
-                    if isinstance(start_time, str):
-                        start_time = datetime.fromisoformat(start_time)
-                    self.start_date_input = ui.date(value=start_time.strftime("%Y-%m-%d"))
-                    self.start_time_input = ui.time(value=start_time.strftime("%H:%M"))
-                with ui.expansion("End Time"):
-                    end_time = self.event.get("end_time", datetime.now())
-                    if isinstance(end_time, str):
-                        end_time = datetime.fromisoformat(end_time)
-                    self.end_date_input = ui.date(value=end_time.strftime("%Y-%m-%d"))
-                    self.end_time_input = ui.time(value=end_time.strftime("%H:%M"))
-                self.all_day_checkbox = ui.checkbox("All Day", value=self.event.get("all_day", False))
-            with ui.row().classes("w-full"):
-                self.description_input = ui.textarea("Description", value=self.event.get("description", "")).classes("w-full")
-            with ui.row().classes("w-full"):
-                with ui.column().classes("w-full"):
-                    self.add_guest_button = ui.button("Add guest", on_click=self.add_guest)
 
-        with ui.row().classes("flex-grow justify-between"):
+        # Load the event data
+        await self.load()
+
+        # Render forms
+        self.event_name_input = ui.input("Event Name", value=self.event.get("name", ""))
+        self.event_location_input = ui.input("Location", value=self.event.get("location", ""))
+
+        with ui.row():
+            self.user_input = ui.input("User", value=self.event.get("organizer_name", ""))
+            self.password_input = ui.input("Password", password=True, password_toggle_button=True)
+
+        with ui.row():
+            with ui.expansion("Start Time"):
+                start_time = self.event.get("start_time", datetime.now())
+                if isinstance(start_time, str):
+                    start_time = datetime.fromisoformat(start_time)
+                self.start_date_input = ui.date(value=start_time.strftime("%Y-%m-%d"))
+                self.start_time_input = ui.time(value=start_time.strftime("%H:%M"))
+            with ui.expansion("End Time"):
+                end_time = self.event.get("end_time", datetime.now())
+                if isinstance(end_time, str):
+                    end_time = datetime.fromisoformat(end_time)
+                self.end_date_input = ui.date(value=end_time.strftime("%Y-%m-%d"))
+                self.end_time_input = ui.time(value=end_time.strftime("%H:%M"))
+            self.all_day_checkbox = ui.checkbox("All Day", value=self.event.get("all_day", False))
+
+        with ui.row().classes("w-full"):
+            self.description_input = ui.textarea("Description", value=self.event.get("description", "")).classes("w-full")
+
+        with ui.row().classes("w-full justify-end"):
             def call_on_back():
                 import logging
                 logging.warning(f"called back {on_back}")

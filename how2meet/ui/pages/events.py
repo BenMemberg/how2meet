@@ -46,13 +46,24 @@ async def events() -> None:
             events = await api.get_events()
             for event in events:
                 with ui.card().classes("w-full") as event_card:
-                    with ui.row().classes("w-full justify-between"):
+                    with ui.row().classes("w-full justify-between items-center"):
                         with ui.column().classes("flex-grow"):
                             ui.label(f"Event ID: {event['id']}")
                             ui.label(f"Event Name: {event['name']}")
-                        ui.button("", icon="edit", on_click=partial(open_floating_editor, _id=event["id"])).classes("w-6 h-6")
-                        ui.button("", icon="info", on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))).classes("w-6 h-6")
-                        ui.button("", icon="delete", color="red", on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card))
+
+                        ui.button(icon="edit",
+                                  on_click=partial(open_floating_editor, _id=event["id"])
+                                  ).classes("w-6 h-6")
+
+                        ui.button(icon="info",
+                                  on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))
+                                  ).classes("w-6 h-6")
+
+                        ui.button(icon="delete",
+                                  on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card),
+                                  color="red"
+                                  ).classes("w-6 h-6")
+
         await render_list()
 
         # Add navigation buttons
