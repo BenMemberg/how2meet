@@ -64,6 +64,7 @@ class EventEditor:
                 status = await api.create_event(self.model_dump())
         except Exception as e:
             return
+
         if status.is_success:
             if callable(on_save):
                 on_save()

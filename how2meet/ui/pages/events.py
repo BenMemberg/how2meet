@@ -81,21 +81,25 @@ async def event_home(event_id: str):
     with frame("Event Home"):
         # set the padding of top level content div to 0
         context.get_client().content.classes("m-0 p-0 gap-0")
+
         event = await api.get_event(event_id)
+
         ui.image(event.get('image', './how2meet/ui/assets/default-image.jpeg')).classes(
             "w-full h-64 m-0 p-0 object-cover")
+
         with ui.column().classes("w-full justify-left space-y-0 p-4"):
             ui.label(f"{event['name']}").classes("text-2xl font-bold")
             ui.label(f"{event_dates_to_str(event)}").classes("text-xl")
             ui.label(f"{event['location'] or 'Unknown'}").classes("text-base text-gray-800")
-        with ui.card().classes("w-full-m-4 p-4"):
+
+        with ui.card().classes("w-full m-4 p-4"):
             ui.label("Details").classes("text-xl font-bold")
             with ui.row().classes("w-full justify-left items-center"):
                 ui.icon("person").classes("text-xl")
                 ui.label(f"{len(event.get('invites', []))} Invites")
             ui.label(f"{event['description']}").classes("text-base text-gray-800")
-        ui.button("Back", on_click=lambda: ui.open("/events"))
 
+        ui.button("Back", on_click=lambda: ui.open("/events"))
 
 @router.page(ROUTE_NEW_EVENT)
 async def new_event():
