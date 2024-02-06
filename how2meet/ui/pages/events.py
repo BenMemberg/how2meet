@@ -20,15 +20,25 @@ router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
 @router.page(ROUTE_EVENTS_LIST)
 async def events() -> None:
     """List page for all events"""
+
+    # Define a function to open the event editor in a floating dialog
+    async def open_floating_editor(_id):
+
+        # Notify and refresh the list when the event is saved
+        def on_save():
+            ui.notify("Event saved!")
+            render_list.refresh()
+
+        # Initialize the event editor and render it in a floating dialog
+        event_editor = EventEditor(_id)
+        await event_editor.render(floating=True,
+                                    on_save=on_save,
+                                    on_back=event_editor.close)
+        event_editor.dialog.on("hide", render_list.refresh)
+
+    # Define page layout
     with frame("Events"):
-        # Get the list of events from the API
-        async def open_floating_editor(_id):
-            event_editor = EventEditor(_id)
-            await event_editor.render(floating=True,
-                                      on_save=partial(ui.notify, "Event saved!"),
-                                      on_back=event_editor.close)
-            event_editor.dialog.on("hide", render_list.refresh)
-        # Display the list of events
+        # Display the list of events in refreshable cards
         @ui.refreshable
         async def render_list():
             events = await api.get_events()
@@ -78,6 +88,7 @@ async def new_event():
 
     with frame("New Event"):
         event_editor = EventEditor()
+        # Render the event editor in page and set routing for save and back buttons
         await event_editor.render(
             on_back=partial(ui.open,
                             URL_EVENTS),
