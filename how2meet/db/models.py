@@ -28,23 +28,37 @@ class Event(Base):
     organizer_name = Column(String(50))
     organizer_password = Column(String(100))
     description = Column(String(500))
-    invites = relationship("Invite", primaryjoin="Event.id == Invite.event_id", cascade="all, delete-orphan")
+    guests = relationship("Guest", primaryjoin="Event.id == Guest.event_id", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"Event({self.name}, {self.date})"
 
 
-class Invite(Base):
-    __tablename__ = "invites"
+class Guest(Base):
+    __tablename__ = "guests"
 
     id = Column(String(32), primary_key=True, index=True)
     name = Column(String(100))
-    email = Column(String(100), nullable=True)
+    email = Column(String(100), nullable=True)  # TODO: how to require at least one (email OR phone)?
     phone = Column(Integer(), nullable=True)
     status = Column(String(15))
-    password = Column(Integer, nullable=True)
-    verified = Column(Boolean, nullable=True)
-    event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
+    event_id = Column(String(32), ForeignKey("events.id"), nullable=False)
 
     def __repr__(self):
-        return f"Invite(name='{self.name}', contact='{self.email if self.email else self.phone}')"
+        return f"Guest(name='{self.name}', contact='{self.email if self.email else self.phone}')"
+
+
+# class Invite(Base):
+#     __tablename__ = "invites"
+#
+#     id = Column(String(32), primary_key=True, index=True)
+#     name = Column(String(100))
+#     email = Column(String(100), nullable=True)
+#     phone = Column(Integer(), nullable=True)
+#     status = Column(String(15))
+#     password = Column(Integer, nullable=True)
+#     verified = Column(Boolean, nullable=True)
+#     event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
+#
+#     def __repr__(self):
+#         return f"Invite(name='{self.name}', contact='{self.email if self.email else self.phone}')"

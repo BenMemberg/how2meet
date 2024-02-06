@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas
 
+### EVENT CRUD OPS ###
+
 
 def get_event(db: Session, event_id: str) -> models.Event | None:
     """
@@ -52,51 +54,6 @@ def create_event(db: Session, event: schemas.EventCreate) -> models.Event:
     return db_event
 
 
-def get_invite(db: Session, user_id: str) -> models.Invite | None:
-    """
-    Retrieve an invite from the database based on the given user ID.
-
-    Parameters:
-        db (Session): The database session object.
-        user_id (int): The ID of the user.
-
-    Returns:
-        models.Invite | None: The invite object if found, None otherwise.
-    """
-    return db.query(models.Invite).filter(models.Invite.id == user_id).first()
-
-
-def create_invite(db: Session, invite: schemas.InviteCreate) -> models.Invite:
-    """
-    Create a new invite.
-    Args:
-        db: Database session
-        invite: Invite data
-
-    Returns:
-        Created invite
-    """
-    db_invite = models.Invite(invite.model_dump())
-    db.add(db_invite)
-    db.commit()
-    db.refresh(db_invite)
-    return db_invite
-
-
-def get_invites(db: Session, skip: int = 0, limit: int = 100) -> list[models.Invite]:
-    """
-    Get a list of invites.
-    Args:
-        db: The database session.
-        skip: The number of invites to skip.
-        limit: The maximum number of invites to retrieve.
-
-    Returns: list[models.Invite]: A list of invites.
-
-    """
-    return db.query(models.Invite).offset(skip).limit(limit).all()
-
-
 def update_event(db: Session, db_event: models.Event, updated_event: schemas.EventUpdate) -> models.Event:
     """
     Update an event in the database.
@@ -117,3 +74,79 @@ def update_event(db: Session, db_event: models.Event, updated_event: schemas.Eve
     db.commit()
     db.refresh(db_event)
     return db_event
+
+
+### GUEST CRUD OPS ###
+
+
+def get_guests_from_event(db: Session, event_id: str) -> list[models.Guest] | None:
+    return db.query(models.Guest).filter(models.Guest.event_id == event_id).all()
+
+
+def get_guest_from_event(db: Session, event_id: str, guest_id: str) -> models.Guest | None:
+    return db.query(models.Guest).filter(models.Guest.event_id == event_id, models.Guest.id == guest_id).first()
+
+
+def create_guest(db: Session, guest: schemas.GuestCreate) -> models.Guest:
+    """"""
+    db_guest = models.Guest(**guest.model_dump())
+    db.add(db_guest)
+    db.commit()
+    db.refresh(db_guest)
+    return db_guest
+
+
+def update_guest(db: Session, db_guest: models.Guest, updated_guest: schemas.GuestUpdate) -> models.Guest:
+    """"""
+    for attr, value in updated_guest.model_dump().items():
+        if value is not None:
+            setattr(db_guest, attr, value)
+    db.commit()
+    db.refresh(db_guest)
+    return db_guest
+
+
+# TODO: remove/rethink how we interact with invites. moving to Guests instead. Leaving here for posterity
+# def get_invite(db: Session, user_id: str) -> models.Invite | None:
+#     """
+#     Retrieve an invite from the database based on the given user ID.
+#
+#     Parameters:
+#         db (Session): The database session object.
+#         user_id (int): The ID of the user.
+#
+#     Returns:
+#         models.Invite | None: The invite object if found, None otherwise.
+#     """
+#     return db.query(models.Invite).filter(models.Invite.id == user_id).first()
+#
+#
+# def create_invite(db: Session, invite: schemas.InviteCreate) -> models.Invite:
+#     """
+#     Create a new invite.
+#     Args:
+#         db: Database session
+#         invite: Invite data
+#
+#     Returns:
+#         Created invite
+#     """
+#     db_invite = models.Invite(invite.model_dump())
+#     db.add(db_invite)
+#     db.commit()
+#     db.refresh(db_invite)
+#     return db_invite
+#
+#
+# def get_invites(db: Session, skip: int = 0, limit: int = 100) -> list[models.Invite]:
+#     """
+#     Get a list of invites.
+#     Args:
+#         db: The database session.
+#         skip: The number of invites to skip.
+#         limit: The maximum number of invites to retrieve.
+#
+#     Returns: list[models.Invite]: A list of invites.
+#
+#     """
+#     return db.query(models.Invite).offset(skip).limit(limit).all()

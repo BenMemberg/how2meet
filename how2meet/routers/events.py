@@ -104,3 +104,96 @@ def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session 
 
     updated_event = crud.update_event(db, db_event, updated_event)
     return updated_event
+
+
+@router.get("/{event_id}/guests", response_model=list[schemas.Guest])
+def get_guests(event_id: str, db: Session = Depends(get_db)) -> list[schemas.Guest]:
+    """
+    API route to get all guests for an event.
+
+    Args:
+        event_id: The ID of the event.
+        db: The database session.
+
+    Returns:
+        list[schemas.Guest]: A list of guests.
+    """
+    guests = crud.get_guests_from_event(db, event_id)
+    return guests
+
+
+@router.get("/{event_id}/guests/{guest_id}", response_model=schemas.Guest)
+def get_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) -> schemas.Guest:
+    """
+    API route to get a guest for an event.
+
+    Args:
+        event_id: The ID of the event.
+        guest_id: The ID of the guest.
+        db: The database session.
+
+    Returns:
+        schemas.Guest: A guest.
+    """
+    guest = crud.get_guest_from_event(db, event_id, guest_id)
+    return guest
+
+
+@router.post("/{event_id}/guests/", response_model=schemas.Guest)
+def create_guest(event_id: str, guest: schemas.GuestCreate, db: Session = Depends(get_db)) -> schemas.Guest:
+    """
+    API route to create a guest for an event.
+
+    Args:
+        event_id: The ID of the event.
+        guest: The guest data.
+        db: The database session.
+
+    Returns:
+        schemas.Guest: A guest.
+    """
+    guest.event_id = event_id
+    db_guest = crud.create_guest(db, guest)
+    return db_guest
+
+
+@router.delete("/{event_id}/guests/{guest_id}", response_model=schemas.Guest)
+def delete_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) -> schemas.Guest:
+    """
+    API route to delete a guest for an event.
+
+    Args:
+        event_id: The ID of the event.
+        guest_id: The ID of the guest.
+        db: The database session.
+
+    Returns:
+        schemas.Guest: A guest.
+    """
+    db_guest = crud.get_guest_from_event(db, event_id, guest_id)
+    if db_guest is None:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    db.delete(db_guest)
+    db.commit()
+    return db_guest
+
+
+@router.put("/{event_id}/guests/{guest_id}", response_model=schemas.Guest)
+def update_guest(event_id: str, guest_id: str, updated_guest: schemas.GuestUpdate, db: Session = Depends(get_db)) -> schemas.Guest:
+    """
+    API route to update a guest for an event.
+
+    Args:
+        event_id: The ID of the event.
+        guest_id: The ID of the guest.
+        guest: The guest data.
+        db: The database session.
+
+    Returns:
+        schemas.Guest: A guest.
+    """
+    db_guest = crud.get_guest_from_event(db, event_id, guest_id)
+    if db_guest is None:
+        raise HTTPException(status_code=404, detail="Guest not found")
+    db_guest = crud.update_guest(db, db_guest, updated_guest)
+    return db_guest
