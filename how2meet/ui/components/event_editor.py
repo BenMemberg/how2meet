@@ -64,7 +64,7 @@ class EventEditor:
                 status = await api.create_event(self.model_dump())
         except Exception as e:
             return
-        if status == 200:
+        if status.is_success:
             if callable(on_save):
                 on_save()
         else:
@@ -76,17 +76,20 @@ class EventEditor:
         self.invites.append(invite_editor)
         await invite_editor.render()
 
-    async def close(self):
+    def close(self):
         try:
             self.dialog.close()
-        except:
-            pass
+            import logging
+            logging.warning("Closed")
+        except Exception as e:
+            import logging
+            logging.warning(e)
 
     async def render(self, floating=False, on_save=None, on_back=None):
         if floating:
             with ui.dialog(value=True) as dialog, ui.card() as card:
                 self.dialog = dialog
-                await self.render()
+                await self.render(on_save=on_save, on_back=on_back)
                 return
         await self.load()
         with ui.row().classes("flex-grow justify-between"):
@@ -116,7 +119,12 @@ class EventEditor:
                     self.add_guest_button = ui.button("Add guest", on_click=self.add_guest)
 
         with ui.row().classes("flex-grow justify-between"):
-            ui.button("Back", on_click=on_back)
+            def call_on_back():
+                import logging
+                logging.warning(f"called back {on_back}")
+                if callable(on_back):
+                    on_back()
+            ui.button("Back", on_click=call_on_back)
             ui.button("Save", on_click=partial(self.save, on_save=on_save))
 
     def model_dump(self):
