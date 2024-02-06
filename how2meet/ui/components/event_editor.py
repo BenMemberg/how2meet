@@ -73,11 +73,8 @@ class EventEditor:
     def close(self):
         try:
             self.dialog.close()
-            import logging
-            logging.warning("Closed")
-        except Exception as e:
-            import logging
-            logging.warning(e)
+        except:
+            pass
 
     async def render(self, floating=False, on_save=None, on_back=None):
         # If floating, enclose in a dialog
@@ -119,8 +116,6 @@ class EventEditor:
 
         with ui.row().classes("w-full justify-end"):
             def call_on_back():
-                import logging
-                logging.warning(f"called back {on_back}")
                 if callable(on_back):
                     on_back()
             ui.button("Back", on_click=call_on_back)
