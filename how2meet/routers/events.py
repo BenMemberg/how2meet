@@ -15,7 +15,7 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> m
     """
     API route to create an event.
 
-    Parameters:
+    Args:
         event: The event to be created.
         db: The database session. Defaults to Depends(get_db).
 
@@ -116,7 +116,7 @@ def get_guests(event_id: str, db: Session = Depends(get_db)) -> list[schemas.Gue
         db: The database session.
 
     Returns:
-        list[schemas.Guest]: A list of guests.
+        list[schemas.Guest]: A list of all guests.
     """
     guests = crud.get_guests_from_event(db, event_id)
     return guests
@@ -150,7 +150,7 @@ def create_guest(event_id: str, guest: schemas.GuestCreate, db: Session = Depend
         db: The database session.
 
     Returns:
-        schemas.Guest: A guest.
+        schemas.Guest: The newly created guest.
     """
     guest.event_id = event_id
     db_guest = crud.create_guest(db, guest)
@@ -168,7 +168,7 @@ def delete_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) ->
         db: The database session.
 
     Returns:
-        schemas.Guest: A guest.
+        schemas.Guest: The deleted guest. # TODO: Maybe it doesn't make sense to return a deleted object
     """
     db_guest = crud.get_guest_from_event(db, event_id, guest_id)
     if db_guest is None:
@@ -186,7 +186,7 @@ def update_guest(event_id: str, guest_id: str, updated_guest: schemas.GuestUpdat
     Args:
         event_id: The ID of the event.
         guest_id: The ID of the guest.
-        guest: The guest data.
+        updated_guest: The new guest data.
         db: The database session.
 
     Returns:

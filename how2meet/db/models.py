@@ -39,7 +39,7 @@ class Guest(Base):
 
     id = Column(String(32), primary_key=True, index=True)
     name = Column(String(100))
-    email = Column(String(100), nullable=True)  # TODO: how to require at least one (email OR phone)?
+    email = Column(String(100), nullable=True)  # TODO: how to require at least one (email OR phone)? Maybe not what we want anyway
     phone = Column(Integer(), nullable=True)
     status = Column(String(15))
     event_id = Column(String(32), ForeignKey("events.id"), nullable=False)

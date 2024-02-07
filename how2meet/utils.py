@@ -135,8 +135,8 @@ class APIClient:
         """
         Create single guest using the API using POST HTTP request.
         Args:
-            event_id:
-            guest_json_str:
+            event_id: Event to add guest to
+            guest_json_str: JSON-formatted string of the guest data
 
         Returns: HTTP status code
 
@@ -152,9 +152,9 @@ class APIClient:
         """
         Updates an event by sending a PUT request to the API with the given event ID and JSON data.
         Args:
-            event_id:
-            guest_id:
-            guest_json_str:
+            event_id: The ID of the event to be updated.
+            guest_id: The ID of the guest to be updated.
+            guest_json_str: The JSON data representing the updated guest.
 
         Returns: HTTP status code
         """
@@ -191,4 +191,7 @@ class APIClient:
 
 ### little helpers ###
 async def reload_page():
+    """
+    Asynchronous function to reload the page using JavaScript. Use sparingly--sign of something else wrong.
+    """
     await ui.run_javascript("location.reload();")

@@ -80,15 +80,17 @@ def update_event(db: Session, db_event: models.Event, updated_event: schemas.Eve
 
 
 def get_guests_from_event(db: Session, event_id: str) -> list[models.Guest] | None:
+    """Return all guests for a specific event"""
     return db.query(models.Guest).filter(models.Guest.event_id == event_id).all()
 
 
 def get_guest_from_event(db: Session, event_id: str, guest_id: str) -> models.Guest | None:
+    """Return a specific guest for a specific event"""
     return db.query(models.Guest).filter(models.Guest.event_id == event_id, models.Guest.id == guest_id).first()
 
 
 def create_guest(db: Session, guest: schemas.GuestCreate) -> models.Guest:
-    """"""
+    """Create a new guest. Assumes that the event exists and the guest arg contains the appropriate ID"""
     db_guest = models.Guest(**guest.model_dump())
     db.add(db_guest)
     db.commit()
@@ -97,7 +99,7 @@ def create_guest(db: Session, guest: schemas.GuestCreate) -> models.Guest:
 
 
 def update_guest(db: Session, db_guest: models.Guest, updated_guest: schemas.GuestUpdate) -> models.Guest:
-    """"""
+    """Overwrite guest data if it exists"""
     for attr, value in updated_guest.model_dump().items():
         if value is not None:
             setattr(db_guest, attr, value)

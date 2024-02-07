@@ -99,7 +99,7 @@ async def event_home(event_id: str):
                         "id": str(uuid.uuid4()),  # TODO: autoincrement IDs
                         "name": guest_name_input.value,
                         "email": guest_email_input.value,
-                        "phone": int(guest_phone_input.value),
+                        "phone": int(guest_phone_input.value),  # TODO: Fails if no phone is provided
                         "status": guest_status_input.value,
                         "event_id": event_id,
                     }
@@ -134,7 +134,7 @@ async def event_guests(event_id: str) -> None:
                 with ui.card().classes("w-full") as guest_card:
                     with ui.row().classes("w-full justify-between"):
                         ui.label(f"{guest['name']}: {guest['status']}")
-                        ui.button("", icon="edit", on_click=lambda: ui.notify("Edit guest"))
+                        ui.button("", icon="edit", on_click=lambda: ui.notify("Edit guest"))  # TODO: TAS-125
                         ui.button(
                             "",
                             icon="delete",
