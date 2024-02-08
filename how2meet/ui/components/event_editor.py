@@ -6,6 +6,7 @@ from nicegui import ui
 
 from how2meet.utils import APIClient as api
 from how2meet.ui.pages.urls import URL_EVENTS, URL_NEW_EVENT, URL_EVENT_HOME
+import how2meet.ui.components.styles as styles
 
 class InviteEditor:
 
@@ -23,13 +24,13 @@ class InviteEditor:
         async def render(self):
             await self.load()
             # TODO add method to remove guest
-            with ui.card().classes("flex-grow position:relative") as card:
+            with styles.card().classes("flex-grow position:relative") as card:
                 self.card = card
                 with ui.row().classes("flex-grow justify-between items-center"):
-                    self.name_input = ui.input("Name")
-                    self.email_input = ui.input("Email")
-                    self.phone_input = ui.input("Phone Number")
-                    ui.button("", icon="delete", color="red", on_click=self.delete).classes("w-6 h-6")
+                    self.name_input = styles.input("Name")
+                    self.email_input = styles.input("Email")
+                    self.phone_input = styles.input("Phone Number")
+                    styles.button("", icon="delete", color="red", on_click=self.delete).classes("w-6 h-6")
 
 
         def model_dump(self):
@@ -43,6 +44,7 @@ class InviteEditor:
                 "verified": self.verified_input.value,
                 "event_id": self.event_id_input.value,
             }
+
 
 class EventEditor:
 
@@ -80,47 +82,50 @@ class EventEditor:
     async def render(self, floating=False, on_save=None, on_back=None):
         # If floating, enclose in a dialog
         if floating:
-            with ui.dialog(value=True).props("no-route-dismiss") as dialog, ui.card() as card:
+            with styles.dialog(value=True).classes("w-7/8").props("no-route-dismiss") as dialog:
                 self.dialog = dialog
-                # Render the event editor (use floating=False to embed in enclosing element)
-                await self.render(on_save=on_save, on_back=on_back)
-                return
+                with styles.card().style("min-width: 100%"):
+                    # Render the event editor (use floating=False to embed in enclosing element)
+                    await self.render(on_save=on_save, on_back=on_back)
+                    return
 
         # Load the event data
         await self.load()
 
         # Render forms
-        self.event_name_input = ui.input("Event Name", value=self.event.get("name", ""))
-        self.event_location_input = ui.input("Location", value=self.event.get("location", ""))
+        self.event_name_input = styles.input("Event Name", value=self.event.get("name", ""))
+        self.event_location_input = styles.input("Location", value=self.event.get("location", ""))
 
         with ui.row():
-            self.user_input = ui.input("User", value=self.event.get("organizer_name", ""))
-            self.password_input = ui.input("Password", password=True, password_toggle_button=True)
+            self.user_input = styles.input("User", value=self.event.get("organizer_name", ""))
+            self.password_input = styles.input("Password", password=True, password_toggle_button=True)
 
         with ui.row():
             with ui.expansion("Start Time"):
-                start_time = self.event.get("start_time", datetime.now())
-                if isinstance(start_time, str):
-                    start_time = datetime.fromisoformat(start_time)
-                self.start_date_input = ui.date(value=start_time.strftime("%Y-%m-%d"))
-                self.start_time_input = ui.time(value=start_time.strftime("%H:%M"))
+                with ui.row().classes("w-full"):
+                    start_time = self.event.get("start_time", datetime.now())
+                    if isinstance(start_time, str):
+                        start_time = datetime.fromisoformat(start_time)
+                    self.start_date_input = styles.date(value=start_time.strftime("%Y-%m-%d"))
+                    self.start_time_input = styles.time(value=start_time.strftime("%H:%M"))
             with ui.expansion("End Time"):
-                end_time = self.event.get("end_time", datetime.now())
-                if isinstance(end_time, str):
-                    end_time = datetime.fromisoformat(end_time)
-                self.end_date_input = ui.date(value=end_time.strftime("%Y-%m-%d"))
-                self.end_time_input = ui.time(value=end_time.strftime("%H:%M"))
+                with ui.row().classes("w-full"):
+                    end_time = self.event.get("end_time", datetime.now())
+                    if isinstance(end_time, str):
+                        end_time = datetime.fromisoformat(end_time)
+                    self.end_date_input = styles.date(value=end_time.strftime("%Y-%m-%d"))
+                    self.end_time_input = styles.time(value=end_time.strftime("%H:%M"))
             self.all_day_checkbox = ui.checkbox("All Day", value=self.event.get("all_day", False))
 
         with ui.row().classes("w-full"):
-            self.description_input = ui.textarea("Description", value=self.event.get("description", "")).classes("w-full")
+            self.description_input = styles.textarea("Description", value=self.event.get("description", "")).classes("w-full")
 
         with ui.row().classes("w-full justify-end"):
             def call_on_back():
                 if callable(on_back):
                     on_back()
-            ui.button("Back", on_click=call_on_back)
-            ui.button("Save", on_click=partial(self.save, on_save=on_save))
+            styles.button("Back", on_click=call_on_back)
+            styles.button("Save", on_click=partial(self.save, on_save=on_save))
 
     def model_dump(self):
         return {

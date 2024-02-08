@@ -1,0 +1,131 @@
+ html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: #010B13;
+  --q-dark-page: #010B13;
+}
+html{
+  background-color: #010B13;
+}
+html:not(.has-dialog) {
+  scroll-behavior: smooth;
+}
+
+.bash-window code,
+.fancy-em em {
+  font-style: normal;
+  color: #2A9D8F;
+}
+a:link:not(.browser-window *),
+a:visited:not(.browser-window *) {
+  color: inherit !important;
+  text-decoration: none;
+}
+a:hover:not(.browser-window *),
+a:active:not(.browser-window *) {
+  opacity: 0.85;
+}
+.bold-links a:link {
+  font-weight: 500;
+}
+.arrow-links a:link:not(.auto-link)::after {
+  content: "north_east";
+  font-family: "Material Icons";
+  font-weight: 100;
+  vertical-align: -10%;
+}
+.q-button {
+  border-color: white;
+  color: transparent;
+  background-color: transparent;
+}
+
+.q-input {
+  border-color: #2f2f2fef;
+  background-color: #010B13;
+  color: white;
+}
+
+.q-card {
+  background-color: #010B13;
+  border-color: #2f2f2fef;
+}
+
+.q-footer {
+  background-color: #010B13;
+  border-color: #2f2f2fef;
+  border-top: 1px solid;
+}
+
+.q-header {
+  height: 70px;
+  background-color: #010B13;
+  border-color: #2f2f2fef;
+  border-bottom: 1px solid;
+}
+.q-header.fade {
+  padding-top: 30px;
+  transform: translateY(-30px);
+  background-color: #010B13;
+  backdrop-filter: blur(5px);
+}
+
+.body--dark .q-header {
+  background-color: #010B13;
+}
+.body--dark .q-header.fade {
+  background-color: #010b13c7;
+}
+
+@-webkit-keyframes sdb04 {
+  0% {
+    -webkit-transform: rotate(-45deg) translate(0, 0);
+  }
+  15% {
+    -webkit-transform: rotate(-45deg) translate(-10px, 10px);
+  }
+  30% {
+    -webkit-transform: rotate(-45deg) translate(0, 0);
+  }
+}
+@keyframes sdb04 {
+  0% {
+    transform: rotate(-45deg) translate(0, 0);
+  }
+  15% {
+    transform: rotate(-45deg) translate(-10px, 10px);
+  }
+  30% {
+    transform: rotate(-45deg) translate(0, 0);
+  }
+}
+
+dl.field-list,
+dl.docinfo {
+  display: grid;
+  grid-template-columns: max-content auto;
+  margin: 1em 0;
+}
+dl.field-list dt,
+dl.docinfo dt {
+  grid-column-start: 1;
+  margin-right: 1em;
+  font-weight: 500;
+}
+dl.field-list dd,
+dl.docinfo dd {
+  grid-column-start: 2;
+}
+dl.field-list p,
+dl.docinfo p {
+  margin: 0;
+}
+
+.dark-box {
+  background-color: #5898d4;
+  width: 100%;
+}
+.body--dark .dark-box {
+  background-color: #3e6a94;
+}

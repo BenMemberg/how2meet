@@ -21,12 +21,12 @@ app.include_router(settings.router)
 @ui.page("/")  # NOTE this is the default page
 def home():
     """Home page"""
-    with frame("Home"):
-        with ui.column().classes("w-full items-center"):
-            with ui.row():
-                ui.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
-            with ui.row():
-                ui.button("Existing Event", on_click=lambda: ui.open(URL_EVENTS))
+    frame("Home")
+    with ui.column().classes("w-full items-center"):
+        with ui.row():
+            ui.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT)).props("outline color=white")
+        with ui.row():
+            ui.button("Existing Event", on_click=lambda: ui.open(URL_EVENTS)).props("outline color=white")
 
 
 def init(fastapi_app) -> None:
