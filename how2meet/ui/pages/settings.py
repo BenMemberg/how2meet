@@ -7,8 +7,8 @@ from ..components.frames import frame
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-router = APIRouter(prefix="/settings", tags=["settings"])
-
+URL_SETTINGS_PREFIX = "/settings"
+router = APIRouter(prefix=URL_SETTINGS_PREFIX, tags=["settings"])
 
 @router.page("/")
 def settings():
