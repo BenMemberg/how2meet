@@ -31,7 +31,7 @@ class EventCreate(Event):
     pass
 
 
-class EventUpdate(BaseModel):
+class EventUpdate(Event):
     id: Optional[str] = Field(default=None, description="The ID of the event")
     name: Optional[str] = Field(default=None, description="The name of the event")
     created: Optional[datetime] = Field(default=None, description="The creation datetime of the event")
@@ -44,19 +44,26 @@ class EventUpdate(BaseModel):
     description: Optional[str] = Field(default=None, description="The description of the event")
 
 
-class Invite(BaseModel):
+class Guest(BaseModel):
     id: str
     name: str
     email: str
     phone: int
     status: str
-    password: int
-    verified: bool
-    event_id: int
+    event_id: str
 
     class Config:
         from_attributes = True
 
 
-class InviteCreate(Invite):
+class GuestCreate(Guest):
     pass
+
+
+class GuestUpdate(Guest):
+    id: Optional[str] = Field(default=None, description="The ID of the guest")
+    name: Optional[str] = Field(default=None, description="The name of the guest")
+    email: Optional[str] = Field(default=None, description="The email of the guest")
+    phone: Optional[int] = Field(default=None, description="The phone number of the guest")
+    status: Optional[str] = Field(default=None, description="The status of the guest")
+    event_id: Optional[str] = Field(default=None, description="The event ID of the guest")

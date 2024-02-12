@@ -11,7 +11,7 @@ from .pages import events, settings
 from .pages.urls import URL_NEW_EVENT, URL_EVENTS
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 app.include_router(events.router)

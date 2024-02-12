@@ -1,5 +1,6 @@
 from functools import partial
 from datetime import datetime
+import logging
 import uuid
 
 from nicegui import ui
@@ -7,6 +8,8 @@ from nicegui import ui
 from how2meet.utils import APIClient as api
 from how2meet.ui.pages.urls import URL_EVENTS, URL_NEW_EVENT, URL_EVENT_HOME
 import how2meet.ui.components.styles as styles
+
+logger = logging.getLogger(__name__)
 
 class InviteEditor:
 
@@ -65,12 +68,13 @@ class EventEditor:
             else:
                 status = await api.create_event(self.model_dump())
         except Exception as e:
+            logger.debug(e)
             return
-
         if status.is_success:
             if callable(on_save):
                 on_save()
         else:
+            logger.debug(f"Error: {status}")
             ui.notification(f"Error: {status}", timeout=5)
 
     def close(self):

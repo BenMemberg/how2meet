@@ -1,12 +1,13 @@
 """
 Nicegui UI routes for all events pages. Use functions from `utils` to call the API. All routes prefixed with `/events/`
 """
+import json
 import uuid
 from datetime import datetime
 from functools import partial
 from pathlib import Path
-from PIL import Image as PIL_Image
-from nicegui import APIRouter, ui, app, context
+
+from nicegui import APIRouter, ui, app
 
 from how2meet.utils import APIClient as api
 
