@@ -116,7 +116,82 @@ class APIClient:
 
         return response
 
+    @classmethod
+    async def get_guests_from_event(cls, event_id: str) -> list:
+        """
+        Get list of all guests from single event
+        """
+
+        async with AsyncClient() as client:
+            guests = await client.get(f"{BASE_URL}/api/events/{event_id}/guests", timeout=10)
+        try:
+            guests = guests.json()
+        except:
+            guests = []
+        return guests
+
+    @classmethod
+    async def create_guest(cls, event_id: str, guest_json_str: str) -> int:
+        """
+        Create single guest using the API using POST HTTP request.
+        Args:
+            event_id: Event to add guest to
+            guest_json_str: JSON-formatted string of the guest data
+
+        Returns: HTTP status code
+
+        """
+        async with AsyncClient() as client:
+            response = await client.post(f"{BASE_URL}/api/events/{event_id}/guests", data=guest_json_str, timeout=10)
+            response.raise_for_status()
+
+        return response.status_code
+
+    @classmethod
+    async def update_guest(cls, event_id: str, guest_id: str, guest_json_str: str) -> int:
+        """
+        Updates an event by sending a PUT request to the API with the given event ID and JSON data.
+        Args:
+            event_id: The ID of the event to be updated.
+            guest_id: The ID of the guest to be updated.
+            guest_json_str: The JSON data representing the updated guest.
+
+        Returns: HTTP status code
+        """
+        async with AsyncClient() as client:
+            response = await client.put(f"{BASE_URL}/api/events/{event_id}/guests/{guest_id}", data=guest_json_str, timeout=10)
+            response.raise_for_status()
+
+        return response.status_code
+
+    @classmethod
+    async def delete_guest(cls, event_id: str, guest_id: str, card: ui.card | None = None) -> int:
+        """
+        Delete single guest from API. Optionally, the UI element (card) may be provided (if calling from events page) so that
+        it can be deleted visually upon clicking delete. This prevents needing to reload the page to show updates to the user
+
+        Args:
+            event_id: The ID of the event to delete
+            guest_id: The ID of the guest to delete
+            card: The ui component card to delete
+
+        Returns:
+            int: The status code of the response
+        """
+        async with AsyncClient() as client:
+            response = await client.delete(f"{BASE_URL}/api/events/{event_id}/guests/{guest_id}", timeout=10)
+            response.raise_for_status()
+
+        if card is not None:
+            card.delete()
+            ui.notification("Guest deleted", timeout=1.5)
+
+        return response.status_code
+
 
 ### little helpers ###
 async def reload_page():
+    """
+    Asynchronous function to reload the page using JavaScript. Use sparingly--sign of something else wrong.
+    """
     await ui.run_javascript("location.reload();")
