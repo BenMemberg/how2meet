@@ -7,7 +7,6 @@ services:
     region: ohio
     plan: free
     branch: main
-    rootDir: how2meet
     buildCommand: poetry install
     startCommand: poetry run make run_server
     envVars:
