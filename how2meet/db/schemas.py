@@ -67,21 +67,3 @@ class GuestUpdate(Guest):
     phone: Optional[int] = Field(default=None, description="The phone number of the guest")
     status: Optional[str] = Field(default=None, description="The status of the guest")
     event_id: Optional[str] = Field(default=None, description="The event ID of the guest")
-
-
-# class Invite(BaseModel):
-#     id: str
-#     name: str
-#     email: str
-#     phone: int
-#     status: str
-#     password: int
-#     verified: bool
-#     event_id: int
-#
-#     class Config:
-#         from_attributes = True
-#
-#
-# class InviteCreate(Invite):
-#     pass

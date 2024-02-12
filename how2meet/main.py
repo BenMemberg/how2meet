@@ -22,7 +22,6 @@ api_app = FastAPI(
     redoc_url="/v1/redoc",
 )
 api_app.include_router(events.router)
-# api_app.include_router(invites.router)
 app.mount("/api", api_app)
 
 # Mount the frontend at the root path
