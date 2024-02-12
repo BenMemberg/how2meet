@@ -3,7 +3,7 @@ Utility functions
 """
 import json
 import os
-from typing import Any, Union, List
+from typing import Any
 
 from httpx import AsyncClient, Response
 from nicegui import ui
@@ -18,7 +18,7 @@ class APIClient:
         self.base_url = base_url
 
     @classmethod
-    async def get_events(cls) -> Union[dict, List[dict]]:
+    async def get_events(cls) -> dict | list[dict]:
         """
         Get list of all events from API
         TODO: Limit the number of events returned
@@ -70,7 +70,7 @@ class APIClient:
         return response
 
     @classmethod
-    async def create_event(cls, event_json_str: Union[str, dict]) -> Response:
+    async def create_event(cls, event_json_str: str | dict) -> Response:
         """
         Create single event using the API using POST HTTP request.
 
