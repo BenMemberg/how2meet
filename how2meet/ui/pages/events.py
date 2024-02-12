@@ -15,12 +15,12 @@ from ..components.frames import frame
 from ..components.event_editor import EventEditor, InviteEditor
 from ..components.date_utils import event_dates_to_str, event_times_to_str
 from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
-      URL_EVENT_HOME, ROUTE_EVENTS_LIST, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
+      URL_EVENT_HOME, ROUTE_BASE, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
 import how2meet.ui.components.elements as elements
 
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
 
-@router.page(ROUTE_EVENTS_LIST)
+@router.page(ROUTE_BASE)
 async def events() -> None:
     """List page for all events"""
 
@@ -127,4 +127,4 @@ async def new_event():
         on_back=partial(ui.open,
                         URL_EVENTS),
         on_save=partial(ui.open,
-                            URL_EVENT_HOME.format(event_id=event_editor.event_id)))
+                        URL_EVENT_HOME.format(event_id=event_editor.event_id)))
