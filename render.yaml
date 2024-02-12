@@ -31,4 +31,6 @@ envVarGroups:
   - name: how2meet-envvars
     envVars:
       - key: DB_CONN
-        sync: false # Input manually in the UI, don't commit secrets to VCS
+        fromDatabase:
+          name: how2meet-db
+          property: connectionString
