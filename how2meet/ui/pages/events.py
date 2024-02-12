@@ -16,7 +16,7 @@ from ..components.event_editor import EventEditor, InviteEditor
 from ..components.date_utils import event_dates_to_str, event_times_to_str
 from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
       URL_EVENT_HOME, ROUTE_EVENTS_LIST, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
-import how2meet.ui.components.styles as styles
+import how2meet.ui.components.elements as elements
 
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
 
@@ -46,32 +46,31 @@ async def events() -> None:
     async def render_list():
         events = await api.get_events()
         for event in events:
-            with styles.card().classes("w-full") as event_card:
+            with elements.card().classes("w-full") as event_card:
                 with ui.row().classes("w-full justify-between items-center"):
                     with ui.column().classes("flex-grow"):
                         ui.label(f"Event ID: {event['id']}")
                         ui.label(f"Event Name: {event['name']}")
 
-                    styles.button(icon="edit",
+                    elements.button(icon="edit",
                                 on_click=partial(open_floating_editor, _id=event["id"])
-                                ).classes("w-6 h-6").props("outline color=white")
-
-                    styles.button(icon="info",
+                                ).classes("w-6 h-6")
+                    elements.button(icon="info",
                                 on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))
-                                ).classes("w-6 h-6").props("outline color=white")
+                                ).classes("w-6 h-6")
 
-                    styles.button(icon="delete",
+                    elements.button(icon="delete",
                                 on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card),
                                 color="red"
-                                ).classes("w-6 h-6").props("outline color=white")
+                                ).classes("w-6 h-6")
 
     await render_list()
 
     # Add navigation buttons
     with ui.row().classes("w-full justify-center"):
-        styles.button("Back", on_click=lambda: ui.open(URL_EVENTS)).props("outline color=white")
-        styles.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT)).props("outline color=white")
-        styles.button("Refresh", on_click=render_list.refresh).props("outline color=white")
+        elements.button("Back", on_click=lambda: ui.open(URL_EVENTS))
+        elements.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
+        elements.button("Refresh", on_click=render_list.refresh)
 
 
 @router.page(ROUTE_EVENT_HOME)
@@ -91,7 +90,7 @@ async def event_home(event_id: str):
         ui.label(f"{event.get('location')}" or "Undetermined Location").classes("text-xl border-l-8 border-orange-400 pl-4 pr-4")
         ui.label(f"{event.get('description')}").classes("text-xl border-l-8 border-orange-600 pl-4 pr-4")
 
-    styles.button("RSVP", on_click=ui.dialog).props("outline color=white")
+    elements.button("RSVP", on_click=ui.dialog)
 
     # TODO: add actual guests
     n_guests = range(100)
@@ -99,7 +98,7 @@ async def event_home(event_id: str):
     ui.label("Who's Going...").classes("text-xl font-bold")
     with ui.column().classes("w-full"):
         i = 0
-        avatar_colors = [color for color in styles.PALETTES.values() if color != styles.PALETTES["dark"]]
+        avatar_colors = [color for color in elements.PALETTES.values() if color != elements.PALETTES["dark"]]
         for guest in guest_names:
             with ui.row().classes("w-full justify-left items-center"):
                 ui.avatar(guest[0], color=avatar_colors[i], text_color="white", size="5xl")
