@@ -88,10 +88,11 @@ async def event_home(event_id: str):
             ui.label(f"{event_dates_to_str(event)}").classes("text-xl")
             ui.label(f"{event_times_to_str(event)}").classes("text-xl")
         ui.label(f"{event.get('location')}" or "Undetermined Location").classes("text-xl border-l-8 border-orange-400 pl-4 pr-4")
-        ui.label(f"{event.get('description')}" or "idk just come").classes("text-xl border-l-8 border-orange-600 pl-4 pr-4")
+        ui.label(f"{event.get('description')}").classes("text-xl border-l-8 border-orange-600 pl-4 pr-4")
 
     styles.button("RSVP", on_click=ui.dialog).props("outline color=white")
 
+    # TODO: add actual guests
     n_guests = range(100)
     guest_names = [f"Guest {i}" for i in n_guests]
     ui.label("Who's Going...").classes("text-xl font-bold")
