@@ -1,4 +1,4 @@
-name: Lint and Commit
+name: Pre-commit Workflow
 on: pull_request
 
 jobs:
