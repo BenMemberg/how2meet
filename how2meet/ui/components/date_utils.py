@@ -54,7 +54,10 @@ def event_times_to_str(event: Dict[str, Any]) -> str:
         return "All Day"
 
     if start_time and end_time and start_time.date() == end_time.date():
-        return f"{start_time.strftime(TIME_FORMAT)} - {end_time.strftime(TIME_FORMAT_W_AMPM)}"
+        if start_time.strftime("%p") == end_time.strftime("%p"):
+            return f"{start_time.strftime(TIME_FORMAT)} - {end_time.strftime(TIME_FORMAT_W_AMPM)}"
+        else:
+            return f"{start_time.strftime(TIME_FORMAT_W_AMPM)} - {end_time.strftime(TIME_FORMAT_W_AMPM)}"
     elif start_time and end_time:
         return f"{start_time.strftime(TIME_FORMAT_W_AMPM)} - {end_time.strftime(TIME_FORMAT_W_AMPM)}"
     elif start_time and not end_time:
