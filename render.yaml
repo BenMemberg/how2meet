@@ -31,6 +31,7 @@ envVarGroups:
   - name: how2meet-envvars
     envVars:
       - key: DB_CONN
-        fromDatabase:
-          name: how2meet-db
-          property: connectionString
+        value:
+          fromDatabase:
+            name: how2meet-db
+            property: connectionString
