@@ -97,7 +97,7 @@ async def event_home(event_id: str):
     ui.label("Who's Going...").classes("text-xl font-bold")
     with ui.column().classes("w-full"):
         i = 0
-        avatar_colors = list(styles.PALETTES.values())
+        avatar_colors = [color for color in styles.PALETTES.values() if color != styles.PALETTES["dark"]]
         for guest in guest_names:
             with ui.row().classes("w-full justify-left items-center"):
                 ui.avatar(guest[0], color=avatar_colors[i], text_color="white", size="5xl")
