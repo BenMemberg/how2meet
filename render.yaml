@@ -9,7 +9,7 @@ services:
     branch: main
     rootDir: how2meet
     buildCommand: poetry install
-    startCommand: poetry run python app.py
+    startCommand: poetry run make run_server
     envVars:
       - fromGroup: how2meet-envvars
     buildFilter:
@@ -30,5 +30,5 @@ envVarGroups:
   - # TODO: How to get connection string from how2meet-db programatically
   - name: how2meet-envvars
     envVars:
-      - key: DB_CONNECTION_STRING
+      - key: DB_CONN
         sync: false # Input manually in the UI, don't commit secrets to VCS
