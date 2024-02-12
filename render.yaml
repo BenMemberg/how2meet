@@ -34,4 +34,3 @@ envVarGroups:
         fromDatabase:
           name: how2meet-db
           property: connectionString
-        sync: false
