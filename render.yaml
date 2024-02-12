@@ -11,7 +11,10 @@ services:
     buildCommand: poetry install
     startCommand: poetry run make run_server
     envVars:
-      - fromGroup: how2meet-envvars
+      - key: DB_CONN
+        fromDatabase:
+          name: how2meet-db
+          property: connectionString
     buildFilter:
       paths: # Only rebuild on changes to these paths
         - how2meet/**/*
@@ -25,12 +28,3 @@ databases:
     plan: free
     region: ohio
 
-envVarGroups:
-  # Environment variable group for
-  - # TODO: How to get connection string from how2meet-db programatically
-  - name: how2meet-envvars
-    envVars:
-      - key: DB_CONN
-        fromDatabase:
-          name: how2meet-db
-          property: connectionString
