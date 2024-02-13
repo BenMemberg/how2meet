@@ -20,9 +20,9 @@ class Event(Base):
 
     id = Column(String(36), primary_key=True, index=True)
     name = Column(String(150))
-    created = Column(DateTime)
-    start_time = Column(DateTime)
-    end_time = Column(DateTime)
+    created = Column(String(100))
+    start_time = Column(String(100))
+    end_time = Column(String(100))
     all_day = Column(Boolean)
     location = Column(String(150))
     organizer_name = Column(String(50))
