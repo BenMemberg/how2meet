@@ -41,9 +41,9 @@ class RsvpEditor:
         async def render(self, floating=True, on_save=None):
             # TODO add method to remove guest
             if floating:
-                with elements.dialog(value=True).classes("w-7/8").props("no-route-dismiss") as dialog:
+                with elements.dialog(value=True).props("no-route-dismiss") as dialog:
                     self.dialog = dialog
-                    with elements.card().style("min-width: 100%"):
+                    with elements.card():
                         await self.render(floating=False, on_save=on_save)
                         return
 
