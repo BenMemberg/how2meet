@@ -11,42 +11,61 @@ import how2meet.ui.components.elements as elements
 
 logger = logging.getLogger(__name__)
 
-class InviteEditor:
+class RsvpEditor:
 
-        def __init__(self, invite_id: str):
-            self.invite_id = invite_id
-            self.invite = None
+        def __init__(self, event_id: str):
+            self.event_id = event_id
+            self.guest = None
 
-        async def load(self):
-            # self.invite = await api.get_invite(self.invite_id)
-            pass
 
-        async def delete(self):
-            self.card.delete()
+        async def save(self, on_save=None):
+            if not self.phone_input.value:
+                ui.notification("Phone number is required", timeout=5)
+                return
 
-        async def render(self):
-            await self.load()
+            guest_json_str = self.model_dump()
+            status = await api.create_guest(self.event_id, guest_json_str)
+            if status.is_success:
+                if self.dialog:
+                    self.dialog.close()
+                ui.notify("Saved!")
+
+            if status.is_success:
+                if callable(on_save):
+                    on_save()
+            else:
+                logger.debug(f"Error: {status}")
+                ui.notification(f"Error: {status}", timeout=5)
+
+
+        async def render(self, floating=True, on_save=None):
             # TODO add method to remove guest
+            if floating:
+                with elements.dialog(value=True).classes("w-7/8").props("no-route-dismiss") as dialog:
+                    self.dialog = dialog
+                    with elements.card().style("min-width: 100%"):
+                        await self.render(floating=False, on_save=on_save)
+                        return
+
             with elements.card().classes("flex-grow position:relative") as card:
                 self.card = card
-                with ui.row().classes("flex-grow justify-between items-center"):
+                with ui.column().classes("flex-grow justify-between items-center"):
                     self.name_input = elements.input("Name")
                     self.email_input = elements.input("Email")
                     self.phone_input = elements.input("Phone Number")
-                    elements.button("", icon="delete", color="red", on_click=self.delete).classes("w-6 h-6")
-
+                    self.status_input = ui.radio(["Yes", "No"])
+                    self.submit_button = elements.button("Submit", on_click=partial(self.save, on_save=on_save))
 
         def model_dump(self):
+            phone_number = "".join(filter(str.isdigit, self.phone_input.value)) if self.phone_input.value else None
             return {
-                "id": self.invite_id,
-                "name": self.name_input.value,
-                "email": self.email_input.value,
-                "phone": self.phone_input.value,
-                "status": self.status_input.value,
-                "password": self.password_input.value,
-                "verified": self.verified_input.value,
-                "event_id": self.event_id_input.value,
-            }
+                    "id": str(uuid.uuid4()),
+                    "name": self.name_input.value,
+                    "email": self.email_input.value,
+                    "phone": phone_number,
+                    "status": self.status_input.value,
+                    "event_id": self.event_id,
+                    }
 
 
 class EventEditor:
@@ -70,6 +89,7 @@ class EventEditor:
         except Exception as e:
             logger.debug(e)
             return
+
         if status.is_success:
             if callable(on_save):
                 on_save()
@@ -119,7 +139,7 @@ class EventEditor:
                         end_time = datetime.fromisoformat(end_time)
                     self.end_date_input = elements.date(value=end_time.strftime("%Y-%m-%d"))
                     self.end_time_input = elements.time(value=end_time.strftime("%H:%M"))
-            self.all_day_checkbox = ui.checkbox("All Day", value=self.event.get("all_day", False))
+            self.all_day_checkbox = elements.checkbox("All Day", value=self.event.get("all_day", False))
 
         with ui.row().classes("w-full"):
             self.description_input = elements.textarea("Description", value=self.event.get("description", "")).classes("w-full")

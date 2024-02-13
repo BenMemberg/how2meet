@@ -12,7 +12,7 @@ from nicegui import APIRouter, ui, app
 from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
-from ..components.event_editor import EventEditor, InviteEditor
+from ..components.event_editor import EventEditor, RsvpEditor
 from ..components.date_utils import event_dates_to_str, event_times_to_str
 from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
       URL_EVENT_HOME, ROUTE_BASE, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
@@ -41,7 +41,7 @@ async def events() -> None:
 
     # Define page layout
     frame("Events")
-        # Display the list of events in refreshable cards
+    # Display the list of events in refreshable cards
     @ui.refreshable
     async def render_list():
         events = await api.get_events()
@@ -87,26 +87,39 @@ async def event_home(event_id: str):
         with ui.column().classes("w-full justify-left border-l-8 border-amber-300 pl-4"):
             ui.label(f"{event_dates_to_str(event)}").classes("text-xl")
             ui.label(f"{event_times_to_str(event)}").classes("text-xl")
-        ui.label(f"{event.get('location')}" or "Undetermined Location").classes("text-xl border-l-8 border-orange-400 pl-4 pr-4")
+        ui.label(f"{event.get('location')}").classes("text-xl border-l-8 border-orange-400 pl-4 pr-4")
         ui.label(f"{event.get('description')}").classes("text-xl border-l-8 border-orange-600 pl-4 pr-4")
 
-    elements.button("RSVP", on_click=ui.dialog)
+    # Display the list of guests in refreshable cards
+    @ui.refreshable
+    async def render_guests():
+        guests = await api.get_guests_from_event(event_id)
+        with ui.column().classes("w-full"):
+            # sort guests by name and status
+            avatar_colors = [color for color in elements.PALETTES.values() if color != elements.PALETTES["dark"]]
+            guests_going = sorted([guest for guest in guests if guest.get("status") == "Yes"], key=lambda x: x.get("name"))
+            guests_not_going = sorted([guest for guest in guests if guest.get("status") == "No"], key=lambda x: x.get("name"))
+            i = 0
+            for guest in guests_going + guests_not_going:
+                with ui.row().classes("w-full justify-left items-center"):
+                    ui.avatar(guest.get("name")[0], color=avatar_colors[i], text_color="white", size="5xl")
+                    # green check if going, red x if not going
+                    ui.icon("check" if guest.get("status") == "Yes" else "close")\
+                        .classes("text-2xl")\
+                        .props("color=green" if guest.get("status") == "Yes" else "color=red")
+                    ui.label(f"{guest.get('name')}").classes("text-xl")
+                    # increment color index
+                    if i < len(avatar_colors) - 1:
+                        i += 1
+                    else:
+                        i = 0
 
-    # TODO: add actual guests
-    n_guests = range(100)
-    guest_names = [f"Guest {i}" for i in n_guests]
+    rsvp_editor = RsvpEditor(event_id)
+    elements.button("RSVP", on_click=partial(rsvp_editor.render, floating=True, on_save=render_guests.refresh))
+
+    # Get the list of guests from the API
     ui.label("Who's Going...").classes("text-xl font-bold")
-    with ui.column().classes("w-full"):
-        i = 0
-        avatar_colors = [color for color in elements.PALETTES.values() if color != elements.PALETTES["dark"]]
-        for guest in guest_names:
-            with ui.row().classes("w-full justify-left items-center"):
-                ui.avatar(guest[0], color=avatar_colors[i], text_color="white", size="5xl")
-                ui.label(f"{guest}").classes("text-xl")
-                if i < len(avatar_colors) - 1:
-                    i += 1
-                else:
-                    i = 0
+    await render_guests()
 
 @router.page(ROUTE_NEW_EVENT)
 async def new_event():
