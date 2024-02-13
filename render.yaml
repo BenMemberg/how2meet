@@ -6,7 +6,7 @@ services:
     repo: https://github.com/BenMemberg/how2meet.git
     region: ohio
     plan: free
-    branch: main
+    branch: tas-115_render_deploy
     buildCommand: poetry install
     startCommand: poetry run make run_server
     envVars:
