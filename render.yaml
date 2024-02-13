@@ -14,6 +14,10 @@ services:
         fromDatabase:
           name: how2meet-db
           property: connectionString
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 8000
     buildFilter:
       paths: # Only rebuild on changes to these paths
         - how2meet/**/*
