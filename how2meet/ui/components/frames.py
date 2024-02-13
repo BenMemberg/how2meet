@@ -40,4 +40,4 @@ def frame(navtitle: str):
             ui.link("Donate", "https://www.buymeacoffee.com/").classes("text-white mr-4")
             ui.link("GitHub", "https://www.github.com/BenMemberg/how2meet").classes("text-white mr-4")
         # put a settings icon on the far right of the footer
-        elements.button(on_click=lambda: ui.open("/settings"))
+        elements.button(on_click=lambda: ui.open(URL_SETTINGS)).props("flat color=white icon=settings")
