@@ -5,20 +5,22 @@ import json
 import uuid
 from datetime import datetime
 from functools import partial
+from pathlib import Path
 
 from nicegui import APIRouter, ui, app
 
 from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
-from ..components.event_editor import EventEditor, InviteEditor
+from ..components.event_editor import EventEditor, RsvpEditor
+from ..components.date_utils import event_dates_to_str, event_times_to_str
 from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
-      URL_EVENT_HOME, ROUTE_EVENTS_LIST, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
-
+      URL_EVENT_HOME, ROUTE_BASE, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
+import how2meet.ui.components.elements as elements
 
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
 
-@router.page(ROUTE_EVENTS_LIST)
+@router.page(ROUTE_BASE)
 async def events() -> None:
     """List page for all events"""
 
@@ -38,112 +40,86 @@ async def events() -> None:
         event_editor.dialog.on("hide", render_list.refresh)
 
     # Define page layout
-    with frame("Events"):
-        # Display the list of events in refreshable cards
-        @ui.refreshable
-        async def render_list():
-            events = await api.get_events()
-            for event in events:
-                with ui.card().classes("w-full") as event_card:
-                    with ui.row().classes("w-full justify-between items-center"):
-                        with ui.column().classes("flex-grow"):
-                            ui.label(f"Event ID: {event['id']}")
-                            ui.label(f"Event Name: {event['name']}")
+    frame("Events")
+    # Display the list of events in refreshable cards
+    @ui.refreshable
+    async def render_list():
+        events = await api.get_events()
+        for event in events:
+            with elements.card().classes("w-full") as event_card:
+                with ui.row().classes("w-full justify-between items-center"):
+                    with ui.column().classes("flex-grow"):
+                        ui.label(f"Event ID: {event['id']}")
+                        ui.label(f"Event Name: {event['name']}")
 
-                        ui.button(icon="edit",
-                                  on_click=partial(open_floating_editor, _id=event["id"])
-                                  ).classes("w-6 h-6")
+                    elements.button(icon="edit",
+                                on_click=partial(open_floating_editor, _id=event["id"])
+                                ).classes("w-6 h-6")
+                    elements.button(icon="info",
+                                on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))
+                                ).classes("w-6 h-6")
 
-                        ui.button(icon="info",
-                                  on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))
-                                  ).classes("w-6 h-6")
+                    elements.button(icon="delete",
+                                on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card),
+                                color="red"
+                                ).classes("w-6 h-6")
 
-                        ui.button(icon="delete",
-                                  on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card),
-                                  color="red"
-                                  ).classes("w-6 h-6")
+    await render_list()
 
-        await render_list()
-
-        # Add navigation buttons
-        with ui.row().classes("w-full justify-center"):
-            ui.button("Back", on_click=lambda: ui.open(URL_EVENTS))
-            ui.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
-            ui.button("Refresh", on_click=render_list.refresh)
+    # Add navigation buttons
+    with ui.row().classes("w-full justify-center"):
+        elements.button("Back", on_click=lambda: ui.open(URL_EVENTS))
+        elements.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
+        elements.button("Refresh", on_click=render_list.refresh)
 
 
 @router.page(ROUTE_EVENT_HOME)
 async def event_home(event_id: str):
     """Detail page for a specific event"""
+    # Iphone12 390x844 pt (1170x2532 px @3x)
+    frame("Event Home")
 
     # Get the event from the API
-    with frame("Event Home"):
-        event = await api.get_event(event_id)
+    event = await api.get_event(event_id)
 
-        # Display the event details
-        with ui.column().classes("w-full justify-between"):
-            for key, value in event.items():
-                ui.label(f"{key}: {value}")
-        ui.button("Back", on_click=lambda: ui.open("/events"))
+    with ui.column().classes("w-full justify-center pt-10"):
+        ui.label(f"{event.get('name')}").classes("text-5xl font-bold border-l-8 border-teal-500 pl-4")
+        with ui.column().classes("w-full justify-left border-l-8 border-amber-300 pl-4"):
+            ui.label(f"{event_dates_to_str(event)}").classes("text-xl")
+            ui.label(f"{event_times_to_str(event)}").classes("text-xl")
+        ui.label(f"{event.get('location')}").classes("text-xl border-l-8 border-orange-400 pl-4 pr-4")
+        ui.label(f"{event.get('description')}").classes("text-xl border-l-8 border-orange-600 pl-4 pr-4")
 
-        with ui.dialog() as rsvp_dialog, ui.card():
-            ui.label("RSVP")
-            guest_name_input = ui.input("Name")
-            guest_email_input = ui.input("Email")
-            guest_phone_input = ui.input("Phone Number")
-            guest_status_input = ui.radio(["Yes", "No"])
-
-            async def _get_guest_json_str() -> str:
-                guest_json = json.dumps(
-                    {
-                        "id": str(uuid.uuid4()),  # TODO: autoincrement IDs
-                        "name": guest_name_input.value,
-                        "email": guest_email_input.value,
-                        "phone": int(guest_phone_input.value),  # TODO: Fails if no phone is provided
-                        "status": guest_status_input.value,
-                        "event_id": event_id,
-                    }
-                )
-                return guest_json
-
-            async def _create_guest():
-                guest_json_str = await _get_guest_json_str()
-                print(guest_json_str)
-                status = await api.create_guest(event_id, guest_json_str)
-                if status == 200:
-                    rsvp_dialog.close()
-                    ui.notify("Saved!")
-
-            ui.button("Submit", on_click=_create_guest)
-
-        ui.button("RSVP", on_click=rsvp_dialog.open)
-        ui.button("Guest List", on_click=lambda: ui.open(f"/events/{event_id}/guests"))
-
-
-@router.page("/{event_id}/guests")
-async def event_guests(event_id: str) -> None:
-    """Guest list page for a specific event"""
-
-    # Get the event from the API
-    with frame("Guests"):
+    # Display the list of guests in refreshable cards
+    @ui.refreshable
+    async def render_guests():
         guests = await api.get_guests_from_event(event_id)
+        with ui.column().classes("w-full"):
+            # sort guests by name and status
+            avatar_colors = [color for color in elements.PALETTES.values() if color != elements.PALETTES["dark"]]
+            guests_going = sorted([guest for guest in guests if guest.get("status") == "Yes"], key=lambda x: x.get("name"))
+            guests_not_going = sorted([guest for guest in guests if guest.get("status") == "No"], key=lambda x: x.get("name"))
+            i = 0
+            for guest in guests_going + guests_not_going:
+                with ui.row().classes("w-full justify-left items-center"):
+                    ui.avatar(guest.get("name")[0], color=avatar_colors[i], text_color="white", size="5xl")
+                    # green check if going, red x if not going
+                    ui.icon("check" if guest.get("status") == "Yes" else "close")\
+                        .classes("text-2xl")\
+                        .props("color=green" if guest.get("status") == "Yes" else "color=red")
+                    ui.label(f"{guest.get('name')}").classes("text-xl")
+                    # increment color index
+                    if i < len(avatar_colors) - 1:
+                        i += 1
+                    else:
+                        i = 0
 
-        # Display the event details
-        with ui.column().classes("w-full justify-between"):
-            for guest in guests:
-                with ui.card().classes("w-full") as guest_card:
-                    with ui.row().classes("w-full justify-between"):
-                        ui.label(f"{guest['name']}: {guest['status']}")
-                        ui.button("", icon="edit", on_click=lambda: ui.notify("Edit guest"))  # TODO: TAS-125
-                        ui.button(
-                            "",
-                            icon="delete",
-                            color="red",
-                            on_click=lambda eid=event_id, gid=guest["id"], card=guest_card: api.delete_guest(eid, gid, card),
-                        )
+    rsvp_editor = RsvpEditor(event_id)
+    elements.button("RSVP", on_click=partial(rsvp_editor.render, floating=True, on_save=render_guests.refresh))
 
-        ui.button("Back", on_click=lambda: ui.open(f"/events/{event_id}"))
-
+    # Get the list of guests from the API
+    ui.label("Who's Going...").classes("text-xl font-bold")
+    await render_guests()
 
 @router.page(ROUTE_NEW_EVENT)
 async def new_event():
@@ -156,11 +132,12 @@ async def new_event():
         None
     """
 
-    with frame("New Event"):
-        event_editor = EventEditor()
-        # Render the event editor in page and set routing for save and back buttons
-        await event_editor.render(
-            on_back=partial(ui.open,
-                            URL_EVENTS),
-            on_save=partial(ui.open,
-                             URL_EVENT_HOME.format(event_id=event_editor.event_id)))
+    frame("New Event")
+
+    event_editor = EventEditor()
+    # Render the event editor in page and set routing for save and back buttons
+    await event_editor.render(
+        on_back=partial(ui.open,
+                        URL_EVENTS),
+        on_save=partial(ui.open,
+                        URL_EVENT_HOME.format(event_id=event_editor.event_id)))

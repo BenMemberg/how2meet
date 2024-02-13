@@ -131,7 +131,7 @@ class APIClient:
         return guests
 
     @classmethod
-    async def create_guest(cls, event_id: str, guest_json_str: str) -> int:
+    async def create_guest(cls, event_id: str, guest_json_str: str) -> Response:
         """
         Create single guest using the API using POST HTTP request.
         Args:
@@ -141,14 +141,20 @@ class APIClient:
         Returns: HTTP status code
 
         """
+        try:
+            guest_json_str = guest_json_str.json()
+        except:
+            if isinstance(guest_json_str, dict):
+                guest_json_str = json.dumps(guest_json_str)
+
         async with AsyncClient() as client:
             response = await client.post(f"{BASE_URL}/api/events/{event_id}/guests", data=guest_json_str, timeout=10)
             response.raise_for_status()
 
-        return response.status_code
+        return response
 
     @classmethod
-    async def update_guest(cls, event_id: str, guest_id: str, guest_json_str: str) -> int:
+    async def update_guest(cls, event_id: str, guest_id: str, guest_json_str: str) -> Response:
         """
         Updates an event by sending a PUT request to the API with the given event ID and JSON data.
         Args:
@@ -162,10 +168,10 @@ class APIClient:
             response = await client.put(f"{BASE_URL}/api/events/{event_id}/guests/{guest_id}", data=guest_json_str, timeout=10)
             response.raise_for_status()
 
-        return response.status_code
+        return response
 
     @classmethod
-    async def delete_guest(cls, event_id: str, guest_id: str, card: ui.card | None = None) -> int:
+    async def delete_guest(cls, event_id: str, guest_id: str, card: ui.card | None = None) -> Response:
         """
         Delete single guest from API. Optionally, the UI element (card) may be provided (if calling from events page) so that
         it can be deleted visually upon clicking delete. This prevents needing to reload the page to show updates to the user
@@ -186,7 +192,7 @@ class APIClient:
             card.delete()
             ui.notification("Guest deleted", timeout=1.5)
 
-        return response.status_code
+        return response
 
 
 ### little helpers ###

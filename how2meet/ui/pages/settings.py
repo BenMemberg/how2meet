@@ -2,19 +2,19 @@ import logging
 
 from nicegui import APIRouter, app, ui
 
+from how2meet.ui.components import elements
 from ..components.frames import frame
+from .urls import URL_SETTINGS
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-URL_SETTINGS_PREFIX = "/settings"
-router = APIRouter(prefix=URL_SETTINGS_PREFIX, tags=["settings"])
+router = APIRouter(prefix=URL_SETTINGS, tags=["settings"])
 
 @router.page("/")
 def settings():
     """Settings page"""
-    with frame("Settings"):
-        with ui.column().classes("absolute-center"):
-            # NOTE dark mode will be persistent for each user across tabs and server restarts
-            ui.dark_mode().bind_value(app.storage.user, "dark_mode")
-            ui.checkbox("dark mode").bind_value(app.storage.user, "dark_mode")
+    frame("Settings")
+        # NOTE dark mode will be persistent for each user across tabs and server restarts
+    ui.dark_mode().bind_value(app.storage.user, "dark_mode")
+    elements.checkbox("dark mode").bind_value(app.storage.user, "dark_mode")
