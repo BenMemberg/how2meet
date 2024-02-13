@@ -42,7 +42,7 @@ class Guest(Base):
     email = Column(String(100), nullable=True)
     phone = Column(Integer(), nullable=True)
     status = Column(String(15))
-    event_id = Column(String(32), ForeignKey("events.id"), nullable=False)
+    event_id = Column(String(36), ForeignKey("events.id"), nullable=False)
 
     def __repr__(self):
         return f"Guest(name='{self.name}', contact='{self.email if self.email else self.phone}')"
