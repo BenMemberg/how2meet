@@ -15,6 +15,9 @@ PALETTES = {
 def button(*args, **kwargs):
     return ui.button(*args, **kwargs).props("outline color=white")
 
+def checkbox(*args, **kwargs):
+    return ui.checkbox(*args, **kwargs).props("flat color=white")
+
 def input(*args, **kwargs):
     return ui.input(*args, **kwargs).props("filled color=white")
 
