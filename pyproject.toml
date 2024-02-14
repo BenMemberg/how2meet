@@ -17,8 +17,6 @@ twilio = "^8.11.0"
 pytest = "^7.0.1"
 mypy = "^1.0.1"
 pre-commit = "^3.5.0"
-black = "^23.11.0"
-isort = "^5.10.1"
 ruff = "^0.1.5"
 netifaces = "^0.11.0"
 
@@ -31,10 +29,10 @@ line-length = 145
 
 [tool.ruff.lint]
 ignore = ["F841", "E722"]
-
-
-[tool.isort]
-profile = "black"
+select = [
+    # isort
+    "I001"
+]
 
 [tool.mypy]
 ignore_missing_imports = true
