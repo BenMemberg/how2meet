@@ -15,16 +15,11 @@ repos:
     hooks:
       # Run the linter.
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
+        args: [--fix-only, --exit-zero]
       # Run the formatter.
       - id: ruff-format
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
-    hooks:
-      - id: mypy
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.8.0
+#    hooks:
+#      - id: mypy

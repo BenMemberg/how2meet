@@ -6,10 +6,11 @@ import uuid
 
 from nicegui import app, ui
 
+import how2meet.ui.components.elements as elements
+
 from .components.frames import frame
 from .pages import events, settings
-from .pages.urls import URL_NEW_EVENT, URL_EVENTS
-import how2meet.ui.components.elements as elements
+from .pages.urls import URL_EVENTS, URL_NEW_EVENT
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

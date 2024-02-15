@@ -1,75 +1,72 @@
-from functools import partial
-from datetime import datetime
 import logging
 import uuid
+from datetime import datetime
+from functools import partial
 
 from nicegui import ui
 
-from how2meet.utils import APIClient as api
-from how2meet.ui.pages.urls import URL_EVENTS, URL_NEW_EVENT, URL_EVENT_HOME
 import how2meet.ui.components.elements as elements
+from how2meet.ui.pages.urls import URL_EVENT_HOME, URL_EVENTS, URL_NEW_EVENT
+from how2meet.utils import APIClient as api
 
 logger = logging.getLogger(__name__)
 
+
 class RsvpEditor:
+    def __init__(self, event_id: str):
+        self.event_id = event_id
+        self.guest = None
 
-        def __init__(self, event_id: str):
-            self.event_id = event_id
-            self.guest = None
+    async def save(self, on_save=None):
+        if not self.phone_input.value:
+            ui.notification("Phone number is required", timeout=5)
+            return
 
+        guest_json_str = self.model_dump()
+        status = await api.create_guest(self.event_id, guest_json_str)
+        if status.is_success:
+            if self.dialog:
+                self.dialog.close()
+            ui.notify("Saved!")
 
-        async def save(self, on_save=None):
-            if not self.phone_input.value:
-                ui.notification("Phone number is required", timeout=5)
-                return
+        if status.is_success:
+            if callable(on_save):
+                on_save()
+        else:
+            logger.debug(f"Error: {status}")
+            ui.notification(f"Error: {status}", timeout=5)
 
-            guest_json_str = self.model_dump()
-            status = await api.create_guest(self.event_id, guest_json_str)
-            if status.is_success:
-                if self.dialog:
-                    self.dialog.close()
-                ui.notify("Saved!")
+    async def render(self, floating=True, on_save=None):
+        # TODO add method to remove guest
+        if floating:
+            with elements.dialog(value=True).props("no-route-dismiss") as dialog:
+                self.dialog = dialog
+                with elements.card():
+                    await self.render(floating=False, on_save=on_save)
+                    return
 
-            if status.is_success:
-                if callable(on_save):
-                    on_save()
-            else:
-                logger.debug(f"Error: {status}")
-                ui.notification(f"Error: {status}", timeout=5)
+        with elements.card().classes("flex-grow position:relative") as card:
+            self.card = card
+            with ui.column().classes("flex-grow justify-between items-center"):
+                self.name_input = elements.input("Name")
+                self.email_input = elements.input("Email")
+                self.phone_input = elements.input("Phone Number")
+                self.status_input = ui.radio(["Yes", "No"])
+                self.submit_button = elements.button("Submit", on_click=partial(self.save, on_save=on_save))
 
-
-        async def render(self, floating=True, on_save=None):
-            # TODO add method to remove guest
-            if floating:
-                with elements.dialog(value=True).props("no-route-dismiss") as dialog:
-                    self.dialog = dialog
-                    with elements.card():
-                        await self.render(floating=False, on_save=on_save)
-                        return
-
-            with elements.card().classes("flex-grow position:relative") as card:
-                self.card = card
-                with ui.column().classes("flex-grow justify-between items-center"):
-                    self.name_input = elements.input("Name")
-                    self.email_input = elements.input("Email")
-                    self.phone_input = elements.input("Phone Number")
-                    self.status_input = ui.radio(["Yes", "No"])
-                    self.submit_button = elements.button("Submit", on_click=partial(self.save, on_save=on_save))
-
-        def model_dump(self):
-            phone_number = "".join(filter(str.isdigit, self.phone_input.value)) if self.phone_input.value else None
-            return {
-                    "id": str(uuid.uuid4()),
-                    "name": self.name_input.value,
-                    "email": self.email_input.value,
-                    "phone": phone_number,
-                    "status": self.status_input.value,
-                    "event_id": self.event_id,
-                    }
+    def model_dump(self):
+        phone_number = "".join(filter(str.isdigit, self.phone_input.value)) if self.phone_input.value else None
+        return {
+            "id": str(uuid.uuid4()),
+            "name": self.name_input.value,
+            "email": self.email_input.value,
+            "phone": phone_number,
+            "status": self.status_input.value,
+            "event_id": self.event_id,
+        }
 
 
 class EventEditor:
-
     def __init__(self, event_id=None):
         self.event_id = event_id or str(uuid.uuid4())
         self.event = {}
@@ -145,9 +142,11 @@ class EventEditor:
             self.description_input = elements.textarea("Description", value=self.event.get("description", "")).classes("w-full")
 
         with ui.row().classes("w-full justify-end"):
+
             def call_on_back():
                 if callable(on_back):
                     on_back()
+
             elements.button("Back", on_click=call_on_back)
             elements.button("Save", on_click=partial(self.save, on_save=on_save))
 

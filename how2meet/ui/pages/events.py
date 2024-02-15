@@ -7,18 +7,18 @@ from datetime import datetime
 from functools import partial
 from pathlib import Path
 
-from nicegui import APIRouter, ui, app
+from nicegui import APIRouter, app, ui
 
+import how2meet.ui.components.elements as elements
 from how2meet.utils import APIClient as api
 
-from ..components.frames import frame
-from ..components.event_editor import EventEditor, RsvpEditor
 from ..components.date_utils import event_dates_to_str, event_times_to_str
-from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
-      URL_EVENT_HOME, ROUTE_BASE, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
-import how2meet.ui.components.elements as elements
+from ..components.event_editor import EventEditor, RsvpEditor
+from ..components.frames import frame
+from .urls import ROUTE_BASE, ROUTE_EVENT_HOME, ROUTE_NEW_EVENT, ROUTE_PREFIX_EVENTS, URL_EVENT_HOME, URL_EVENTS, URL_NEW_EVENT
 
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
+
 
 @router.page(ROUTE_BASE)
 async def events() -> None:
@@ -26,7 +26,6 @@ async def events() -> None:
 
     # Define a function to open the event editor in a floating dialog
     async def open_floating_editor(_id):
-
         # Notify and refresh the list when the event is saved
         def on_save():
             ui.notify("Event saved!")
@@ -34,13 +33,12 @@ async def events() -> None:
 
         # Initialize the event editor and render it in a floating dialog
         event_editor = EventEditor(_id)
-        await event_editor.render(floating=True,
-                                    on_save=on_save,
-                                    on_back=event_editor.close)
+        await event_editor.render(floating=True, on_save=on_save, on_back=event_editor.close)
         event_editor.dialog.on("hide", render_list.refresh)
 
     # Define page layout
     frame("Events")
+
     # Display the list of events in refreshable cards
     @ui.refreshable
     async def render_list():
@@ -52,17 +50,14 @@ async def events() -> None:
                         ui.label(f"Event ID: {event['id']}")
                         ui.label(f"Event Name: {event['name']}")
 
-                    elements.button(icon="edit",
-                                on_click=partial(open_floating_editor, _id=event["id"])
-                                ).classes("w-6 h-6")
-                    elements.button(icon="info",
-                                on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))
-                                ).classes("w-6 h-6")
+                    elements.button(icon="edit", on_click=partial(open_floating_editor, _id=event["id"])).classes("w-6 h-6")
+                    elements.button(icon="info", on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))).classes(
+                        "w-6 h-6"
+                    )
 
-                    elements.button(icon="delete",
-                                on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card),
-                                color="red"
-                                ).classes("w-6 h-6")
+                    elements.button(
+                        icon="delete", on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card), color="red"
+                    ).classes("w-6 h-6")
 
     await render_list()
 
@@ -104,9 +99,9 @@ async def event_home(event_id: str):
                 with ui.row().classes("w-full justify-left items-center"):
                     ui.avatar(guest.get("name")[0], color=avatar_colors[i], text_color="white", size="5xl")
                     # green check if going, red x if not going
-                    ui.icon("check" if guest.get("status") == "Yes" else "close")\
-                        .classes("text-2xl")\
-                        .props("color=green" if guest.get("status") == "Yes" else "color=red")
+                    ui.icon("check" if guest.get("status") == "Yes" else "close").classes("text-2xl").props(
+                        "color=green" if guest.get("status") == "Yes" else "color=red"
+                    )
                     ui.label(f"{guest.get('name')}").classes("text-xl")
                     # increment color index
                     if i < len(avatar_colors) - 1:
@@ -120,6 +115,7 @@ async def event_home(event_id: str):
     # Get the list of guests from the API
     ui.label("Who's Going...").classes("text-xl font-bold")
     await render_guests()
+
 
 @router.page(ROUTE_NEW_EVENT)
 async def new_event():
@@ -137,7 +133,5 @@ async def new_event():
     event_editor = EventEditor()
     # Render the event editor in page and set routing for save and back buttons
     await event_editor.render(
-        on_back=partial(ui.open,
-                        URL_EVENTS),
-        on_save=partial(ui.open,
-                        URL_EVENT_HOME.format(event_id=event_editor.event_id)))
+        on_back=partial(ui.open, URL_EVENTS), on_save=partial(ui.open, URL_EVENT_HOME.format(event_id=event_editor.event_id))
+    )
