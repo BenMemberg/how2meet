@@ -7,7 +7,7 @@ from fastapi import FastAPI
 
 from .db import models
 from .db.database import engine
-from .routers import events, invites
+from .routers import events
 from .ui import frontend
 
 models.Base.metadata.create_all(bind=engine)
@@ -22,7 +22,6 @@ api_app = FastAPI(
     redoc_url="/v1/redoc",
 )
 api_app.include_router(events.router)
-api_app.include_router(invites.router)
 app.mount("/api", api_app)
 
 # Mount the frontend at the root path
@@ -30,4 +29,4 @@ app.mount("/api", api_app)
 frontend.init(app)
 
 if __name__ == "__main__":
-    print('Please start the app with the "uvicorn" command as shown in the start.sh script')
+    print('Please start the app with the "uvicorn" command.')

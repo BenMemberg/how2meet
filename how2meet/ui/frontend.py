@@ -8,9 +8,11 @@ from nicegui import app, ui
 
 from .components.frames import frame
 from .pages import events, settings
+from .pages.urls import URL_NEW_EVENT, URL_EVENTS
+import how2meet.ui.components.elements as elements
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 app.include_router(events.router)
@@ -20,12 +22,12 @@ app.include_router(settings.router)
 @ui.page("/")  # NOTE this is the default page
 def home():
     """Home page"""
-    with frame("Home"):
-        with ui.column().classes("w-full items-center"):
-            with ui.row():
-                ui.button("New Event", on_click=lambda: ui.open(f"/events/new/{uuid.uuid4()}"))
-            with ui.row():
-                ui.button("Existing Event", on_click=lambda: ui.open("/events"))
+    frame("Home")
+    with ui.column().classes("w-full items-center"):
+        with ui.row():
+            elements.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
+        with ui.row():
+            elements.button("Existing Event", on_click=lambda: ui.open(URL_EVENTS))
 
 
 def init(fastapi_app) -> None:
