@@ -18,7 +18,7 @@ from .database import Base
 class Event(Base):
     __tablename__ = "events"
 
-    id = Column(String(32), primary_key=True, index=True)
+    id = Column(String(36), primary_key=True, index=True)
     name = Column(String(150))
     created = Column(DateTime)
     start_time = Column(DateTime)
@@ -37,12 +37,12 @@ class Event(Base):
 class Guest(Base):
     __tablename__ = "guests"
 
-    id = Column(String(32), primary_key=True, index=True)
+    id = Column(String(36), primary_key=True, index=True)
     name = Column(String(100))
     email = Column(String(100), nullable=True)
     phone = Column(Integer(), nullable=True)
     status = Column(String(15))
-    event_id = Column(String(32), ForeignKey("events.id"), nullable=False)
+    event_id = Column(String(36), ForeignKey("events.id"), nullable=False)
 
     def __repr__(self):
         return f"Guest(name='{self.name}', contact='{self.email if self.email else self.phone}')"
