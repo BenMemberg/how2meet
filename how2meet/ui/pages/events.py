@@ -7,7 +7,7 @@ from datetime import datetime
 from functools import partial
 from pathlib import Path
 
-from nicegui import APIRouter, ui, app
+from nicegui import APIRouter, ui, app, Client
 
 from how2meet.utils import APIClient as api
 
@@ -15,7 +15,7 @@ from ..components.frames import frame
 from ..components.event_editor import EventEditor, RsvpEditor
 from ..components.date_utils import event_dates_to_str, event_times_to_str
 from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
-      URL_EVENT_HOME, ROUTE_BASE, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME
+      URL_EVENT_HOME, ROUTE_BASE, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME, BASE_URL
 import how2meet.ui.components.elements as elements
 
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
@@ -40,7 +40,7 @@ async def events() -> None:
         event_editor.dialog.on("hide", render_list.refresh)
 
     # Define page layout
-    frame("Events")
+    frame()
     # Display the list of events in refreshable cards
     @ui.refreshable
     async def render_list():
@@ -74,10 +74,10 @@ async def events() -> None:
 
 
 @router.page(ROUTE_EVENT_HOME)
-async def event_home(event_id: str):
+async def event_home(event_id: str, client: Client):
     """Detail page for a specific event"""
     # Iphone12 390x844 pt (1170x2532 px @3x)
-    frame("Event Home")
+    frame()
 
     # Get the event from the API
     event = await api.get_event(event_id)
@@ -114,9 +114,15 @@ async def event_home(event_id: str):
                     else:
                         i = 0
 
-    rsvp_editor = RsvpEditor(event_id)
-    elements.button("RSVP", on_click=partial(rsvp_editor.render, floating=True, on_save=render_guests.refresh))
+    async def copy_url():
+        await client.connected()
+        await client.run_javascript(f"navigator.clipboard.writeText('{BASE_URL}{app.url_path_for('event_home', event_id=event_id)}')")
 
+    rsvp_editor = RsvpEditor(event_id)
+    with ui.row().classes("w-full justify-left items-center"):
+        elements.button("RSVP", on_click=partial(rsvp_editor.render, floating=True, on_save=render_guests.refresh))
+        # copy url to clipboard
+        ui.icon("link").on("click", copy_url).classes("text-3xl cursor-pointer")
     # Get the list of guests from the API
     ui.label("Who's Going...").classes("text-xl font-bold")
     await render_guests()
@@ -132,7 +138,7 @@ async def new_event():
         None
     """
 
-    frame("New Event")
+    frame()
 
     event_editor = EventEditor()
     # Render the event editor in page and set routing for save and back buttons

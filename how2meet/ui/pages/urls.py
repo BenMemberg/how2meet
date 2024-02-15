@@ -1,3 +1,5 @@
+import os
+BASE_URL = os.getenv("BASE_URL", "localhost:8000")
 ROUTE_PREFIX_EVENTS = "/events"
 ROUTE_BASE = "/"
 ROUTE_NEW_EVENT = "/new_event"

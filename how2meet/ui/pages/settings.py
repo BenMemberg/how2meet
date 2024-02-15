@@ -14,7 +14,7 @@ router = APIRouter(prefix=URL_SETTINGS, tags=["settings"])
 @router.page("/")
 def settings():
     """Settings page"""
-    frame("Settings")
+    frame()
         # NOTE dark mode will be persistent for each user across tabs and server restarts
     ui.dark_mode().bind_value(app.storage.user, "dark_mode")
     elements.checkbox("dark mode").bind_value(app.storage.user, "dark_mode")
