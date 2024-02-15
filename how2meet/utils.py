@@ -8,7 +8,7 @@ from typing import Any
 from httpx import AsyncClient, Response
 from nicegui import ui
 
-BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")  # To be passed around as needed
+from how2meet.ui.pages.urls import BASE_URL
 
 
 class APIClient:

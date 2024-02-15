@@ -11,6 +11,8 @@ services:
     startCommand: poetry run make run_server
     autoDeploy: false
     envVars:
+      - key: BASE_URL
+        value: https://how2meet.com
       - key: DB_CONN
         fromDatabase:
           name: how2meet-db
@@ -31,4 +33,3 @@ databases:
   - name: how2meet-db
     plan: free
     region: ohio
-
