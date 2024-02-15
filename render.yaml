@@ -9,6 +9,7 @@ services:
     branch: main
     buildCommand: poetry install
     startCommand: poetry run make run_server
+    autoDeploy: false
     envVars:
       - key: DB_CONN
         fromDatabase:
