@@ -2,7 +2,7 @@
 Utility functions
 """
 import json
-import os
+import uuid
 from typing import Any
 
 from httpx import AsyncClient, Response
@@ -34,7 +34,7 @@ class APIClient:
         return events
 
     @classmethod
-    async def get_event(cls, event_id: str) -> dict:
+    async def get_event(cls, event_id: uuid.UUID) -> dict:
         """Get single event from API"""
         # NOTE: This is a blocking call, so we use an async client
         async with AsyncClient() as client:
@@ -47,7 +47,7 @@ class APIClient:
         return event
 
     @classmethod
-    async def delete_event(cls, event_id: str, card: ui.card | None = None) -> Response:
+    async def delete_event(cls, event_id: uuid.UUID, card: ui.card | None = None) -> Response:
         """
         Delete single event from API. Optionally, the UI element (card) may be provided (if calling from events page) so that
         it can be deleted visually upon clicking delete. This prevents needing to reload the page to show updates to the user
@@ -84,6 +84,7 @@ class APIClient:
             event_json_str = event_json_str.json()
         except:
             if isinstance(event_json_str, dict):
+                event_json_str["id"] = str(event_json_str["id"])
                 event_json_str = json.dumps(event_json_str)
 
         async with AsyncClient() as client:
@@ -93,7 +94,7 @@ class APIClient:
         return response
 
     @classmethod
-    async def update_event(cls, event_id: str, event_json_str: dict[str, Any]) -> Response:
+    async def update_event(cls, event_id: uuid.UUID, event_json_str: dict[str, Any]) -> Response:
         """
         Updates an event by sending a PUT request to the API with the given event ID and JSON data.
 
@@ -108,6 +109,8 @@ class APIClient:
             event_json_str = event_json_str.json()
         except:
             if isinstance(event_json_str, dict):
+                if "id" in event_json_str:
+                    event_json_str["id"] = str(event_json_str["id"])
                 event_json_str = json.dumps(event_json_str)
 
         async with AsyncClient() as client:
@@ -117,7 +120,7 @@ class APIClient:
         return response
 
     @classmethod
-    async def get_guests_from_event(cls, event_id: str) -> list:
+    async def get_guests_from_event(cls, event_id: uuid.UUID) -> list:
         """
         Get list of all guests from single event
         """

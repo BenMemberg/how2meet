@@ -1,6 +1,8 @@
 """
 Basic CRUD operations for adding, updating, and deleting events and invites.
 """
+import uuid
+
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -8,7 +10,7 @@ from . import models, schemas
 ### EVENT CRUD OPS ###
 
 
-def get_event(db: Session, event_id: str) -> models.Event | None:
+def get_event(db: Session, event_id: uuid.UUID) -> models.Event | None:
     """
     Get an event by ID.
     Args:
@@ -79,12 +81,12 @@ def update_event(db: Session, db_event: models.Event, updated_event: schemas.Eve
 ### GUEST CRUD OPS ###
 
 
-def get_guests_from_event(db: Session, event_id: str) -> list[models.Guest] | None:
+def get_guests_from_event(db: Session, event_id: uuid.UUID) -> list[models.Guest] | None:
     """Return all guests for a specific event"""
     return db.query(models.Guest).filter(models.Guest.event_id == event_id).all()
 
 
-def get_guest_from_event(db: Session, event_id: str, guest_id: str) -> models.Guest | None:
+def get_guest_from_event(db: Session, event_id: uuid.UUID, guest_id: str) -> models.Guest | None:
     """Return a specific guest for a specific event"""
     return db.query(models.Guest).filter(models.Guest.event_id == event_id, models.Guest.id == guest_id).first()
 

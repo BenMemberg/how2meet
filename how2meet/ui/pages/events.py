@@ -72,9 +72,30 @@ async def events() -> None:
         elements.button("New Event", on_click=lambda: ui.open(URL_NEW_EVENT))
         elements.button("Refresh", on_click=render_list.refresh)
 
+@router.page(ROUTE_NEW_EVENT)
+async def create():
+    """New event creation page
 
+    Args:
+        event_id (str): The unique ID of the event to be created.
+
+    Returns:
+        None
+    """
+
+    frame()
+
+    event_editor = EventEditor()
+    # Render the event editor in page and set routing for save and back buttons
+    await event_editor.render(
+        on_back=partial(ui.open,
+                        URL_EVENTS),
+        on_save=partial(ui.open,
+                        URL_EVENT_HOME.format(event_id=event_editor.event_id)))
+
+# must come after /create to avoid path order conflict
 @router.page(ROUTE_EVENT_HOME)
-async def event_home(event_id: str, client: Client):
+async def event_home(event_id: uuid.UUID, client: Client):
     """Detail page for a specific event"""
     # Iphone12 390x844 pt (1170x2532 px @3x)
     frame()
@@ -126,24 +147,3 @@ async def event_home(event_id: str, client: Client):
     # Get the list of guests from the API
     ui.label("Who's Going...").classes("text-xl font-bold")
     await render_guests()
-
-@router.page(ROUTE_NEW_EVENT)
-async def new_event():
-    """New event creation page
-
-    Args:
-        event_id (str): The unique ID of the event to be created.
-
-    Returns:
-        None
-    """
-
-    frame()
-
-    event_editor = EventEditor()
-    # Render the event editor in page and set routing for save and back buttons
-    await event_editor.render(
-        on_back=partial(ui.open,
-                        URL_EVENTS),
-        on_save=partial(ui.open,
-                        URL_EVENT_HOME.format(event_id=event_editor.event_id)))

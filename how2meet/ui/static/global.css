@@ -47,11 +47,6 @@ a:active:not(.browser-window *) {
   color: white;
 }
 
-.q-card {
-  background-color: #010B13;
-  border-color: #2f2f2fef;
-}
-
 .q-footer {
   background-color: #010B13;
   border-color: #2f2f2fef;

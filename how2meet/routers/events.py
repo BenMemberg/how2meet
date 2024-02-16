@@ -1,6 +1,8 @@
 """
 API routes for events. All routes are prefixed with `api/events/` per the router instantiation and mounting the api_app in main.py
 """
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -9,6 +11,9 @@ from ..db.database import get_db
 
 router = APIRouter(prefix="/events", tags=["events"], responses={404: {"description": "Not found"}})
 
+"""
+Event routers
+"""
 
 @router.post("/", response_model=schemas.Event)
 def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> models.Event:
@@ -22,6 +27,7 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> m
     Returns:
         models.Event: The created event.
     """
+    # event.id = uuid.UUID(event.id)
     db_event = crud.get_event(db, event_id=event.id)
     if db_event:
         raise HTTPException(status_code=400, detail="Event already registered")
@@ -48,7 +54,7 @@ def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) 
 
 
 @router.get("/{event_id}", response_model=schemas.Event)
-def read_event(event_id: str, db: Session = Depends(get_db)) -> models.Event:
+def read_event(event_id: uuid.UUID, db: Session = Depends(get_db)) -> models.Event:
     """
     API route to retrieve an event from the database.
 
@@ -66,7 +72,7 @@ def read_event(event_id: str, db: Session = Depends(get_db)) -> models.Event:
 
 
 @router.delete("/{event_id}", response_model=schemas.Event)
-def delete_event(event_id: str, db: Session = Depends(get_db)) -> models.Event:
+def delete_event(event_id: uuid.UUID, db: Session = Depends(get_db)) -> models.Event:
     """
     API route to delete an event from the database
 
@@ -86,7 +92,7 @@ def delete_event(event_id: str, db: Session = Depends(get_db)) -> models.Event:
 
 
 @router.put("/{event_id}", response_model=schemas.Event)
-def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session = Depends(get_db)) -> models.Event:
+def update_event(event_id: uuid.UUID, updated_event: schemas.EventUpdate, db: Session = Depends(get_db)) -> models.Event:
     """
     API router to update an existing event in the database.
 
@@ -101,10 +107,13 @@ def update_event(event_id: str, updated_event: schemas.EventUpdate, db: Session 
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:
         raise HTTPException(status_code=404, detail="Event not found")
-
+    db_event.id = uuid.UUID(db_event.id)
     updated_event = crud.update_event(db, db_event, updated_event)
     return updated_event
 
+"""
+Guests routers
+"""
 
 @router.get("/{event_id}/guests", response_model=list[schemas.Guest])
 def get_guests(event_id: str, db: Session = Depends(get_db)) -> list[schemas.Guest]:
