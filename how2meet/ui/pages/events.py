@@ -135,15 +135,12 @@ async def event_home(event_id: uuid.UUID, client: Client):
                     else:
                         i = 0
 
-    async def copy_url():
-        await client.connected()
-        await client.run_javascript(f"navigator.clipboard.writeText('{BASE_URL}{app.url_path_for('event_home', event_id=event_id)}')")
-
     rsvp_editor = RsvpEditor(event_id)
     with ui.row().classes("w-full justify-left items-center"):
         elements.button("RSVP", on_click=partial(rsvp_editor.render, floating=True, on_save=render_guests.refresh))
         # copy url to clipboard
-        ui.icon("link").on("click", copy_url).classes("text-3xl cursor-pointer")
+        icon = ui.icon("link").on("click", lambda: ui.notify("Copied link to clipboard")).classes("text-3xl cursor-pointer")
+        icon._props["onclick"] = f"navigator.clipboard.writeText('{BASE_URL}{app.url_path_for('event_home', event_id=event_id)}')"
     # Get the list of guests from the API
     ui.label("Who's Going...").classes("text-xl font-bold")
     await render_guests()
