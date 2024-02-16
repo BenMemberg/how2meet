@@ -32,7 +32,7 @@ class TokenDialog:
 
     async def render(self, on_next, floating=True):
         if floating:
-            with ui.dialog(value=True) as dialog:
+            with ui.dialog(value=True).props("persistent") as dialog:
                 self.dialog = dialog
                 with elements.card():
                     await self.render(on_next, floating=False)
@@ -42,8 +42,12 @@ class TokenDialog:
             elements.label("Your event has been saved!").classes("text-2xl text-center w-full")
             elements.label("We'll try to remember you in this browser, but in case we mess up save the token below to edit your event later.").classes("text-xl w-full text-center")
             with elements.card().classes("flex-grow position:relative") as card:
-                card.classes("border-2 border-teal-500")
-                self.token_display = elements.label(self.auth_token).classes("text-2xl")
+                card.classes("border-2 border-teal-500 no-wrap")
+                with ui.row().classes("w-full items-center justify-between"):
+                    self.token_display = elements.label(self.auth_token).classes("text-xl")
+                    copy_icon = ui.icon("content_copy").classes("cursor-pointer text-2xl")
+                    copy_icon.on("click", lambda: ui.notify("Copied to clipboard!"))
+                    copy_icon._props["onclick"] = f"navigator.clipboard.writeText('{self.auth_token}');"
             elements.label("We can also send it to your email if you want.").classes("text-xl text-center w-full")
             with ui.row().classes("w-full items-center justify-between"):
                 self.email_input = elements.input("Email").classes("flex-grow")
@@ -76,7 +80,7 @@ class RsvpEditor:
         async def render(self, floating=True, on_save=None):
             # TODO add method to remove guest
             if floating:
-                with elements.dialog(value=True).props("no-route-dismiss") as dialog:
+                with elements.dialog(value=True) as dialog:
                     self.dialog = dialog
                     await self.render(floating=False, on_save=on_save)
                     return
@@ -147,7 +151,7 @@ class EventEditor:
     async def render(self, floating=False, on_save=None, on_back=None):
         # If floating, enclose in a dialog
         if floating:
-            with elements.dialog(value=True).classes("w-7/8").props("no-route-dismiss") as dialog:
+            with elements.dialog(value=True).classes("w-7/8") as dialog:
                 self.dialog = dialog
                 with elements.card().style("min-width: 100%"):
                     # Render the event editor (use floating=False to embed in enclosing element)
