@@ -38,8 +38,8 @@ class Guest(Base):
     id = Column(String(36), primary_key=True, index=True)
     name = Column(String(100))
     email = Column(String(100), nullable=True)
-    phone = Column(Integer(), nullable=True)
-    status = Column(String(15))
+    phone = Column(String(15), nullable=True)
+    status = Column(String(16), nullable=False)
     event_id = Column(Uuid, ForeignKey("events.id"), nullable=False)
 
     def __repr__(self):

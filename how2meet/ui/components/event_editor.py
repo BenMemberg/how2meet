@@ -2,6 +2,7 @@ from functools import partial
 from datetime import datetime
 import logging
 import uuid
+from enum import Enum
 
 from nicegui import ui, app
 
@@ -10,6 +11,15 @@ from how2meet.ui.pages.urls import URL_EVENTS, URL_NEW_EVENT, URL_EVENT_HOME
 import how2meet.ui.components.elements as elements
 
 logger = logging.getLogger(__name__)
+
+class StatusEnum(Enum):
+    GOING = "Going"
+    NOT_GOING = "Not Going"
+    MAYBE = "Maybe"
+
+    @classmethod
+    def choices(cls):
+        return [e.value for e in cls]
 
 class TokenDialog:
 
@@ -48,12 +58,8 @@ class RsvpEditor:
 
 
         async def save(self, on_save=None):
-            if not self.phone_input.value:
-                ui.notification("Phone number is required", timeout=5)
-                return
-
             guest_json_str = self.model_dump()
-            status = await api.create_guest(self.event_id, guest_json_str)
+            status = await api.create_guest(str(self.event_id), guest_json_str)
             if status.is_success:
                 if self.dialog:
                     self.dialog.close()
@@ -72,17 +78,17 @@ class RsvpEditor:
             if floating:
                 with elements.dialog(value=True).props("no-route-dismiss") as dialog:
                     self.dialog = dialog
-                    with elements.card():
-                        await self.render(floating=False, on_save=on_save)
-                        return
+                    await self.render(floating=False, on_save=on_save)
+                    return
 
-            with elements.card().classes("flex-grow position:relative") as card:
+            with elements.card().classes("flex-grow") as card:
                 self.card = card
-                with ui.column().classes("flex-grow justify-between items-center"):
-                    self.name_input = elements.input("Name")
-                    self.email_input = elements.input("Email")
-                    self.phone_input = elements.input("Phone Number")
-                    self.status_input = ui.radio(["Yes", "No"])
+                with ui.column().classes("w-full justify-between items-center"):
+                    self.name_input = elements.input("Name").classes("w-full")
+                    self.email_input = elements.input("Email (Optional)").classes("w-full")
+                    self.phone_input = elements.input("Phone Number (Optional)").classes("w-full")
+                    with ui.row().classes("w-full"):
+                        self.status_input = ui.radio(StatusEnum.choices()).classes("w-full")
                     self.submit_button = elements.button("Submit", on_click=partial(self.save, on_save=on_save))
 
         def model_dump(self):
@@ -93,7 +99,7 @@ class RsvpEditor:
                     "email": self.email_input.value,
                     "phone": phone_number,
                     "status": self.status_input.value,
-                    "event_id": self.event_id,
+                    "event_id": str(self.event_id),
                     }
 
 

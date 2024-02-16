@@ -44,10 +44,10 @@ class EventUpdate(Event):
 class Guest(BaseModel):
     id: str
     name: str
-    email: str
-    phone: int
+    email: Optional[str] = Field(default="", description="The email of the guest")
+    phone: Optional[str] = Field(default="", description="The phone number of the guest")
     status: str
-    event_id: str
+    event_id: uuid.UUID
 
     class Config:
         from_attributes = True
@@ -56,11 +56,7 @@ class Guest(BaseModel):
 class GuestCreate(Guest):
     pass
 
-
 class GuestUpdate(Guest):
-    id: Optional[str] = Field(default=None, description="The ID of the guest")
     name: Optional[str] = Field(default=None, description="The name of the guest")
-    email: Optional[str] = Field(default=None, description="The email of the guest")
-    phone: Optional[int] = Field(default=None, description="The phone number of the guest")
     status: Optional[str] = Field(default=None, description="The status of the guest")
-    event_id: Optional[str] = Field(default=None, description="The event ID of the guest")
+    event_id: Optional[uuid.UUID] = Field(default=None, description="The event ID of the guest")

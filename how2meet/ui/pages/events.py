@@ -12,7 +12,7 @@ from nicegui import APIRouter, ui, app, Client
 from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
-from ..components.event_editor import EventEditor, RsvpEditor
+from ..components.event_editor import EventEditor, RsvpEditor, StatusEnum
 from ..components.date_utils import event_dates_to_str, event_times_to_str
 from .urls import ROUTE_PREFIX_EVENTS, URL_EVENTS, URL_NEW_EVENT,\
       URL_EVENT_HOME, ROUTE_BASE, ROUTE_NEW_EVENT, ROUTE_EVENT_HOME, BASE_URL
@@ -118,16 +118,26 @@ async def event_home(event_id: uuid.UUID, client: Client):
         with ui.column().classes("w-full"):
             # sort guests by name and status
             avatar_colors = [color for color in elements.PALETTES.values() if color != elements.PALETTES["dark"]]
-            guests_going = sorted([guest for guest in guests if guest.get("status") == "Yes"], key=lambda x: x.get("name"))
-            guests_not_going = sorted([guest for guest in guests if guest.get("status") == "No"], key=lambda x: x.get("name"))
+            guests_going = sorted([guest for guest in guests if guest.get("status") == StatusEnum.GOING.value], key=lambda x: x.get("name"))
+            guests_not_going = sorted([guest for guest in guests if guest.get("status") != StatusEnum.GOING.value], key=lambda x: x.get("name"))
             i = 0
             for guest in guests_going + guests_not_going:
                 with ui.row().classes("w-full justify-left items-center"):
                     ui.avatar(guest.get("name")[0], color=avatar_colors[i], text_color="white", size="5xl")
                     # green check if going, red x if not going
-                    ui.icon("check" if guest.get("status") == "Yes" else "close")\
+                    icons = {
+                        StatusEnum.GOING.value: "check",
+                        StatusEnum.NOT_GOING.value: "close",
+                        StatusEnum.MAYBE.value: "question_mark"
+                    }
+                    icon_colors = {
+                        StatusEnum.GOING.value: "color=green",
+                        StatusEnum.NOT_GOING.value: "color=red",
+                        StatusEnum.MAYBE.value: "color=yellow"
+                    }
+                    ui.icon(icons.get(guest['status']))\
                         .classes("text-2xl")\
-                        .props("color=green" if guest.get("status") == "Yes" else "color=red")
+                        .props(icon_colors.get(guest['status']))
                     ui.label(f"{guest.get('name')}").classes("text-xl")
                     # increment color index
                     if i < len(avatar_colors) - 1:

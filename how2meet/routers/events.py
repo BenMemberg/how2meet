@@ -116,7 +116,7 @@ Guests routers
 """
 
 @router.get("/{event_id}/guests", response_model=list[schemas.Guest])
-def get_guests(event_id: str, db: Session = Depends(get_db)) -> list[schemas.Guest]:
+def get_guests(event_id: uuid.UUID, db: Session = Depends(get_db)) -> list[schemas.Guest]:
     """
     API route to get all guests for an event.
 
@@ -132,7 +132,7 @@ def get_guests(event_id: str, db: Session = Depends(get_db)) -> list[schemas.Gue
 
 
 @router.get("/{event_id}/guests/{guest_id}", response_model=schemas.Guest)
-def get_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) -> schemas.Guest:
+def get_guest(event_id: uuid.UUID, guest_id: str, db: Session = Depends(get_db)) -> schemas.Guest:
     """
     API route to get a guest for an event.
 
@@ -149,7 +149,7 @@ def get_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) -> sc
 
 
 @router.post("/{event_id}/guests", response_model=schemas.Guest)
-def create_guest(event_id: str, guest: schemas.GuestCreate, db: Session = Depends(get_db)) -> schemas.Guest:
+def create_guest(event_id: uuid.UUID, guest: schemas.GuestCreate, db: Session = Depends(get_db)) -> schemas.Guest:
     """
     API route to create a guest for an event.
 
@@ -167,7 +167,7 @@ def create_guest(event_id: str, guest: schemas.GuestCreate, db: Session = Depend
 
 
 @router.delete("/{event_id}/guests/{guest_id}", response_model=schemas.Guest)
-def delete_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) -> schemas.Guest:
+def delete_guest(event_id: uuid.UUID, guest_id: str, db: Session = Depends(get_db)) -> schemas.Guest:
     """
     API route to delete a guest for an event.
 
@@ -188,7 +188,7 @@ def delete_guest(event_id: str, guest_id: str, db: Session = Depends(get_db)) ->
 
 
 @router.put("/{event_id}/guests/{guest_id}", response_model=schemas.Guest)
-def update_guest(event_id: str, guest_id: str, updated_guest: schemas.GuestUpdate, db: Session = Depends(get_db)) -> schemas.Guest:
+def update_guest(event_id: uuid.UUID, guest_id: str, guest_update: schemas.GuestUpdate, db: Session = Depends(get_db)) -> schemas.Guest:
     """
     API route to update a guest for an event.
 
@@ -204,5 +204,5 @@ def update_guest(event_id: str, guest_id: str, updated_guest: schemas.GuestUpdat
     db_guest = crud.get_guest_from_event(db, event_id, guest_id)
     if db_guest is None:
         raise HTTPException(status_code=404, detail="Guest not found")
-    db_guest = crud.update_guest(db, db_guest, updated_guest)
+    db_guest = crud.update_guest(db, db_guest, guest_update)
     return db_guest
