@@ -19,6 +19,7 @@ class Event(Base):
     __tablename__ = "events"
 
     id = Column(Uuid, primary_key=True, index=True)
+    auth_token = Column(Uuid, index=True)
     name = Column(String(150))
     created = Column(DateTime)
     start_time = Column(DateTime)

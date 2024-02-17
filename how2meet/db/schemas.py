@@ -27,10 +27,11 @@ class Event(BaseModel):
 
 
 class EventCreate(Event):
-    pass
+    auth_token: uuid.UUID
 
 
 class EventUpdate(Event):
+    auth_token: uuid.UUID
     id: Optional[uuid.UUID] = Field(default=None, description="The ID of the event")
     name: Optional[str] = Field(default=None, description="The name of the event")
     created: Optional[datetime] = Field(default=None, description="The creation datetime of the event")
@@ -40,6 +41,8 @@ class EventUpdate(Event):
     location: Optional[str] = Field(default=None, description="The location of the event")
     description: Optional[str] = Field(default=None, description="The description of the event")
 
+class EventDelete(BaseModel):
+    auth_token: uuid.UUID
 
 class Guest(BaseModel):
     id: str

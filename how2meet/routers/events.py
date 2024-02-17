@@ -50,6 +50,8 @@ def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) 
         List[models.Event]: A list of events retrieved from the database.
     """
     events = crud.get_events(db, skip=skip, limit=limit)
+    for event in events:
+        del event.auth_token
     return events
 
 
@@ -72,7 +74,7 @@ def read_event(event_id: uuid.UUID, db: Session = Depends(get_db)) -> models.Eve
 
 
 @router.delete("/{event_id}", response_model=schemas.Event)
-def delete_event(event_id: uuid.UUID, db: Session = Depends(get_db)) -> models.Event:
+def delete_event(event_id: uuid.UUID, event_delete: schemas.EventDelete, db: Session = Depends(get_db)) -> models.Event:
     """
     API route to delete an event from the database
 
@@ -86,6 +88,8 @@ def delete_event(event_id: uuid.UUID, db: Session = Depends(get_db)) -> models.E
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:
         raise HTTPException(status_code=404, detail="Event not found")
+    if event_delete.auth_token != db_event.auth_token:
+        raise HTTPException(status_code=403, detail="Unauthorized")
     db.delete(db_event)
     db.commit()
     return db_event
@@ -107,7 +111,8 @@ def update_event(event_id: uuid.UUID, updated_event: schemas.EventUpdate, db: Se
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:
         raise HTTPException(status_code=404, detail="Event not found")
-    db_event.id = uuid.UUID(db_event.id)
+    if updated_event.auth_token != db_event.auth_token:
+        raise HTTPException(status_code=403, detail="Unauthorized")
     updated_event = crud.update_event(db, db_event, updated_event)
     return updated_event
 

@@ -126,7 +126,21 @@ class EventEditor:
 
         try:
             if self.event:
-                status = await api.update_event(self.event_id, model_dump)
+                try:
+                    status = await api.update_event(self.event_id, model_dump)
+                except:
+                    with ui.dialog(value=True)as token_dialog, elements.card() as card:
+                        async def retry():
+                            app.storage.user["auth_token"] = token_input.value
+                            token_dialog.close()
+                            await self.save(on_save=on_save)
+                        card.classes("flex-grow w-full justify-between items-center border-2 border-neutral-500")
+                        elements.label("Please enter your auth token you received at event creation to edit this event.")\
+                                    .classes("text-xl justify-center w-full text-center")
+                        token_input = elements.input("Auth Token", value=app.storage.user.get("auth_token"))\
+                                                .classes("w-full")
+                        elements.button("Submit", on_click=retry).classes("w-1/3")
+                    return
             else:
                 status = await api.create_event(model_dump)
         except Exception as e:
