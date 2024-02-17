@@ -20,6 +20,11 @@ import how2meet.ui.components.elements as elements
 
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
 
+@router.page(ROUTE_BASE + "/test" )
+async def events() -> None:
+    frame()
+    ui.label("Test")
+
 @router.page(ROUTE_BASE)
 async def events() -> None:
     """List page for all events"""
