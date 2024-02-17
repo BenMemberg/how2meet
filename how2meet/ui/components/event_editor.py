@@ -28,7 +28,7 @@ class TokenDialog:
         self.auth_token = auth_token
 
     async def send_email(self):
-        ui.notification("Email functionality coming soon!")
+        ui.notify("Email functionality coming soon!")
 
     async def render(self, on_next, floating=True):
         if floating:
@@ -62,10 +62,10 @@ class RsvpEditor:
 
         def validate(self):
             if not self.name_input.value:
-                ui.notification("Name is required!", timeout=5)
+                ui.notify("Name is required!")
                 return False
             if not self.status_input.value:
-                ui.notification("Attendance status is required!", timeout=5)
+                ui.notify("Attendance status is required!")
                 return False
             return True
 
@@ -84,7 +84,7 @@ class RsvpEditor:
                     on_save()
             else:
                 logger.debug(f"Error: {status}")
-                ui.notification(f"Error: {status}", timeout=5)
+                ui.notify(f"Error: {status}")
 
         async def render(self, floating=True, on_save=None):
             # TODO add method to remove guest
@@ -153,16 +153,16 @@ class EventEditor:
                 status = await api.create_event(model_dump)
         except Exception as e:
             logger.exception(e)
-            ui.notification(f"Sorry we ran into an error trying to save your event!")
+            ui.notify(f"Sorry we ran into an error trying to save your event!")
             return
 
         if status.is_success:
-            ui.notification("Saved!")
+            ui.notify("Saved!")
             token_dialog = TokenDialog(model_dump["auth_token"])
             await token_dialog.render(on_save)
         else:
             logger.debug(f"Error: {status}")
-            ui.notification(f"Sorry we ran into an error!", timeout=5)
+            ui.notify(f"Sorry we ran into an error!", timeout=5)
 
     def close(self):
         try:
