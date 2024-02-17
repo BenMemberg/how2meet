@@ -34,7 +34,7 @@ def textarea(*args, **kwargs) -> ui.textarea:
     return ui.textarea(*args, **kwargs).props("filled color=white")
 
 def date(*args, **kwargs) -> ui.date:
-    return ui.date(*args, **kwargs).props("minimal")
+    return ui.date(*args, **kwargs).props("minimal navigation-min-year-month=1970/01")
 
 def time(*args, **kwargs) -> ui.time:
     return ui.time(*args, **kwargs).props("minimal color=white text-color=black")
