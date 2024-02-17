@@ -97,21 +97,7 @@ async def create():
 @router.page(ROUTE_EVENT_HOME)
 async def event_home(event_id: uuid.UUID, client: Client):
     """Detail page for a specific event"""
-    # Iphone12 390x844 pt (1170x2532 px @3x)
-    frame()
-
-    # Get the event from the API
-    event = await api.get_event(event_id)
-
-    with ui.column().classes("w-full justify-center pt-10"):
-        ui.label(f"{event.get('name')}").classes("text-5xl font-bold border-l-8 border-teal-500 pl-4")
-        with ui.column().classes("w-full justify-left border-l-8 border-amber-300 pl-4"):
-            ui.label(f"{event_dates_to_str(event)}").classes("text-xl")
-            ui.label(f"{event_times_to_str(event)}").classes("text-xl")
-        ui.label(f"{event.get('location')}").classes("text-xl border-l-8 border-orange-400 pl-4 pr-4")
-        ui.label(f"{event.get('description')}").classes("text-xl border-l-8 border-orange-600 pl-4 pr-4")
-
-    # Display the list of guests in refreshable cards
+        # Display the list of guests in refreshable cards
     @ui.refreshable
     async def render_guests():
         guests = await api.get_guests_from_event(event_id)
@@ -145,12 +131,41 @@ async def event_home(event_id: uuid.UUID, client: Client):
                     else:
                         i = 0
 
-    rsvp_editor = RsvpEditor(event_id)
-    with ui.row().classes("w-full justify-left items-center"):
-        elements.button("RSVP", on_click=partial(rsvp_editor.render, floating=True, on_save=render_guests.refresh))
-        # copy url to clipboard
-        icon = ui.icon("link").on("click", lambda: ui.notify("Copied link to clipboard")).classes("text-3xl cursor-pointer")
-        icon._props["onclick"] = f"navigator.clipboard.writeText('{BASE_URL}{app.url_path_for('event_home', event_id=event_id)}')"
+    async def open_floating_editor(_id):
+        # Initialize the event editor and render it in a floating dialog
+        event_editor = EventEditor(_id)
+        await event_editor.render(floating=True,
+                                  on_save=event_editor.close,
+                                  on_back=event_editor.close)
+        event_editor.dialog.on("hide", render_event.refresh)
+
+    frame()
+    # Get the event from the API
+    @ui.refreshable
+    async def render_event():
+        event = await api.get_event(event_id)
+
+        with ui.column().classes("w-full justify-center pt-10"):
+            ui.label(f"{event.get('name')}").classes("cursor-pointer text-5xl font-bold border-l-8 border-teal-500 pl-4")\
+                .on("click", lambda: open_floating_editor(event_id))
+            with ui.column().classes("cursor-pointer w-full justify-left border-l-8 border-amber-300 pl-4"):
+                ui.label(f"{event_dates_to_str(event)}").classes("cursor-pointer text-xl")\
+                    .on("click", lambda: open_floating_editor(event_id))
+                ui.label(f"{event_times_to_str(event)}").classes("cursor-pointer text-xl")\
+                    .on("click", lambda: open_floating_editor(event_id))
+            ui.label(f"{event.get('location')}").classes("cursor-pointer text-xl border-l-8 border-orange-400 pl-4 pr-4")\
+                .on("click", lambda: open_floating_editor(event_id))
+            ui.label(f"{event.get('description')}").classes("cursor-pointer text-xl border-l-8 border-orange-600 pl-4 pr-4")\
+                .on("click", lambda: open_floating_editor(event_id))
+
+        rsvp_editor = RsvpEditor(event_id)
+        with ui.row().classes("w-full justify-left items-center"):
+            elements.button("RSVP", on_click=partial(rsvp_editor.render, floating=True, on_save=render_guests.refresh))
+            # copy url to clipboard
+            icon = ui.icon("link").on("click", lambda: ui.notify("Copied link to clipboard")).classes("text-3xl cursor-pointer")
+            icon._props["onclick"] = f"navigator.clipboard.writeText('{BASE_URL}{app.url_path_for('event_home', event_id=event_id)}')"
+
+    await render_event()
     # Get the list of guests from the API
     ui.label("Who's Going...").classes("text-xl font-bold")
     await render_guests()

@@ -60,8 +60,18 @@ class RsvpEditor:
             self.event_id = event_id
             self.guest = None
 
+        def validate(self):
+            if not self.name_input.value:
+                ui.notification("Name is required!", timeout=5)
+                return False
+            if not self.status_input.value:
+                ui.notification("Attendance status is required!", timeout=5)
+                return False
+            return True
 
         async def save(self, on_save=None):
+            if not self.validate():
+                return
             guest_json_str = self.model_dump()
             status = await api.create_guest(str(self.event_id), guest_json_str)
             if status.is_success:
@@ -75,7 +85,6 @@ class RsvpEditor:
             else:
                 logger.debug(f"Error: {status}")
                 ui.notification(f"Error: {status}", timeout=5)
-
 
         async def render(self, floating=True, on_save=None):
             # TODO add method to remove guest
@@ -129,7 +138,7 @@ class EventEditor:
                 try:
                     status = await api.update_event(self.event_id, model_dump)
                 except:
-                    with ui.dialog(value=True)as token_dialog, elements.card() as card:
+                    with ui.dialog(value=True) as token_dialog, elements.card() as card:
                         async def retry():
                             app.storage.user["auth_token"] = token_input.value
                             token_dialog.close()
@@ -140,7 +149,6 @@ class EventEditor:
                         token_input = elements.input("Auth Token", value=app.storage.user.get("auth_token"))\
                                                 .classes("w-full")
                         elements.button("Submit", on_click=retry).classes("w-1/3")
-                    return
             else:
                 status = await api.create_event(model_dump)
         except Exception as e:
@@ -149,9 +157,9 @@ class EventEditor:
             return
 
         if status.is_success:
-            if not self.dialog:
-                token_dialog = TokenDialog(model_dump["auth_token"])
-                await token_dialog.render(on_save)
+            ui.notification("Saved!")
+            token_dialog = TokenDialog(model_dump["auth_token"])
+            await token_dialog.render(on_save)
         else:
             logger.debug(f"Error: {status}")
             ui.notification(f"Sorry we ran into an error!", timeout=5)
