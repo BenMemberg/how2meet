@@ -21,6 +21,7 @@ class StatusEnum(Enum):
     def choices(cls):
         return [e.value for e in cls]
 
+
 class TokenDialog:
 
     def __init__(self, auth_token: str):
@@ -28,9 +29,16 @@ class TokenDialog:
         self.auth_token = auth_token
 
     async def send_email(self):
+        """Sends the token to the user's email"""
         ui.notify("Email functionality coming soon!")
 
     async def render(self, on_next, floating=True):
+        """Renders the token dialog
+
+        Args:
+            on_next (callable): A callback to run when the next button is clicked.
+            floating (bool, optional): Whether to render the dialog in a floating dialog. Defaults to True.
+        """
         if floating:
             with ui.dialog(value=True).props("persistent") as dialog:
                 self.dialog = dialog
@@ -61,6 +69,7 @@ class RsvpEditor:
             self.guest = None
 
         def validate(self):
+            """Validates the form data"""
             if not self.name_input.value:
                 ui.notify("Name is required!")
                 return False
@@ -70,6 +79,7 @@ class RsvpEditor:
             return True
 
         async def save(self, on_save=None):
+            """Saves the guest to the API"""
             if not self.validate():
                 return
             guest_json_str = self.model_dump()
@@ -87,6 +97,7 @@ class RsvpEditor:
                 ui.notify(f"Error: {status}")
 
         async def render(self, floating=True, on_save=None):
+            """Renders the RSVP form"""
             # TODO add method to remove guest
             if floating:
                 with elements.dialog(value=True) as dialog:
@@ -105,6 +116,7 @@ class RsvpEditor:
                     self.submit_button = elements.button("Submit", on_click=partial(self.save, on_save=on_save))
 
         def model_dump(self):
+            """Dumps the form data to a JSON string"""
             phone_number = "".join(filter(str.isdigit, self.phone_input.value)) if self.phone_input.value else None
             return {
                     "id": str(uuid.uuid4()),
@@ -123,11 +135,27 @@ class EventEditor:
         self.event = {}
         self.dialog = None
 
+    def validate(self):
+        """Validates the form data"""
+        if not self.event_name_input.value:
+            ui.notify("Event name is required!")
+            return False
+        return True
+
     async def load(self):
+        """Loads the event data from the API"""
         if self.event_id is not None:
             self.event = await api.get_event(self.event_id)
 
     async def save(self, on_save=None):
+        """Saves the event to the API, displaying a token dialog if necessary
+
+        Args:
+            on_save (callable, optional): A callback to run after the event is saved. Defaults to None.
+        """
+        if not self.validate():
+            return
+
         if not app.storage.user.get("auth_token"):
             app.storage.user["auth_token"] = uuid.uuid4()
 
@@ -135,6 +163,7 @@ class EventEditor:
 
         try:
             if self.event:
+                # Update the event and provide auth interface
                 try:
                     status = await api.update_event(self.event_id, model_dump)
                 except:
@@ -150,7 +179,9 @@ class EventEditor:
                                                 .classes("w-full")
                         elements.button("Submit", on_click=retry).classes("w-1/3")
             else:
+                # Create the event
                 status = await api.create_event(model_dump)
+
         except Exception as e:
             logger.exception(e)
             ui.notify(f"Sorry we ran into an error trying to save your event!")
@@ -171,6 +202,13 @@ class EventEditor:
             pass
 
     async def render(self, floating=False, on_save=None, on_back=None):
+        """Renders the event editor form
+
+        Args:
+            floating (bool, optional): Whether to render the form in a floating dialog. Defaults to False.
+            on_save (callable, optional): A callback to run after the event is saved. Defaults to None.
+            on_back (callable, optional): A callback to run when the back button is clicked. Defaults to None.
+        """
         # If floating, enclose in a dialog
         if floating:
             with elements.dialog(value=True).classes("w-7/8") as dialog:
@@ -215,6 +253,7 @@ class EventEditor:
             elements.button("Back", on_click=call_on_back).classes("w-1/3")
 
     def model_dump(self):
+        """Dumps the form data to a JSON string"""
         if not app.storage.user.get("auth_token"):
             app.storage.user["auth_token"] = str(uuid.uuid4())
 
