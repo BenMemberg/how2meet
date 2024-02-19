@@ -16,7 +16,7 @@ def button(*args, **kwargs) -> ui.button:
     return ui.button(*args, **kwargs).props("outline color=white")
 
 def checkbox(*args, **kwargs) -> ui.checkbox:
-    return ui.checkbox(*args, **kwargs).props("flat color=white")
+    return ui.checkbox(*args, **kwargs).props("flat color=teal")
 
 def input(*args, **kwargs) -> ui.input:
     return ui.input(*args, **kwargs).props("filled color=white")
