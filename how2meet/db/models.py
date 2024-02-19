@@ -8,7 +8,7 @@ But Pydantic also uses the term "model" to refer to something different, the dat
 and documentation classes and instances.'
 
 """
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Uuid
+from sqlalchemy import Boolean, Column, ForeignKey, String, Uuid
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import DateTime
 
