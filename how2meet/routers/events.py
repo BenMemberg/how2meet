@@ -27,7 +27,6 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> m
     Returns:
         models.Event: The created event.
     """
-    # event.id = uuid.UUID(event.id)
     db_event = crud.get_event(db, event_id=event.id)
     if db_event:
         raise HTTPException(status_code=400, detail="Event already registered")
