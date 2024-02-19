@@ -94,7 +94,7 @@ async def create():
     # Render the event editor in page and set routing for save and back buttons
     await event_editor.render(
         on_back=partial(ui.open,
-                        URL_EVENTS),
+                        ROUTE_BASE),
         on_save=partial(ui.open,
                         URL_EVENT_HOME.format(event_id=event_editor.event_id)))
 
