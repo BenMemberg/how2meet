@@ -224,6 +224,7 @@ class EventEditor:
         # Render forms
         self.event_name_input = elements.input("What is your event going to be called?", value=self.event.get("name", "")).classes("w-full")
         self.event_location_input = elements.input("Where is it?", value=self.event.get("location", "")).classes("w-full")
+        self.org_name_input = elements.input("Who's hosting?", value=self.event.get("organizer", "")).classes("w-full")
 
         with ui.column().classes("w-full"):
             with ui.expansion("Start Time").classes("w-full"):
@@ -260,6 +261,7 @@ class EventEditor:
         return {
             "id": str(self.event_id),
             "name": self.event_name_input.value,
+            "organizer": self.org_name_input.value,
             "created": datetime.now().isoformat(),
             "start_time": f"{self.start_date_input.value}T{self.start_time_input.value}:00",
             "end_time": f"{self.end_date_input.value}T{self.end_time_input.value}:00",

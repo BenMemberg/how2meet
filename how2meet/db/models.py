@@ -21,6 +21,7 @@ class Event(Base):
     id = Column(Uuid, primary_key=True, index=True)
     auth_token = Column(Uuid, index=True)
     name = Column(String(150))
+    organizer = Column(String(100))
     created = Column(DateTime)
     start_time = Column(DateTime)
     end_time = Column(DateTime)

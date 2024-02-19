@@ -153,6 +153,8 @@ async def event_home(event_id: uuid.UUID, client: Client):
         with ui.column().classes("w-full justify-center pt-10"):
             ui.label(f"{event.get('name')}").classes("cursor-pointer text-5xl font-bold border-l-8 border-teal-500 pl-4")\
                 .on("click", lambda: open_floating_editor(event_id))
+            ui.label(f"Host: {event.get('organizer')}").classes("cursor-pointer text-xl border-l-8 border-teal-600 pl-4 pr-4")\
+                .on("click", lambda: open_floating_editor(event_id))
             with ui.column().classes("cursor-pointer w-full justify-left border-l-8 border-amber-300 pl-4"):
                 ui.label(f"{event_dates_to_str(event)}").classes("cursor-pointer text-xl")\
                     .on("click", lambda: open_floating_editor(event_id))
