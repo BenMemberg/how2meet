@@ -15,6 +15,7 @@ router = APIRouter(prefix="/events", tags=["events"], responses={404: {"descript
 Event routers
 """
 
+
 @router.post("/", response_model=schemas.Event)
 def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> models.Event:
     """
@@ -115,9 +116,11 @@ def update_event(event_id: uuid.UUID, updated_event: schemas.EventUpdate, db: Se
     updated_event = crud.update_event(db, db_event, updated_event)
     return updated_event
 
+
 """
 Guests routers
 """
+
 
 @router.get("/{event_id}/guests", response_model=list[schemas.Guest])
 def get_guests(event_id: uuid.UUID, db: Session = Depends(get_db)) -> list[schemas.Guest]:

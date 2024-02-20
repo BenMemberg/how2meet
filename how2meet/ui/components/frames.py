@@ -19,9 +19,7 @@ def frame():
         ui.link("How2Meet", ROUTE_BASE).classes("no-underline font-bold text-teal-500 text-xl")
         elements.button(on_click=lambda: right_drawer.toggle()).props("flat color=white icon=menu")
 
-    with ui.right_drawer()\
-            .classes("gap-0 m-0 p-0 bg-neutral-900")\
-            .props("show-if-above=False no-swipe-open=True") as right_drawer:
+    with ui.right_drawer().classes("gap-0 m-0 p-0 bg-neutral-900").props("show-if-above=False no-swipe-open=True") as right_drawer:
         header_links = {
             "Home": ROUTE_BASE,
             # "Events": URL_EVENTS,

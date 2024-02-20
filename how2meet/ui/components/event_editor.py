@@ -1,16 +1,17 @@
 import logging
 import uuid
-from enum import Enum
 from datetime import datetime
+from enum import Enum
 from functools import partial
 
-from nicegui import ui, app
+from nicegui import app, ui
 
 import how2meet.ui.components.elements as elements
 from how2meet.ui.pages.urls import URL_EVENT_HOME, URL_EVENTS, URL_NEW_EVENT
 from how2meet.utils import APIClient as api
 
 logger = logging.getLogger(__name__)
+
 
 class StatusEnum(Enum):
     GOING = "Going"
@@ -23,7 +24,6 @@ class StatusEnum(Enum):
 
 
 class TokenDialog:
-
     def __init__(self, auth_token: str):
         self.dialog = None
         self.auth_token = auth_token
@@ -48,7 +48,9 @@ class TokenDialog:
 
         with ui.column().classes("flex-grow justify-between items-center"):
             elements.label("Your event has been saved!").classes("text-2xl text-center w-full")
-            elements.label("We'll try to remember you in this browser, but in case we mess up save the token below to edit your event later.").classes("text-xl w-full text-center")
+            elements.label(
+                "We'll try to remember you in this browser, but in case we mess up save the token below to edit your event later."
+            ).classes("text-xl w-full text-center")
             with elements.card().classes("flex-grow position:relative") as card:
                 card.classes("border-2 border-teal-500 no-wrap")
                 with ui.row().classes("w-full items-center justify-between"):
@@ -62,8 +64,8 @@ class TokenDialog:
                 self.send_button = elements.button("Send", on_click=self.send_email).classes("max-w-1/3")
             self.next_button = elements.button("Next", on_click=on_next).classes("w-1/3")
 
-class RsvpEditor:
 
+class RsvpEditor:
     def __init__(self, event_id: uuid.UUID):
         self.event_id = event_id
         self.guest = None
@@ -119,13 +121,13 @@ class RsvpEditor:
         """Dumps the form data to a JSON string"""
         phone_number = "".join(filter(str.isdigit, self.phone_input.value)) if self.phone_input.value else None
         return {
-                "id": str(uuid.uuid4()),
-                "name": self.name_input.value,
-                "email": self.email_input.value,
-                "phone": phone_number,
-                "status": self.status_input.value,
-                "event_id": str(self.event_id),
-                }
+            "id": str(uuid.uuid4()),
+            "name": self.name_input.value,
+            "email": self.email_input.value,
+            "phone": phone_number,
+            "status": self.status_input.value,
+            "event_id": str(self.event_id),
+        }
 
 
 class EventEditor:
@@ -167,15 +169,17 @@ class EventEditor:
                     status = await api.update_event(self.event_id, model_dump)
                 except:
                     with ui.dialog(value=True) as token_dialog, elements.card() as card:
+
                         async def retry():
                             app.storage.user["auth_token"] = token_input.value
                             token_dialog.close()
                             await self.save(on_save=on_save)
+
                         card.classes("flex-grow w-full justify-between items-center border-2 border-neutral-500")
-                        elements.label("Please enter your auth token you received at event creation to edit this event.")\
-                                    .classes("text-xl justify-center w-full text-center")
-                        token_input = elements.input("Auth Token", value=app.storage.user.get("auth_token"))\
-                                                .classes("w-full")
+                        elements.label("Please enter your auth token you received at event creation to edit this event.").classes(
+                            "text-xl justify-center w-full text-center"
+                        )
+                        token_input = elements.input("Auth Token", value=app.storage.user.get("auth_token")).classes("w-full")
                         elements.button("Submit", on_click=retry).classes("w-1/3")
             else:
                 # Create the event
@@ -246,9 +250,11 @@ class EventEditor:
             self.description_input = elements.textarea("Description", value=self.event.get("description", "")).classes("w-full")
 
         with ui.column().classes("w-full justify-between items-center"):
+
             def call_on_back():
                 if callable(on_back):
                     on_back()
+
             elements.button("Save", on_click=partial(self.save, on_save=on_save)).classes("w-1/3")
             elements.button("Back", on_click=call_on_back).classes("w-1/3")
 

@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 Events schemas
 """
 
+
 class Event(BaseModel):
     id: uuid.UUID
     name: str
@@ -55,6 +56,7 @@ class EventDelete(BaseModel):
 Guests schemas
 """
 
+
 class Guest(BaseModel):
     id: str
     name: str
@@ -69,6 +71,7 @@ class Guest(BaseModel):
 
 class GuestCreate(Guest):
     pass
+
 
 class GuestUpdate(Guest):
     name: Optional[str] = Field(default=None, description="The name of the guest")
