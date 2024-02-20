@@ -11,7 +11,7 @@ services:
     autoDeploy: false
     envVars:
       - key: BASE_URL
-        value: https://how2meet.com
+        value: https://www.how2meet.com
       - key: DB_CONN
         fromDatabase:
           name: how2meet-db
