@@ -5,22 +5,26 @@ from these schemas depending on how the API is to be used.
 
 FastAPI Tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/#create-the-pydantic-models
 """
+import uuid
 from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
 
+"""
+Events schemas
+"""
+
 
 class Event(BaseModel):
-    id: str
+    id: uuid.UUID
     name: str
+    organizer: str
     created: datetime
     start_time: datetime
     end_time: datetime
     all_day: bool
     location: str
-    organizer_name: str
-    organizer_password: str
     description: str
 
     class Config:
@@ -28,29 +32,38 @@ class Event(BaseModel):
 
 
 class EventCreate(Event):
-    pass
+    auth_token: uuid.UUID
 
 
 class EventUpdate(Event):
-    id: Optional[str] = Field(default=None, description="The ID of the event")
+    auth_token: uuid.UUID
+    id: Optional[uuid.UUID] = Field(default=None, description="The ID of the event")
     name: Optional[str] = Field(default=None, description="The name of the event")
+    organizer: Optional[str] = Field(default=None, description="The organizer of the event")
     created: Optional[datetime] = Field(default=None, description="The creation datetime of the event")
     start_time: Optional[datetime] = Field(default=None, description="The start datetime of the event")
     end_time: Optional[datetime] = Field(default=None, description="The end datetime of the event")
     all_day: Optional[bool] = Field(default=None, description="Whether the event lasts all day")
     location: Optional[str] = Field(default=None, description="The location of the event")
-    organizer_name: Optional[str] = Field(default=None, description="The name of the event organizer")
-    organizer_password: Optional[str] = Field(default=None, description="The password of the event organizer")
     description: Optional[str] = Field(default=None, description="The description of the event")
+
+
+class EventDelete(BaseModel):
+    auth_token: uuid.UUID
+
+
+"""
+Guests schemas
+"""
 
 
 class Guest(BaseModel):
     id: str
     name: str
-    email: str
-    phone: int
+    email: Optional[str] = Field(default="", description="The email of the guest")
+    phone: Optional[str] = Field(default="", description="The phone number of the guest")
     status: str
-    event_id: str
+    event_id: uuid.UUID
 
     class Config:
         from_attributes = True
@@ -61,9 +74,6 @@ class GuestCreate(Guest):
 
 
 class GuestUpdate(Guest):
-    id: Optional[str] = Field(default=None, description="The ID of the guest")
     name: Optional[str] = Field(default=None, description="The name of the guest")
-    email: Optional[str] = Field(default=None, description="The email of the guest")
-    phone: Optional[int] = Field(default=None, description="The phone number of the guest")
     status: Optional[str] = Field(default=None, description="The status of the guest")
-    event_id: Optional[str] = Field(default=None, description="The event ID of the guest")
+    event_id: Optional[uuid.UUID] = Field(default=None, description="The event ID of the guest")

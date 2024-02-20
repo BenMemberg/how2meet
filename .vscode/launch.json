@@ -2,8 +2,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "how2meet: main",
-            "type": "python",
+            "name": "how2meet: debug",
+            "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
             "args": [
@@ -20,7 +20,34 @@
                 "pattern": "Uvicorn running on http://127.0.0.1:([0-9]+)",
                 "uriFormat": "http://localhost:%s",
                 "action": "openExternally"
-                    }
+                    },
+            "env": {
+                "DB_CONN": "postgresql://localhost/how2meet.db"
+            },
+        },
+        {
+            "name": "how2meet: info",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "how2meet.main:app",
+                "--reload",
+                "--log-level=info",
+                "--port=8000"
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            "console": "integratedTerminal",
+            "subProcess": true,
+            "serverReadyAction": {
+                "pattern": "Uvicorn running on http://127.0.0.1:([0-9]+)",
+                "uriFormat": "http://localhost:%s",
+                "action": "openExternally"
+                    },
+            "env": {
+                "DB_CONN": "postgresql://localhost/how2meet.db"
+            }
         }
     ]
 }
