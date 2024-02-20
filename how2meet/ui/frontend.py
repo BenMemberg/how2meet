@@ -6,6 +6,8 @@ from functools import partial
 
 from nicegui import app, ui
 
+import how2meet.ui.components.elements as elements
+
 from .components.frames import frame
 from .pages import events, settings
 from .pages.urls import URL_NEW_EVENT

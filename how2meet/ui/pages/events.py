@@ -9,6 +9,7 @@ from pathlib import Path
 
 from nicegui import APIRouter, ui, app, Client
 
+import how2meet.ui.components.elements as elements
 from how2meet.utils import APIClient as api
 
 from ..components.frames import frame
@@ -31,7 +32,6 @@ async def events() -> None:
 
     # Define a function to open the event editor in a floating dialog
     async def open_floating_editor(_id):
-
         # Notify and refresh the list when the event is saved
         def on_save():
             ui.notify("Event saved!")
@@ -39,9 +39,7 @@ async def events() -> None:
 
         # Initialize the event editor and render it in a floating dialog
         event_editor = EventEditor(_id)
-        await event_editor.render(floating=True,
-                                    on_save=on_save,
-                                    on_back=event_editor.close)
+        await event_editor.render(floating=True, on_save=on_save, on_back=event_editor.close)
         event_editor.dialog.on("hide", render_list.refresh)
 
     # Define page layout
@@ -57,17 +55,14 @@ async def events() -> None:
                         ui.label(f"Event ID: {event['id']}")
                         ui.label(f"Event Name: {event['name']}")
 
-                    elements.button(icon="edit",
-                                on_click=partial(open_floating_editor, _id=event["id"])
-                                ).classes("w-6 h-6")
-                    elements.button(icon="info",
-                                on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))
-                                ).classes("w-6 h-6")
+                    elements.button(icon="edit", on_click=partial(open_floating_editor, _id=event["id"])).classes("w-6 h-6")
+                    elements.button(icon="info", on_click=lambda _id=event["id"]: ui.open(URL_EVENT_HOME.format(event_id=_id))).classes(
+                        "w-6 h-6"
+                    )
 
-                    elements.button(icon="delete",
-                                on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card),
-                                color="red"
-                                ).classes("w-6 h-6")
+                    elements.button(
+                        icon="delete", on_click=lambda _id=event["id"], card=event_card: api.delete_event(_id, card), color="red"
+                    ).classes("w-6 h-6")
 
     await render_list()
 

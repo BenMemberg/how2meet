@@ -1,14 +1,14 @@
-from functools import partial
-from datetime import datetime
 import logging
 import uuid
 from enum import Enum
+from datetime import datetime
+from functools import partial
 
 from nicegui import ui, app
 
-from how2meet.utils import APIClient as api
-from how2meet.ui.pages.urls import URL_EVENTS, URL_NEW_EVENT, URL_EVENT_HOME
 import how2meet.ui.components.elements as elements
+from how2meet.ui.pages.urls import URL_EVENT_HOME, URL_EVENTS, URL_NEW_EVENT
+from how2meet.utils import APIClient as api
 
 logger = logging.getLogger(__name__)
 
@@ -64,72 +64,71 @@ class TokenDialog:
 
 class RsvpEditor:
 
-        def __init__(self, event_id: uuid.UUID):
-            self.event_id = event_id
-            self.guest = None
+    def __init__(self, event_id: uuid.UUID):
+        self.event_id = event_id
+        self.guest = None
 
-        def validate(self):
-            """Validates the form data"""
-            if not self.name_input.value:
-                ui.notify("Name is required!")
-                return False
-            if not self.status_input.value:
-                ui.notify("Attendance status is required!")
-                return False
-            return True
+    def validate(self):
+        """Validates the form data"""
+        if not self.name_input.value:
+            ui.notify("Name is required!")
+            return False
+        if not self.status_input.value:
+            ui.notify("Attendance status is required!")
+            return False
+        return True
 
-        async def save(self, on_save=None):
-            """Saves the guest to the API"""
-            if not self.validate():
+    async def save(self, on_save=None):
+        """Saves the guest to the API"""
+        if not self.validate():
+            return
+        guest_json_str = self.model_dump()
+        status = await api.create_guest(str(self.event_id), guest_json_str)
+        if status.is_success:
+            if self.dialog:
+                self.dialog.close()
+            ui.notify("Saved!")
+
+        if status.is_success:
+            if callable(on_save):
+                on_save()
+        else:
+            logger.debug(f"Error: {status}")
+            ui.notify(f"Error: {status}")
+
+    async def render(self, floating=True, on_save=None):
+        """Renders the RSVP form"""
+        # TODO add method to remove guest
+        if floating:
+            with elements.dialog(value=True) as dialog:
+                self.dialog = dialog
+                await self.render(floating=False, on_save=on_save)
                 return
-            guest_json_str = self.model_dump()
-            status = await api.create_guest(str(self.event_id), guest_json_str)
-            if status.is_success:
-                if self.dialog:
-                    self.dialog.close()
-                ui.notify("Saved!")
 
-            if status.is_success:
-                if callable(on_save):
-                    on_save()
-            else:
-                logger.debug(f"Error: {status}")
-                ui.notify(f"Error: {status}")
+        with elements.card().classes("flex-grow") as card:
+            self.card = card
+            with ui.column().classes("w-full justify-between items-center"):
+                self.name_input = elements.input("Name").classes("w-full")
+                self.email_input = elements.input("Email (Optional)").classes("w-full")
+                self.phone_input = elements.input("Phone Number (Optional)").classes("w-full")
+                with ui.row().classes("w-full"):
+                    self.status_input = ui.radio(StatusEnum.choices()).classes("w-full")
+                self.submit_button = elements.button("Submit", on_click=partial(self.save, on_save=on_save))
 
-        async def render(self, floating=True, on_save=None):
-            """Renders the RSVP form"""
-            # TODO add method to remove guest
-            if floating:
-                with elements.dialog(value=True) as dialog:
-                    self.dialog = dialog
-                    await self.render(floating=False, on_save=on_save)
-                    return
-
-            with elements.card().classes("flex-grow") as card:
-                self.card = card
-                with ui.column().classes("w-full justify-between items-center"):
-                    self.name_input = elements.input("Name").classes("w-full")
-                    self.email_input = elements.input("Email (Optional)").classes("w-full")
-                    self.phone_input = elements.input("Phone Number (Optional)").classes("w-full")
-                    with ui.row().classes("w-full"):
-                        self.status_input = ui.radio(StatusEnum.choices()).classes("w-full")
-                    self.submit_button = elements.button("Submit", on_click=partial(self.save, on_save=on_save))
-
-        def model_dump(self):
-            """Dumps the form data to a JSON string"""
-            phone_number = "".join(filter(str.isdigit, self.phone_input.value)) if self.phone_input.value else None
-            return {
-                    "id": str(uuid.uuid4()),
-                    "name": self.name_input.value,
-                    "email": self.email_input.value,
-                    "phone": phone_number,
-                    "status": self.status_input.value,
-                    "event_id": str(self.event_id),
-                    }
+    def model_dump(self):
+        """Dumps the form data to a JSON string"""
+        phone_number = "".join(filter(str.isdigit, self.phone_input.value)) if self.phone_input.value else None
+        return {
+                "id": str(uuid.uuid4()),
+                "name": self.name_input.value,
+                "email": self.email_input.value,
+                "phone": phone_number,
+                "status": self.status_input.value,
+                "event_id": str(self.event_id),
+                }
 
 
 class EventEditor:
-
     def __init__(self, event_id=None):
         self.event_id = event_id or uuid.uuid4()
         self.event = {}

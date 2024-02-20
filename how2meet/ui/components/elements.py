@@ -4,13 +4,8 @@ Collection of How2Meet styled Quasar components
 
 from nicegui import ui
 
-PALETTES = {
-    "dark": "#010B13",
-    "persian-green": "#2A9D8F",
-    "saffron": "#E9C46A",
-    "sandy-brown": "#F4A261",
-    "burnt-sienna": "#E76F51"
-    }
+PALETTES = {"dark": "#010B13", "persian-green": "#2A9D8F", "saffron": "#E9C46A", "sandy-brown": "#F4A261", "burnt-sienna": "#E76F51"}
+
 
 def button(*args, **kwargs) -> ui.button:
     return ui.button(*args, **kwargs).props("outline color=white")

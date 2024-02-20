@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from pathlib import Path
 
-from nicegui import ui, context
+from nicegui import context, ui
 
 from how2meet.ui.components import elements
 from how2meet.ui.pages.urls import ROUTE_BASE, URL_EVENTS, URL_SETTINGS
@@ -9,15 +9,13 @@ from how2meet.ui.pages.urls import ROUTE_BASE, URL_EVENTS, URL_SETTINGS
 
 def frame():
     """Custom page frame to share the same styling and behavior across all pages"""
-    HEADER_HTML = (Path(__file__).parent / ".." / 'static' / 'header.html').read_text()
-    STYLE_CSS = (Path(__file__).parent / ".." / 'static' / 'global.css').read_text()
-    ui.add_head_html(HEADER_HTML + f'<style>{STYLE_CSS}</style>')
+    HEADER_HTML = (Path(__file__).parent / ".." / "static" / "header.html").read_text()
+    STYLE_CSS = (Path(__file__).parent / ".." / "static" / "global.css").read_text()
+    ui.add_head_html(HEADER_HTML + f"<style>{STYLE_CSS}</style>")
 
     ui.dark_mode(True)
 
-    with ui.header() \
-            .classes('items-center justify-between duration-200 p-0 px-4') \
-            .style('box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)'):
+    with ui.header().classes("items-center justify-between duration-200 p-0 px-4").style("box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)"):
         ui.link("How2Meet", ROUTE_BASE).classes("no-underline font-bold text-teal-500 text-xl")
         elements.button(on_click=lambda: right_drawer.toggle()).props("flat color=white icon=menu")
 
