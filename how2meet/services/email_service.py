@@ -40,7 +40,3 @@ def send_email(to_email: str, subject: str, body: str):
         server.close()
     except Exception as e:
         print(e)
-
-
-if __name__ == "__main__":
-    send_email("csrubin@gmail.com", "Test Subject", "Test Body")
