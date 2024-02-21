@@ -1,4 +1,5 @@
 import logging
+import smtplib
 import uuid
 from datetime import datetime
 from enum import Enum
@@ -39,8 +40,11 @@ class TokenDialog:
 
     async def send_email(self):
         """Sends the token to the user's email"""
-        send_email(self.email_input.value, "How2Meet Event Password", self.auth_token)
-        ui.notify("Email sent!")
+        try:
+            send_email(self.email_input.value, "How2Meet Event Password", self.auth_token)
+            ui.notify("Email sent! Check your spam folder if you don't see it in your inbox.")
+        except smtplib.SMTPException as e:
+            ui.notify(f"Failed to send email with error: {e}")
 
     async def render(self, on_next, floating=True):
         """Renders the token dialog
