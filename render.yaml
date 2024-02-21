@@ -20,6 +20,8 @@ services:
         value: 0.0.0.0
       - key: PORT
         value: 8000
+      - key: H2M_EMAIL_APP_PASSWORD
+        sync: false
     buildFilter:
       paths: # Only rebuild on changes to these paths
         - how2meet/**/*
