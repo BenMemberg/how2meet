@@ -7,9 +7,10 @@ from functools import partial
 from nicegui import app, ui
 
 import how2meet.ui.components.elements as elements
+from how2meet.services.email_service import send_email
 from how2meet.ui.pages.urls import URL_EVENT_HOME, URL_EVENTS, URL_NEW_EVENT
 from how2meet.utils import APIClient as api
-from how2meet.services.email_service import send_email
+
 logger = logging.getLogger(__name__)
 
 
@@ -31,7 +32,8 @@ class TokenDialog:
     @staticmethod
     def check_email(value):
         import re
-        pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+
+        pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
         if re.fullmatch(pattern, value):
             return None
         else:

@@ -3,9 +3,9 @@ GMail service. Boilerplate to arbitrarily send email messages. Uses app password
 
 Note: Named "email_service" to avoid conflict with the built-in email module
 """
+import os
 import smtplib
 from email.message import EmailMessage
-import os
 
 app_email = "app.how2meet@gmail.com"
 app_password = os.getenv("H2M_EMAIL_APP_PASSWORD")
@@ -33,7 +33,7 @@ def send_email(to_email: str, subject: str, body: str):
 
     # Login and send the email
     try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server = smtplib.SMTP("smtp.gmail.com", 587)
         server.ehlo()
         server.starttls()
         server.login(app_email, app_password)
