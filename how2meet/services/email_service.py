@@ -9,6 +9,7 @@ import os
 
 app_email = "app.how2meet@gmail.com"
 app_password = os.getenv("H2M_EMAIL_APP_PASSWORD")
+from_email = "events@how2meet.com"
 
 
 def send_email(to_email: str, subject: str, body: str):
@@ -26,7 +27,7 @@ def send_email(to_email: str, subject: str, body: str):
     # Setting up the email
     message = EmailMessage()
     message["Subject"] = subject
-    message["From"] = "app.how2meet@gmail.com"
+    message["From"] = from_email
     message["To"] = to_email
     message.set_content(body)
 
