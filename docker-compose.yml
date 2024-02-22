@@ -1,0 +1,19 @@
+# docker-compose.yml
+
+version: '3'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      PGHOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: how2meet
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
