@@ -20,7 +20,7 @@ class Event(Base):
     __tablename__ = "events"
 
     id = Column(Uuid, primary_key=True, index=True)
-    auth_token = Column(Uuid, index=True)
+    auth_token = Column(String(100))
     name = Column(String(150))
     organizer = Column(String(100))
     created = Column(DateTime)
