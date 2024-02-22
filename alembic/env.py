@@ -26,8 +26,8 @@ target_metadata = Base.metadata
 # ... etc.
 
 # Define sqlalchemy url dynamically here, instead of in the alembic.ini file
-db_conn = os.getenv("DB_CONN", "postgresql://postgres:password@0.0.0.0:5432/how2meet")
-config.set_main_option("sqlalchemy.url", db_conn)
+from how2meet.db.database import SQLALCHEMY_DATABASE_URL
+config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
 
 def run_migrations_offline() -> None:
