@@ -27,6 +27,7 @@ target_metadata = Base.metadata
 
 # Define sqlalchemy url dynamically here, instead of in the alembic.ini file
 from how2meet.db.database import SQLALCHEMY_DATABASE_URL
+
 config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
 
