@@ -27,8 +27,6 @@ else:
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()  # Base class inherited in models.py to declare new tables
-
 
 # Dependency
 def get_db() -> Session:

@@ -9,10 +9,11 @@ and documentation classes and instances.'
 
 """
 from sqlalchemy import Boolean, Column, ForeignKey, String, Uuid
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.types import DateTime
 
-from .database import Base
+
+Base = declarative_base()
 
 
 class Event(Base):
