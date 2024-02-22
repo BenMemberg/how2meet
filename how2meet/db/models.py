@@ -12,7 +12,6 @@ from sqlalchemy import Boolean, Column, ForeignKey, String, Uuid
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.types import DateTime
 
-
 Base = declarative_base()
 
 
