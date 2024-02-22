@@ -1,15 +1,13 @@
 
 ---
 <h1 align="center">
-    <img src="assets/h2m-logo.png" alt="Logo" width="125" height="125">
+    <img src="assets/h2m_logo.png" alt="Logo" width="175" height="175">
     <br>
-    <img src="assets/company-logo.png" alt="CompanyLogo" width="200">
-    <br>
-    how2meet
+    <img src="assets/how2meet.png" alt="title" width="299">
 </h1>
 
 <p align="center">
-    Frictionless event manager
+    The frictionless event manager
     <br/>
 </p>
 
