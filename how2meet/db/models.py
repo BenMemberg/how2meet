@@ -38,7 +38,7 @@ class Event(Base):
 class Guest(Base):
     __tablename__ = "guests"
 
-    id = Column(String(36), primary_key=True, index=True)
+    id = Column(Uuid, primary_key=True, index=True)
     name = Column(String(100))
     email = Column(String(100), nullable=True)
     phone = Column(String(15), nullable=True)
