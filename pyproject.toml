@@ -34,5 +34,12 @@ select = [
     "I001"
 ]
 
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length  = 80
+
 [tool.mypy]
 ignore_missing_imports = true

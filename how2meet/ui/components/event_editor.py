@@ -31,7 +31,13 @@ class TokenDialog:
         self.auth_token = auth_token
 
     @staticmethod
-    def check_email(value):
+    def check_email(value: str) -> str | None:
+        """
+        Checks if the input is a valid email address; used as validator callback
+        Args:
+            value: The value from the email input field passed in at render time
+        """
+
         import re
 
         pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
