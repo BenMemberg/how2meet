@@ -1,4 +1,5 @@
 import logging
+import smtplib
 import uuid
 from datetime import datetime
 from enum import Enum
@@ -7,6 +8,7 @@ from functools import partial
 from nicegui import app, ui
 
 import how2meet.ui.components.elements as elements
+from how2meet.services.email_service import send_email
 from how2meet.ui.pages.urls import URL_EVENT_HOME, URL_EVENTS, URL_NEW_EVENT
 from how2meet.utils import APIClient as api
 
@@ -28,9 +30,29 @@ class TokenDialog:
         self.dialog = None
         self.auth_token = auth_token
 
+    @staticmethod
+    def check_email(value: str) -> str | None:
+        """
+        Checks if the input is a valid email address; used as validator callback
+        Args:
+            value: The value from the email input field passed in at render time
+        """
+
+        import re
+
+        pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
+        if re.fullmatch(pattern, value):
+            return None
+        else:
+            return "Invalid email address"
+
     async def send_email(self):
         """Sends the token to the user's email"""
-        ui.notify("Email functionality coming soon!")
+        try:
+            send_email(self.email_input.value, "How2Meet Event Password", self.auth_token)
+            ui.notify("Email sent! Check your spam folder if you don't see it in your inbox.")
+        except smtplib.SMTPException as e:
+            ui.notify(f"Failed to send email with error: {e}")
 
     async def render(self, on_next, floating=True):
         """Renders the token dialog
@@ -60,7 +82,7 @@ class TokenDialog:
                     copy_icon._props["onclick"] = f"navigator.clipboard.writeText('{self.auth_token}');"
             elements.label("We can also send it to your email if you want.").classes("text-xl text-center w-full")
             with ui.row().classes("w-full items-center justify-between"):
-                self.email_input = elements.input("Email").classes("flex-grow")
+                self.email_input = elements.input("Email", validation=self.check_email).classes("flex-grow")
                 self.send_button = elements.button("Send", on_click=self.send_email).classes("max-w-1/3")
             self.next_button = elements.button("Next", on_click=on_next).classes("w-1/3")
 
