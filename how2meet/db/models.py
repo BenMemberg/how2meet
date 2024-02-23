@@ -11,6 +11,7 @@ and documentation classes and instances.'
 from sqlalchemy import Boolean, Column, ForeignKey, String, Uuid
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.types import DateTime
+from uuid import uuid4
 
 Base = declarative_base()
 
@@ -18,7 +19,7 @@ Base = declarative_base()
 class Event(Base):
     __tablename__ = "events"
 
-    id = Column(Uuid, primary_key=True, index=True)
+    id = Column(Uuid, primary_key=True, index=True, default=uuid4)
     auth_token = Column(String(100))
     name = Column(String(150), nullable=False)
     organizer = Column(String(100))
