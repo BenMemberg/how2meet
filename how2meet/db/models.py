@@ -8,10 +8,11 @@ But Pydantic also uses the term "model" to refer to something different, the dat
 and documentation classes and instances.'
 
 """
+from uuid import uuid4
+
 from sqlalchemy import Boolean, Column, ForeignKey, String, Uuid
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.types import DateTime
-from uuid import uuid4
 
 Base = declarative_base()
 
