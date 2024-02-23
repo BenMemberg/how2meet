@@ -8,10 +8,10 @@ FastAPI tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/#create-th
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, declarative_base, sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 # TODO: connect to postres instance from env
-SQLALCHEMY_DATABASE_URL = os.getenv("DB_CONN", "postgresql://postgres:password@0.0.0.0:5432/how2meet")
+SQLALCHEMY_DATABASE_URL = os.getenv("DB_CONN", "postgresql://postgres:password@localhost:5432/how2meet")
 connect_args = {}
 
 if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
@@ -19,9 +19,6 @@ if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
     # Ref: https://community.render.com/t/sqlalchemy-exc-nosuchmoduleerror-cant-load-plugin-sqlalchemy-dialects-postgres/11789
     # Ref: https://github.com/sqlalchemy/sqlalchemy/issues/6083#issuecomment-821914503
     SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://")
-else:
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./sqlite.db"
-    connect_args = {"check_same_thread": False}
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
