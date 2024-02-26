@@ -1,16 +1,15 @@
 FROM python:3.10-slim
-RUN mkdir /how2meet
-COPY how2meet/ how2meet/
-COPY pyproject.toml /how2meet
-WORKDIR /how2meet
-ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+
+# RUN mkdir /how2meet
+WORKDIR /app
+COPY . .
+
 RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry install --only main
 
-EXPOSE 8501
+# Maybe run migrations here? Do we want them to be automatic or manual?
+# RUN alembic upgrade head
+# ^ Might have to be in an entrypoint script? (That's how a tutorial did it at least)
 
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
-
-#ENTRYPOINT ["streamlit", "run", "run.py", "--server.port=8501", "--server.address=0.0.0.0"]
-# Entrypoint command TBD
+CMD ["uvicorn", "how2meet.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
