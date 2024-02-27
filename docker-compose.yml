@@ -1,0 +1,37 @@
+# docker-compose.yml
+
+version: '3'
+
+services:
+  web:
+    build: .
+    volumes:
+      - ./how2meet:/app/how2meet
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_CONN: postgresql://postgres:password@db:5432/how2meet
+    networks:
+      - app-network
+
+  db:
+    image: postgres:latest
+    environment:
+      PGHOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: how2meet
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:

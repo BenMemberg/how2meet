@@ -6,7 +6,7 @@ services:
     repo: https://github.com/BenMemberg/how2meet.git
     region: ohio
     plan: free
-    buildCommand: poetry install
+    buildCommand: make install
     startCommand: poetry run make run_server
     autoDeploy: false
     envVars:

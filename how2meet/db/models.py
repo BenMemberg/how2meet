@@ -8,19 +8,21 @@ But Pydantic also uses the term "model" to refer to something different, the dat
 and documentation classes and instances.'
 
 """
+from uuid import uuid4
+
 from sqlalchemy import Boolean, Column, ForeignKey, String, Uuid
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.types import DateTime
 
-from .database import Base
+Base = declarative_base()
 
 
 class Event(Base):
     __tablename__ = "events"
 
-    id = Column(Uuid, primary_key=True, index=True)
-    auth_token = Column(Uuid, index=True)
-    name = Column(String(150))
+    id = Column(Uuid, primary_key=True, index=True, default=uuid4)
+    auth_token = Column(String(100))
+    name = Column(String(150), nullable=False)
     organizer = Column(String(100))
     created = Column(DateTime)
     start_time = Column(DateTime)
@@ -37,7 +39,7 @@ class Event(Base):
 class Guest(Base):
     __tablename__ = "guests"
 
-    id = Column(String(36), primary_key=True, index=True)
+    id = Column(Uuid, primary_key=True, index=True)
     name = Column(String(100))
     email = Column(String(100), nullable=True)
     phone = Column(String(15), nullable=True)

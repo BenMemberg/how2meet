@@ -10,8 +10,6 @@ from .db.database import engine
 from .routers import events
 from .ui import frontend
 
-models.Base.metadata.create_all(bind=engine)
-
 # Create app
 app = FastAPI()
 

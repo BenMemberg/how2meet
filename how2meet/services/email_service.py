@@ -24,6 +24,9 @@ def send_email(to_email: str, subject: str, body: str) -> EmailMessage:
     Returns:
         EmailMessage: The instance of the sent email.
     """
+    if not app_password:
+        raise ValueError("Missing email app password environment variable.")
+
     # Setting up the email
     message = EmailMessage()
     message["Subject"] = subject
