@@ -20,6 +20,7 @@ class Event(BaseModel):
     id: uuid.UUID
     name: str
     organizer: str
+    email: str
     created: datetime
     start_time: datetime
     end_time: datetime
@@ -32,20 +33,22 @@ class Event(BaseModel):
 
 
 class EventCreate(Event):
-    event_password: str
+    id: Optional[uuid.UUID] = Field(default=None, description="The ID of the event")
+    event_password: Optional[str] = Field(default=None, description="The password of the event")
 
 
 class EventUpdate(Event):
-    event_password: Optional[str] = Field(default=None, description="The password of the event")
     id: Optional[uuid.UUID] = Field(default=None, description="The ID of the event")
     name: Optional[str] = Field(default=None, description="The name of the event")
     organizer: Optional[str] = Field(default=None, description="The organizer of the event")
+    email: Optional[str] = Field(default=None, description="The email of the event")
     created: Optional[datetime] = Field(default=None, description="The creation datetime of the event")
     start_time: Optional[datetime] = Field(default=None, description="The start datetime of the event")
     end_time: Optional[datetime] = Field(default=None, description="The end datetime of the event")
     all_day: Optional[bool] = Field(default=None, description="Whether the event lasts all day")
     location: Optional[str] = Field(default=None, description="The location of the event")
     description: Optional[str] = Field(default=None, description="The description of the event")
+    event_password: Optional[str] = Field(default=None, description="The password of the event")
 
 
 class EventDelete(BaseModel):

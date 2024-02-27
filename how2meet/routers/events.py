@@ -23,7 +23,7 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> m
 
     Args:
         event: The event to be created.
-        db: The database session. Defaults to Depends(get_db).
+        db: The database session. Defaults to Depends(geft_db).
 
     Returns:
         models.Event: The created event.
@@ -51,7 +51,7 @@ def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) 
     """
     events = crud.get_events(db, skip=skip, limit=limit)
     for event in events:
-        del event.auth_token
+        del event.event_password
     return events
 
 
@@ -88,7 +88,7 @@ def delete_event(event_id: uuid.UUID, event_delete: schemas.EventDelete, db: Ses
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:
         raise HTTPException(status_code=404, detail="Event not found")
-    if event_delete.auth_token != db_event.auth_token:
+    if event_delete.event_password != db_event.event_password:
         raise HTTPException(status_code=403, detail="Unauthorized")
     db.delete(db_event)
     db.commit()
@@ -111,7 +111,7 @@ def update_event(event_id: uuid.UUID, updated_event: schemas.EventUpdate, db: Se
     db_event = crud.get_event(db, event_id=event_id)
     if db_event is None:
         raise HTTPException(status_code=404, detail="Event not found")
-    if updated_event.auth_token != db_event.auth_token:
+    if updated_event.event_password != db_event.event_password:
         raise HTTPException(status_code=403, detail="Unauthorized")
     updated_event = crud.update_event(db, db_event, updated_event)
     return updated_event

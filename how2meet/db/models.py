@@ -21,15 +21,16 @@ class Event(Base):
     __tablename__ = "events"
 
     id = Column(Uuid, primary_key=True, index=True, default=uuid4)
-    event_password = Column(String(100))
     name = Column(String(150), nullable=False)
     organizer = Column(String(100))
+    email = Column(String(100))  # TODO: Add email validation?
     created = Column(DateTime)
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     all_day = Column(Boolean)
     location = Column(String(150))
     description = Column(String(500))
+    event_password = Column(String(100))
     guests = relationship("Guest", primaryjoin="Event.id == Guest.event_id", cascade="all, delete-orphan")
 
     def __repr__(self):
