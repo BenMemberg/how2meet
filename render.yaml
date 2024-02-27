@@ -4,11 +4,12 @@ services:
     name: how2meet
     runtime: python
     repo: https://github.com/BenMemberg/how2meet.git
+    branch: deploy
     region: ohio
     plan: free
     buildCommand: make install
     startCommand: poetry run make run_server
-    autoDeploy: false
+    autoDeploy: true
     envVars:
       - key: BASE_URL
         value: https://www.how2meet.com
