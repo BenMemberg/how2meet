@@ -15,8 +15,8 @@ reset-db:
 	@poetry run alembic downgrade base
 
 # USAGE: make makemigrations MSG="migration name"
-.PHONY: makemigrations
-makemigrations:
+.PHONY: create_migration
+create_migration:
 	@poetry run alembic revision --autogenerate -m "$(MSG)"
 
 .PHONY: run_server
