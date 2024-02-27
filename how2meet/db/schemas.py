@@ -32,11 +32,11 @@ class Event(BaseModel):
 
 
 class EventCreate(Event):
-    auth_token: uuid.UUID
+    event_password: str
 
 
 class EventUpdate(Event):
-    auth_token: uuid.UUID
+    event_password: Optional[str] = Field(default=None, description="The password of the event")
     id: Optional[uuid.UUID] = Field(default=None, description="The ID of the event")
     name: Optional[str] = Field(default=None, description="The name of the event")
     organizer: Optional[str] = Field(default=None, description="The organizer of the event")
@@ -49,7 +49,7 @@ class EventUpdate(Event):
 
 
 class EventDelete(BaseModel):
-    auth_token: uuid.UUID
+    event_password: str
 
 
 """
