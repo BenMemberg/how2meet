@@ -237,13 +237,9 @@ class EventEditor:
         if response.is_success:
             ui.notify("Saved!")
 
-            logger.info("Response:")
-            logger.info(response)
-            logger.info("Response Content:")
-            logger.info(response.content)
             api_data = json.loads(response.content.decode("utf-8"))
 
-            email = api_data["email"]  # TODO: access like this or through class interface?
+            email = api_data["email"]
             if email:
                 try:
                     send_email(email, f"How2Meet Event Details: {api_data['name']}", str(model_data))
@@ -283,22 +279,30 @@ class EventEditor:
         await self.load()
 
         # Render forms
+        # fmt: off
         self.event_name_input = elements.input(
-            "What is your event going to be called?", value=self.event.get("name", ""), validation=self.check_event_name
-        ).classes("w-full")
-        self.event_location_input = elements.input("Where is it? (Optional)", value=self.event.get("location", "")).classes("w-full")
-        self.org_name_input = elements.input("Who's hosting? (Optional)", value=self.event.get("organizer", "")).classes("w-full")
-        self.org_email_input = elements.input("Email (Optional)", value=self.event.get("email", ""), validation=self.check_email).classes(
-            "w-full"
-        )
-        ui.label("We'll send an email with the event details and password in case you forget").bind_visibility_from(
-            self.org_email_input, "value"
-        ).tailwind.text_color("zinc-500")
+            "What is your event going to be called?",
+            value=self.event.get("name", ""),
+            validation=self.check_event_name).classes("w-full")
+        self.event_location_input = elements.input(
+            "Where is it? (Optional)",
+            value=self.event.get("location", ""),
+            placeholder="Online").classes("w-full")
+        self.org_name_input = elements.input(
+            "Who's hosting? (Optional)",
+            value=self.event.get("organizer", "")).classes("w-full")
+        self.org_email_input = elements.input(
+            "Email (Optional)",
+            value=self.event.get("email", ""),
+            validation=self.check_email).classes("w-full")
+        ui.label("  We'll send an email with the event details and password in case you forget").bind_visibility_from(
+            self.org_email_input, "value").tailwind.text_color("zinc-500").padding("pl-4")
+        # fmt: on
 
         with ui.row().classes("w-full"):
             self.enable_password = elements.checkbox("Enable Password")
             self.event_password_input = (
-                elements.input("Password", value=uuid.uuid4())
+                elements.input("Password", value=uuid.uuid4(), validation={"Must be at least 6 characters": lambda x: len(x) >= 6})
                 .classes("w-1/3")
                 .bind_visibility_from(self.enable_password, "value")
                 .props("clearable")

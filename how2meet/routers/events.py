@@ -23,7 +23,7 @@ def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)) -> m
 
     Args:
         event: The event to be created.
-        db: The database session. Defaults to Depends(geft_db).
+        db: The database session. Defaults to Depends(get_db).
 
     Returns:
         models.Event: The created event.
