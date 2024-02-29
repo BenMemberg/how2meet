@@ -1,3 +1,4 @@
+import json
 import logging
 import smtplib
 import uuid
@@ -25,66 +26,66 @@ class StatusEnum(Enum):
         return [e.value for e in cls]
 
 
-class TokenDialog:
-    def __init__(self, auth_token: str):
-        self.dialog = None
-        self.auth_token = auth_token
-
-    @staticmethod
-    def check_email(value: str) -> str | None:
-        """
-        Checks if the input is a valid email address; used as validator callback
-        Args:
-            value: The value from the email input field passed in at render time
-        """
-
-        import re
-
-        pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
-        if re.fullmatch(pattern, value):
-            return None
-        else:
-            return "Invalid email address"
-
-    async def send_email(self):
-        """Sends the token to the user's email"""
-        try:
-            send_email(self.email_input.value, "How2Meet Event Password", self.auth_token)
-            ui.notify("Email sent! Check your spam folder if you don't see it in your inbox.")
-        except smtplib.SMTPException as e:
-            ui.notify(f"Failed to send email with error: {e}")
-
-    async def render(self, on_next, floating=True):
-        """Renders the token dialog
-
-        Args:
-            on_next (callable): A callback to run when the next button is clicked.
-            floating (bool, optional): Whether to render the dialog in a floating dialog. Defaults to True.
-        """
-        if floating:
-            with ui.dialog(value=True).props("persistent") as dialog:
-                self.dialog = dialog
-                with elements.card():
-                    await self.render(on_next, floating=False)
-                    return
-
-        with ui.column().classes("flex-grow justify-between items-center"):
-            elements.label("Your event has been saved!").classes("text-2xl text-center w-full")
-            elements.label(
-                "We'll try to remember you in this browser, but in case we mess up save the token below to edit your event later."
-            ).classes("text-xl w-full text-center")
-            with elements.card().classes("flex-grow position:relative") as card:
-                card.classes("border-2 border-teal-500 no-wrap")
-                with ui.row().classes("w-full items-center justify-between"):
-                    self.token_display = elements.label(self.auth_token).classes("text-xl")
-                    copy_icon = ui.icon("content_copy").classes("cursor-pointer text-2xl")
-                    copy_icon.on("click", lambda: ui.notify("Copied to clipboard!"))
-                    copy_icon._props["onclick"] = f"navigator.clipboard.writeText('{self.auth_token}');"
-            elements.label("We can also send it to your email if you want.").classes("text-xl text-center w-full")
-            with ui.row().classes("w-full items-center justify-between"):
-                self.email_input = elements.input("Email", validation=self.check_email).classes("flex-grow")
-                self.send_button = elements.button("Send", on_click=self.send_email).classes("max-w-1/3")
-            self.next_button = elements.button("Next", on_click=on_next).classes("w-1/3")
+# class TokenDialog:
+#     def __init__(self, event_password: str):
+#         self.dialog = None
+#         self.event_password = event_password
+#
+#     @staticmethod
+#     def check_email(value: str) -> str | None:
+#         """
+#         Checks if the input is a valid email address; used as validator callback
+#         Args:
+#             value: The value from the email input field passed in at render time
+#         """
+#
+#         import re
+#
+#         pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
+#         if re.fullmatch(pattern, value):
+#             return None
+#         else:
+#             return "Invalid email address"
+#
+#     async def send_email(self):
+#         """Sends the token to the user's email"""
+#         try:
+#             send_email(self.email_input.value, "How2Meet Event Password", self.event_password)
+#             ui.notify("Email sent! Check your spam folder if you don't see it in your inbox.")
+#         except smtplib.SMTPException as e:
+#             ui.notify(f"Failed to send email with error: {e}")
+#
+#     async def render(self, on_next, floating=True):
+#         """Renders the token dialog
+#
+#         Args:
+#             on_next (callable): A callback to run when the next button is clicked.
+#             floating (bool, optional): Whether to render the dialog in a floating dialog. Defaults to True.
+#         """
+#         if floating:
+#             with ui.dialog(value=True).props("persistent") as dialog:
+#                 self.dialog = dialog
+#                 with elements.card():
+#                     await self.render(on_next, floating=False)
+#                     return
+#
+#         with ui.column().classes("flex-grow justify-between items-center"):
+#             elements.label("Your event has been saved!").classes("text-2xl text-center w-full")
+#             elements.label(
+#                 "We'll try to remember you in this browser, but in case we mess up save the token below to edit your event later."
+#             ).classes("text-xl w-full text-center")
+#             with elements.card().classes("flex-grow position:relative") as card:
+#                 card.classes("border-2 border-teal-500 no-wrap")
+#                 with ui.row().classes("w-full items-center justify-between"):
+#                     self.password_display = elements.input(value=self.event_password).classes("text-xl")
+#                     copy_icon = ui.icon("content_copy").classes("cursor-pointer text-2xl")
+#                     copy_icon.on("click", lambda: ui.notify("Copied to clipboard!"))
+#                     copy_icon._props["onclick"] = f"navigator.clipboard.writeText('{self.event_password}');"
+#             elements.label("We can also send it to your email if you want.").classes("text-xl text-center w-full")
+#             with ui.row().classes("w-full items-center justify-between"):
+#                 self.email_input = elements.input("Email", validation=self.check_email).classes("flex-grow")
+#                 self.send_button = elements.button("Send", on_click=self.send_email).classes("max-w-1/3")
+#             self.next_button = elements.button("Next", on_click=on_next).classes("w-1/3")
 
 
 class RsvpEditor:
@@ -158,8 +159,32 @@ class EventEditor:
         self.event = {}
         self.dialog = None
 
+    @staticmethod
+    def check_event_name(event_name):
+        """Check if event name exists on focus"""
+        if not event_name:
+            return "Event name is required!"
+        else:
+            return None
+
+    @staticmethod
+    def check_email(value: str) -> str | None:
+        """
+        Checks if the input is a valid email address; used as validator callback
+        Args:
+            value: The value from the email input field passed in at render time
+        """
+
+        import re
+
+        pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
+        if re.fullmatch(pattern, value) or not value:
+            return None
+        else:
+            return "Invalid email address"
+
     def validate(self):
-        """Validates the form data"""
+        """Validates the form data on save"""
         if not self.event_name_input.value:
             ui.notify("Event name is required!")
             return False
@@ -179,21 +204,18 @@ class EventEditor:
         if not self.validate():
             return
 
-        if not app.storage.user.get("auth_token"):
-            app.storage.user["auth_token"] = uuid.uuid4()
-
-        model_dump = self.model_dump()
+        model_data = self.model_dump()
 
         try:
             if self.event:
                 # Update the event and provide auth interface
                 try:
-                    status = await api.update_event(self.event_id, model_dump)
+                    status = await api.update_event(self.event_id, model_data)
                 except:
                     with ui.dialog(value=True) as token_dialog, elements.card() as card:
 
                         async def retry():
-                            app.storage.user["auth_token"] = token_input.value
+                            self.event["event_password"] = event_password_input.value
                             token_dialog.close()
                             await self.save(on_save=on_save)
 
@@ -201,21 +223,31 @@ class EventEditor:
                         elements.label("Please enter your auth token you received at event creation to edit this event.").classes(
                             "text-xl justify-center w-full text-center"
                         )
-                        token_input = elements.input("Auth Token", value=app.storage.user.get("auth_token")).classes("w-full")
+                        event_password_input = elements.input("Event Password").classes("w-full")
                         elements.button("Submit", on_click=retry).classes("w-1/3")
             else:
                 # Create the event
-                status = await api.create_event(model_dump)
+                response = await api.create_event(model_data)
 
         except Exception as e:
             logger.exception(e)
             ui.notify(f"Sorry we ran into an error trying to save your event!")
             return
 
-        if status.is_success:
+        if response.is_success:
             ui.notify("Saved!")
-            token_dialog = TokenDialog(model_dump["auth_token"])
-            await token_dialog.render(on_save)
+
+            api_data = json.loads(response.content.decode("utf-8"))
+
+            email = api_data["email"]
+            if email:
+                try:
+                    send_email(email, f"How2Meet Event Details: {api_data['name']}", str(model_data))
+                except smtplib.SMTPException as e:
+                    ui.notify(f"Failed to send email with error: {e}")
+
+            ui.open(URL_EVENT_HOME.format(event_id=self.event_id))
+
         else:
             logger.debug(f"Error: {status}")
             ui.notify(f"Sorry we ran into an error!", timeout=5)
@@ -247,9 +279,34 @@ class EventEditor:
         await self.load()
 
         # Render forms
-        self.event_name_input = elements.input("What is your event going to be called?", value=self.event.get("name", "")).classes("w-full")
-        self.event_location_input = elements.input("Where is it?", value=self.event.get("location", "")).classes("w-full")
-        self.org_name_input = elements.input("Who's hosting?", value=self.event.get("organizer", "")).classes("w-full")
+        # fmt: off
+        self.event_name_input = elements.input(
+            "What is your event going to be called?",
+            value=self.event.get("name", ""),
+            validation=self.check_event_name).classes("w-full")
+        self.event_location_input = elements.input(
+            "Where is it? (Optional)",
+            value=self.event.get("location", ""),
+            placeholder="Online").classes("w-full")
+        self.org_name_input = elements.input(
+            "Who's hosting? (Optional)",
+            value=self.event.get("organizer", "")).classes("w-full")
+        self.org_email_input = elements.input(
+            "Email (Optional)",
+            value=self.event.get("email", ""),
+            validation=self.check_email).classes("w-full")
+        ui.label("  We'll send an email with the event details and password in case you forget").bind_visibility_from(
+            self.org_email_input, "value").tailwind.text_color("zinc-500").padding("pl-4")
+        # fmt: on
+
+        with ui.row().classes("w-full"):
+            self.enable_password = elements.checkbox("Enable Password")
+            self.event_password_input = (
+                elements.input("Password", value=uuid.uuid4(), validation={"Must be at least 6 characters": lambda x: len(x) >= 6})
+                .classes("w-1/3")
+                .bind_visibility_from(self.enable_password, "value")
+                .props("clearable")
+            )
 
         with ui.column().classes("w-full"):
             with ui.expansion("Start Time").classes("w-full"):
@@ -282,18 +339,17 @@ class EventEditor:
 
     def model_dump(self):
         """Dumps the form data to a JSON string"""
-        if not app.storage.user.get("auth_token"):
-            app.storage.user["auth_token"] = str(uuid.uuid4())
 
         return {
             "id": str(self.event_id),
             "name": self.event_name_input.value,
             "organizer": self.org_name_input.value,
+            "email": self.org_email_input.value,
             "created": datetime.now().isoformat(),
             "start_time": f"{self.start_date_input.value}T{self.start_time_input.value}:00",
             "end_time": f"{self.end_date_input.value}T{self.end_time_input.value}:00",
             "all_day": self.all_day_checkbox.value,
             "location": self.event_location_input.value,
             "description": self.description_input.value,
-            "auth_token": str(app.storage.user.get("auth_token")),
+            "event_password": str(self.event_password_input.value) if self.enable_password.value else None,
         }
