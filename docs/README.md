@@ -1,15 +1,13 @@
 
 ---
 <h1 align="center">
-    <img src="assets/h2m-logo.png" alt="Logo" width="125" height="125">
+    <img src="assets/h2m_logo_alt.png" alt="Logo" width="175" height="175">
     <br>
-    <img src="assets/company-logo.png" alt="CompanyLogo" width="200">
-    <br>
-    how2meet
+    <img src="assets/how2meet.png" alt="title" width="300">
 </h1>
 
 <p align="center">
-    Frictionless event manager
+    The frictionless event manager
     <br/>
 </p>
 
@@ -17,14 +15,10 @@
 <summary>Table of Contents</summary>
 
 - [About](#about)
-    - [Description](#description)
     - [Motivation](#motivation)
     - [Features](#features)
     - [Roadmap](#roadmap)
     - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Tutorial](#tutorial)
-  - [Screenshots](#screenshots)
 - [Roadmap](#roadmap)
 - [Maintainers](#maintainers)
 - [License](#license)
@@ -38,11 +32,14 @@
 
 **how2meet** is a *frictionless* event manager--meaning it is simple, free, easy to use, and does **NOT** require you or your guests to:
 - Create an account
+- Give out your personal information to a service you're not sure that you can trust
 - Download an app
+
+Just create your event and send a link with whatever service you choose!
 
 ## Motivation
 
-### __Facebook is dead:__ _But Facebook Events was :fire:_
+### __Facebook is dead :skull: :__ _But Facebook Events was :fire:_
 - Facebook Events
 - No one wants to download an app
 - Planning a reunion with a big group of distributed, busy friends
@@ -50,10 +47,10 @@
 -
 
 ## Features
-- [ ] Host an event at a specific location, date, and time
-- [ ] Send invites to guests via text, email, or web interface (link)
-- [ ] Track RSVP responses, nudge those who haven't responded
-- [ ] Admin access to limit attendees, kick out unknowns, change event details, and more!
+- [x] Host an event at a specific location, date, and time
+- [x] Send invites to guests via link
+- [x] Track RSVP responses
+- [x] Admin access to change event details
 
 ## Roadmap
 - [ ] When2meet-style group scheduler
@@ -61,13 +58,19 @@
 - [ ] Polls
 - [ ] Photos and comments
 - [ ] AI-powered planning assistant
+- [ ] Alternative communication paths (text, email, whatsapp, etc.)
+- [ ] Nudge guests who haven't responded
+- [ ] Geo-location search and presentation
+- [ ] Admins to limit attendees, kick out unknowns
 
 ## Built With
-| Library                                 | Use            | Source                                          |
-|-----------------------------------------|----------------|-------------------------------------------------|
-| [nicegui](https://nicegui.io)           | GUI            | https://github.com/zauberzeug/nicegui/tree/main |
-| [FastAPI](https://fastapi.tiangolo.com) | Backend        | https://github.com/tiangolo/fastapi             |
-| [Render](https://render.com)            | Infrastructure | https://github.com/renderinc                    |
+| Library                                  | Use            | Source                                          |
+|------------------------------------------|----------------|-------------------------------------------------|
+| [nicegui](https://nicegui.io)            | GUI            | https://github.com/zauberzeug/nicegui/tree/main |
+| [FastAPI](https://fastapi.tiangolo.com)  | Backend        | https://github.com/tiangolo/fastapi             |
+| [Render](https://render.com)             | Infrastructure | https://github.com/renderinc                    |
+| [SQLAlchemy](https://www.sqlalchemy.org) | ORM            | https://github.com/sqlalchemy/sqlalchemy        |
+| [Postgres](https://www.postgresql.org)   | Database       | https://github.com/postgres                     |
 
 # Maintainers
 | Name         | Email                |
@@ -79,6 +82,6 @@
 # License
 [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/)
 
-# Acknowledgements / References
+# Acknowledgements
 
 [when2meet](https://www.when2meet.com)
