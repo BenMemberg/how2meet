@@ -65,6 +65,7 @@ class Guest(BaseModel):
     name: str
     email: Optional[str] = Field(default=None, description="The email of the guest")
     phone: Optional[str] = Field(default=None, description="The phone number of the guest")
+    # TODO: Make this an enum, default it to either "pending" or "invited" or something
     status: str
     event_id: uuid.UUID
 
