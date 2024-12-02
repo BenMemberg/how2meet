@@ -55,12 +55,16 @@
 - [ ] Track RSVP responses, nudge those who haven't responded
 - [ ] Admin access to limit attendees, kick out unknowns, change event details, and more!
 
+## Usage
+
+
 ## Roadmap
 - [ ] When2meet-style group scheduler
 - [ ] GCal URL integration
 - [ ] Polls
 - [ ] Photos and comments
 - [ ] AI-powered planning assistant
+
 
 ## Built With
 | Library                                 | Use            | Source                                          |
