@@ -75,7 +75,7 @@ class Guest(BaseModel):
 
 class GuestCreate(Guest):
     id: Optional[uuid.UUID] = Field(default=None, description="The event ID of the guest")
-    status: Optional[str] = Field(default='Pending', description="The status of the guest")
+    status: Optional[str] = Field(default="Pending", description="The status of the guest")
     event_id: Optional[uuid.UUID] = Field(default=None, description="The event ID of the guest")
 
 
