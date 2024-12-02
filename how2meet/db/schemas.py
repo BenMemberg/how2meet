@@ -63,8 +63,8 @@ Guests schemas
 class Guest(BaseModel):
     id: uuid.UUID
     name: str
-    email: Optional[str] = Field(default="", description="The email of the guest")
-    phone: Optional[str] = Field(default="", description="The phone number of the guest")
+    email: Optional[str] = Field(default=None, description="The email of the guest")
+    phone: Optional[str] = Field(default=None, description="The phone number of the guest")
     status: str
     event_id: uuid.UUID
 
