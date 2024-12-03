@@ -144,3 +144,5 @@ dmypy.json
 
 # SQLAlchemy storage
 *.db
+
+node_modules/

@@ -20,13 +20,13 @@ from .urls import BASE_URL, ROUTE_BASE, ROUTE_EVENT_HOME, ROUTE_NEW_EVENT, ROUTE
 router = APIRouter(prefix=ROUTE_PREFIX_EVENTS, tags=["events"])
 
 
-@router.page(ROUTE_BASE + "/test")
+@router.page(ROUTE_BASE + "test")
 async def events() -> None:
     frame()
     ui.label("Test")
 
 
-@router.page(ROUTE_BASE)
+@router.page("/")
 async def events() -> None:
     """List page for all events"""
 
