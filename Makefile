@@ -32,6 +32,6 @@ reset-db:
 create_migration:
 	@poetry run alembic revision --autogenerate -m "$(MSG)"
 
-.PHONY: run_server
-run_server:
+.PHONY: server
+server:
 	@uvicorn how2meet.main:app --reload --log-level info --port ${PORT} --host ${HOST}

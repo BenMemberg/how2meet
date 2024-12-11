@@ -8,7 +8,7 @@ services:
     region: ohio
     plan: free
     buildCommand: make install
-    startCommand: poetry run make run_server
+    startCommand: poetry run make server
     autoDeploy: true
     envVars:
       - key: BASE_URL
