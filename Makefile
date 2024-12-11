@@ -35,3 +35,7 @@ create_migration:
 .PHONY: server
 server:
 	@uvicorn how2meet.main:app --reload --log-level info --port ${PORT} --host ${HOST}
+
+.PHONY: client
+client:
+	@cd client && yarn dev
