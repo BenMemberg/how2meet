@@ -20,7 +20,7 @@ app.include_router(events.router)
 app.include_router(settings.router)
 
 
-@ui.page("/")  # NOTE this is the default page
+@ui.page("/gui/")  # NOTE this is the default page
 def home():
     """Home page"""
     frame()

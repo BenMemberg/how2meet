@@ -25,6 +25,7 @@ app.mount("/api", api_app)
 # Mount the frontend at the root path
 # NOTE: If this is mounted before the API, the API will not be accessible
 frontend.init(app)
+print("Frontend mounted at http://localhost:8000/gui/")
 
 if __name__ == "__main__":
     print('Please start the app with the "uvicorn" command.')
